@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+out/
+build/
+
+# Electron cache
+.cache/
+electron-builder.yml
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos sensíveis
+.env
+*.env
+
+# VSCode (caso use)
+.vscode/
+
+# .git
+.git/
