@@ -28,6 +28,7 @@ function registrarCadastroHandler(ipcMain) {
 
       let lista = { usuarios: [] };
       if (fs.existsSync(USUARIO_PATH)) {
+        console.log("📁 Criando novo arquivo de usuarios...");
         try {
           lista = JSON.parse(fs.readFileSync(USUARIO_PATH, "utf8"));
         } catch (erroLeitura) {
@@ -40,6 +41,10 @@ function registrarCadastroHandler(ipcMain) {
         return { sucesso: false, erro: "E-mail já cadastrado." };
       }
 
+      if (!dados.email || !dados.aluno) {
+        return { sucesso: false, erro: "Campos obrigatórios ausentes." };
+      }
+      
       lista.usuarios.push(novoUsuario);
 
       fs.mkdirSync(path.dirname(USUARIO_PATH), { recursive: true });

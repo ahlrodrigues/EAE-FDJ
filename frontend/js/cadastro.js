@@ -39,10 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
       senha: senhaInput.value
     };
 
+    if (!dados.email || !dados.senha || !dados.aluno) {
+      exibirAviso({ tipo: "erro", mensagem: "Preencha todos os campos obrigatórios." });
+      return;
+    }
+
     try {
       const resultado = await window.electronAPI.salvarCadastro(dados);
 
       if (resultado.sucesso) {
+        console.log("📤 Enviando dados para salvarCadastro:", dados);
         exibirAviso({ tipo: "sucesso", mensagem: "Usuário cadastrado com sucesso!", aoFechar: () => window.location.reload() });
       } else {
         exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Erro ao salvar cadastro." });
