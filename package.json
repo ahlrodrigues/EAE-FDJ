@@ -1,9 +1,10 @@
 {
   "name": "eae-fdj",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "<p align=\"center\" width=\"100%\">     <img src=\"https://geea.com.br/imagem/trevo.png\"> </p>",
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,6 +12,33 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "electron": "^36.2.1",
     "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahlrodrigues/EAE-FDJ.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahlrodrigues/EAE-FDJ/issues"
+  },
+  "homepage": "https://github.com/ahlrodrigues/EAE-FDJ#readme",
+  "build": {
+    "appId": "com.seuapp.aprendizes",
+    "productName": "Escola de Aprendizes",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "icon": "build/icon.icns"
+    }
   }
 }
