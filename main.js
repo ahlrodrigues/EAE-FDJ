@@ -8,6 +8,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
+    icon: path.join(__dirname, 'frontend', 'assets', 'trevo.png'), // Caminho do ícone
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
