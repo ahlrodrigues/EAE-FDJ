@@ -16,7 +16,6 @@
     "electron": "^36.2.1",
     "zxcvbn": "^4.4.2"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ahlrodrigues/EAE-FDJ.git"
