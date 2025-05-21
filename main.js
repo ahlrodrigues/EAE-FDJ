@@ -15,7 +15,7 @@ const createWindow = () => {
     },
   });
 
-  mainWindow.loadFile('frontend/cadastro.html');
+  mainWindow.loadFile('frontend/login.html');
 };
 
 app.whenReady().then(() => {

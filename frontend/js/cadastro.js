@@ -36,7 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
       aluno: form.aluno.value.trim(),
       email: form.email.value.trim(),
       telefone: form.telefone.value.trim(),
-      senha: senhaInput.value
+      senha: senhaInput.value,
+      codigoTemas: form.codigoTemas.value.trim(),
+
     };
 
     if (!dados.email || !dados.senha || !dados.aluno) {
