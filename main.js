@@ -1,25 +1,39 @@
-// === main.js ===
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const fs = require('fs');
-const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
+const fs = require("fs");
+const usuarioPath = path.resolve(process.cwd(), 'config/usuario.json');
 
-const createWindow = () => {
+// Handlers
+const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
+const registrarLoginHandler = require('./backend/handlers/loginHandler');
+
+// Registra os handlers de IPC
+registrarCadastroHandler(ipcMain);
+registrarLoginHandler(ipcMain);
+
+const preloadPath = path.join(__dirname, 'preload.js');
+console.log("🧪 Caminho absoluto do preload:", preloadPath);
+console.log("🧪 Arquivo existe?", fs.existsSync(preloadPath));
+
+// Função para criar a janela principal
+function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
     icon: path.join(__dirname, 'frontend', 'assets', 'trevo.png'),
     webPreferences: {
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      preload: preloadPath
     },
   });
 
+  console.log("📂 Carregando login.html com preload ativo");
   mainWindow.loadFile('frontend/login.html');
-};
+}
 
+// Executado quando o app estiver pronto
 app.whenReady().then(() => {
-  registrarCadastroHandler(ipcMain);
   createWindow();
 
   app.on('activate', () => {
@@ -27,6 +41,9 @@ app.whenReady().then(() => {
   });
 });
 
+// Fecha o app quando todas as janelas forem fechadas (exceto no macOS)
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
