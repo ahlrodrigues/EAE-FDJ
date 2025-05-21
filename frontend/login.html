@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Escola de Aprendizes</title>
+
+  <!-- Estilo principal -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Cabeçalho -->
+<div id="cabecalho"></div>
+
+<!-- Formulário de Login -->
+<div class="card">
+  <h2>Login</h2>
+  <form id="form-login">
+    <input type="email" id="email" placeholder="E-mail" required />
+
+    <div class="campo-senha">
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="button" id="btn-olho" class="btn-olho" tabindex="-1">👁️</button>
+    </div>
+
+    <button type="submit" class="btn-principal">Entrar</button>
+  </form>
+</div>
+
+<!-- Modal de aviso (injetado dinamicamente) -->
+<div id="modalAvisoContainer"></div>
+
+<!-- Rodapé -->
+<div id="rodape"></div>
+  <!-- 📦 Scripts -->
+  <!-- Carrega cabeçalho e rodapé dinamicamente -->
+  <script src="js/incluirComponentes.js"></script>
+
+  <!-- Modal reutilizável para exibir avisos -->
+  <script type="module" src="js/modalAviso.js"></script>
+
+  <!-- Lógica do formulário de login -->
+  <script type="module" src="js/login.js"></script>
+
+  <!-- Log de inicialização da página -->
+  <script>
+    console.log("✅ Página de login carregada com sucesso");
+  </script>
+</body>
+</html>

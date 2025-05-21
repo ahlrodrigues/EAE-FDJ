@@ -2,5 +2,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  salvarCadastro: async (dados) => ipcRenderer.invoke('salvar-cadastro', dados)
+  salvarCadastro: async (dados) => ipcRenderer.invoke('salvar-cadastro', dados),
+  validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
 });

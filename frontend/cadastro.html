@@ -10,6 +10,7 @@
 <body>
   <div id="cabecalho"></div>
   <h2>Cadastro de Usuário</h2>
+  <div class="card">
   <form id="cadastroForm">
     <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
     <input type="number" id="numeroTurma" placeholder="Número da turma" required />
@@ -24,7 +25,8 @@
       <input type="password" id="senha" placeholder="Senha" required />
       <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
     </div>
-    <div id="forcaSenha" class="mensagem-sucesso"></div><br>
+
+    <div id="forcaSenha" class="mensagem-sucesso"></div>
 
     <div id="senhaRegrasContainer"></div>
 
@@ -33,10 +35,13 @@
       <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
     </div>
 
+    <input type="text" id="codigoTemas" placeholder="Código temas" required />
+
+
     <div id="mensagem" class="mensagem-sucesso"></div>
     <button type="submit" class="btn-principal">Salvar cadastro</button>
   </form>
-
+</div>
   <div id="modalAvisoContainer"></div>
   <div id="rodape"></div>
 
