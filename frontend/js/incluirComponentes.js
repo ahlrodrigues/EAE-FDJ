@@ -1,27 +1,25 @@
 // js/incluirComponentes.js
-import { inicializarCabecalho } from "../js/rodape";
-import { inicializarRodape } from "../js/rodape";
-
-// Inclui HTML externo em container por ID
-export function incluir(id, caminho, aoFinalizar) {
-  fetch(caminho)
-    .then(resp => resp.text())
-    .then(html => {
-      const container = document.getElementById(id);
-      if (container) {
-        container.innerHTML = html;
-        if (aoFinalizar) aoFinalizar();
-        console.log(`✅ Componente incluído em #${id}: ${caminho}`);
-      } else {
-        console.warn(`⚠️ Elemento #${id} não encontrado para incluir ${caminho}`);
+export const componentesCarregados = (async function incluirComponentes() {
+  const incluirHTML = async (id, arquivo) => {
+    const el = document.getElementById(id);
+    if (el) {
+      try {
+        const resposta = await fetch(arquivo);
+        if (resposta.ok) {
+          const html = await resposta.text();
+          el.innerHTML = html;
+          console.log(`✅ Componente incluído em #${id}: ${arquivo}`);
+        } else {
+          console.warn(`⚠️ Não foi possível carregar ${arquivo}: ${resposta.status}`);
+        }
+      } catch (erro) {
+        console.error(`❌ Erro ao carregar ${arquivo}:`, erro);
       }
-    })
-    .catch(err => console.error(`❌ Erro ao carregar ${caminho}:`, err));
-}
+    }
+  };
 
-// Inicializa cabeçalho e rodapé
-export function carregarComponentesFixos() {
-  console.log("🔧 Carregando cabeçalho e rodapé...");
-  inicializarCabecalho();
-  inicializarRodape();
-}
+  await incluirHTML("cabecalho", "componentes/cabecalho.html");
+  await incluirHTML("senhaRegrasContainer", "componentes/senhaRegras.html");
+  await incluirHTML("modalAvisoContainer", "componentes/modalAviso.html");
+  await incluirHTML("rodape", "componentes/rodape.html");
+})();

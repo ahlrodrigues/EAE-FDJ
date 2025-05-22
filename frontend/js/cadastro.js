@@ -1,6 +1,28 @@
-// === js/cadastro.js ===
 import { exibirAviso } from "./modalAviso.js";
-import { incluir, carregarComponentesFixos } from "./incluirComponentes.js";
+import { componentesCarregados } from "./incluirComponentes.js";
+
+async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
+  for (let i = 0; i < tentativas; i++) {
+    if (document.querySelector(seletor)) return true;
+    await new Promise(resolve => setTimeout(resolve, intervalo));
+  }
+  console.warn(`⚠️ Elemento ${seletor} não carregado após ${tentativas} tentativas.`);
+  return false;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await esperarElemento("#cabecalho");
+  await esperarElemento("#rodape");
+  await esperarElemento("#modalAvisoContainer");
+  await esperarElemento("#senhaRegrasContainer");
+  await componentesCarregados;
+
+  console.log("✅ Todos os componentes foram carregados. Iniciando lógica do cadastro.");
+
+
+  // Código original do cadastro.js
+  // === js/cadastro.js ===
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("🔄 DOMContentLoaded iniciado");
@@ -95,4 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       exibirAviso({ tipo: "erro", mensagem: "Erro inesperado ao tentar salvar." });
     }
   });
+});
+
 });
