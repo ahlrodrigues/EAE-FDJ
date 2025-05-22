@@ -15,48 +15,63 @@ const USUARIO_PATH = path.join(
 function registrarCadastroHandler(ipcMain) {
   ipcMain.handle("salvar-cadastro", async (_, dados) => {
     try {
-      const senhaHash = await bcrypt.hash(dados.senha, 10);
-      delete dados.senha;
+      if (!dados || !dados.email || !dados.senha || !dados.aluno) {
+        return { sucesso: false, erro: "Campos obrigatórios ausentes." };
+      }
+  
+      
+      // Extração segura antes de modificar dados
+      const emailNormalizado = String(dados.email).trim().toLowerCase();
+      const senhaOriginal = String(dados.senha);
 
-      const conteudoCriptografado = criptografarComMestra(JSON.stringify(dados));
+      // Cria cópia dos dados e remove email/senha
+      const dadosSeguros = { ...dados };
+      delete dadosSeguros.email;
+      delete dadosSeguros.senha;
 
+      // Criptografa individualmente
+      const emailCriptografado = criptografarComMestra(emailNormalizado);
+      const senhaCriptografada = criptografarComMestra(senhaOriginal);
+      const conteudoCriptografado = criptografarComMestra(JSON.stringify(dadosSeguros));
+
+      // Define o objeto final
       const novoUsuario = {
-        email: dados.email,
-        senha: senhaHash,
-        conteudoCriptografado,
+        emailCriptografado,
+        senhaCriptografada,
+        conteudoCriptografado
       };
 
+  
       let lista = { usuarios: [] };
       if (fs.existsSync(USUARIO_PATH)) {
-        console.log("📁 Criando novo arquivo de usuarios...");
         try {
           lista = JSON.parse(fs.readFileSync(USUARIO_PATH, "utf8"));
         } catch (erroLeitura) {
           console.error("⚠️ Erro ao ler usuario.json:", erroLeitura);
         }
       }
-
-      const jaExiste = lista.usuarios.some((u) => u.email.toLowerCase() === novoUsuario.email.toLowerCase());
+  
+      const jaExiste = lista.usuarios.some(
+        (u) => u.emailCriptografado === emailCriptografado
+      );
       if (jaExiste) {
         return { sucesso: false, erro: "E-mail já cadastrado." };
       }
-
-      if (!dados.email || !dados.aluno) {
-        return { sucesso: false, erro: "Campos obrigatórios ausentes." };
-      }
-      
+  
       lista.usuarios.push(novoUsuario);
-
+  
       fs.mkdirSync(path.dirname(USUARIO_PATH), { recursive: true });
       fs.writeFileSync(USUARIO_PATH, JSON.stringify(lista, null, 2), "utf8");
-
-      console.log("✅ Usuário salvo com sucesso:", novoUsuario.email);
+  
+      console.log("✅ Usuário salvo com sucesso:", dados.email);
       return { sucesso: true };
+     
     } catch (erro) {
       console.error("❌ Erro ao salvar cadastro:", erro);
-      return { sucesso: false, erro: "Falha ao salvar cadastro." };
+      return { sucesso: false, erro: "Erro ao salvar cadastro." };
     }
   });
+  
 }
 
 module.exports = registrarCadastroHandler;

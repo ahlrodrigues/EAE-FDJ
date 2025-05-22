@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Início - Escola de Aprendizes</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+  <div id="menu"></div>
+  <main class="conteudo">
+    <div class="card">
+    <div class="cartao" id="cartao-dirigente">
+      <h3>Mensagem do Dirigente</h3>
+      <div id="mensagem-dirigente">Carregando...</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="cartao" id="cartao2" style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div id="cartao-youtube" style="flex: 1 1 50%">
+        <h3>Último Vídeo</h3>
+        <!-- iframe inserido via JS -->
+      </div>
+      <div id="cartao-revista" style="flex: 1 1 45%">
+        <h3>Revista "O Trevo"</h3>
+        <div id="capa-revista">Carregando...</div>
+      </div>
+    </div></div>
+
+    <div class="card">
+    <div class="cartao" id="cartao-randomico">
+      <h3>Mensagem Aleatória</h3>
+      <div id="mensagem-randomica">Carregando...</div>
+    </div></div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>

@@ -24,7 +24,8 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      preload: preloadPath
+      preload: preloadPath,
+      sandbox: false,
     },
   });
 
