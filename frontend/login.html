@@ -10,46 +10,41 @@
 </head>
 <body>
   <!-- Cabeçalho -->
-<div id="cabecalho"></div>
+  <div id="cabecalho"></div>
 
-<!-- Formulário de Login -->
-<div class="card">
+  <!-- Título -->
   <h2>Login</h2>
-  <form id="form-login">
-    <input type="email" id="email" placeholder="E-mail" required />
 
-    <div class="campo-senha">
-      <input type="password" id="senha" placeholder="Senha" required />
-      <button type="button" id="btn-olho" class="btn-olho" tabindex="-1">👁️</button>
-    </div>
+  <!-- Cartão de login -->
+  <div class="card">
+    <form id="form-login">
+      <input type="email" id="email" placeholder="E-mail" required />
 
-    <button type="submit" class="btn-principal">Entrar</button>
-  </form>
-  <div class="login-links" style="margin-top: 1rem; text-align: center;">
-    <a href="cadastro.html" style="margin-right: 1.5rem;">Criar cadastro</a>
+      <div class="campo-senha">
+        <input type="password" id="senha" placeholder="Senha" required />
+        <button type="button" id="btn-olho" class="btn-olho" tabindex="-1">👁️</button>
+      </div>
+
+      <div class="botao-container">
+        <button type="submit" class="btn-principal">Entrar</button>
+      </div>
+    </form>
+
+  </div>
+
+  <div class="login-links">
+    <a href="cadastro.html">Criar cadastro</a>
     <a href="esqueciSenha.html">Esqueci a senha</a>
   </div>
-  
-</div>
+  <!-- Modal de aviso (injetado dinamicamente) -->
+  <div id="modalAvisoContainer"></div>
 
-<!-- Modal de aviso (injetado dinamicamente) -->
-<div id="modalAvisoContainer"></div>
+  <!-- Rodapé -->
+  <div id="rodape"></div>
 
-<!-- Rodapé -->
-<div id="rodape"></div>
-  <!-- 📦 Scripts -->
-  <!-- Carrega cabeçalho e rodapé dinamicamente -->
+  <!-- Scripts -->
   <script type="module" src="js/incluirComponentes.js"></script>
-
-  <!-- Modal reutilizável para exibir avisos -->
   <script type="module" src="js/modalAviso.js"></script>
-
-   <!-- Lógica do formulário de login -->
   <script type="module" src="js/login.js"></script>
-
-  <!-- Log de inicialização da página -->
-  <script>
-    console.log("✅ Página de login carregada com sucesso");
-  </script>
 </body>
 </html>

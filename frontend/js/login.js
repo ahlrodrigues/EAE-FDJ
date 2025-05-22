@@ -2,25 +2,16 @@
 // ES6 module para página de login
 
 import { exibirAviso } from "./modalAviso.js";
-import { incluir } from "./incluirComponentes.js";
-import { inicializarRodape } from "./rodape.js";
 
-// Log de verificação da API no preload
 console.log("🔍 window.api no início:", window.api);
 window.api?.teste?.();
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("📄 DOMContentLoaded carregado");
 
-  // Garante inclusão de componentes comuns
-  await incluir("cabecalho", "componentes/cabecalho.html");
-  await incluir("modalAvisoContainer", "componentes/modalAviso.html");
-  await incluir("rodape", "componentes/rodape.html");
-  inicializarRodape();
-  console.log("✅ Cabeçalho, modalAviso e rodapé incluídos");
+  // Removido: await incluir("modalAvisoContainer", "componentes/modalAviso.html");
 
-  // Verifica se preload expôs a função de login
-  console.log("🔍 window.api após DOMContentLoaded:", window.api);
+  console.log("✅ DOM pronto e componentes fixos assumidos");
 
   if (!window.api?.validarLogin) {
     console.error("❌ API de login não está disponível.");
@@ -39,13 +30,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Mostrar/ocultar senha
   btnOlho.addEventListener("click", () => {
     senhaEl.type = senhaEl.type === "password" ? "text" : "password";
     console.log(`👁️ Senha visível: ${senhaEl.type === "text"}`);
   });
 
-  // Envio do formulário de login
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
