@@ -6,6 +6,8 @@ const usuarioPath = path.resolve(process.cwd(), 'config/usuario.json');
 // Handlers
 const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
 const registrarLoginHandler = require('./backend/handlers/loginHandler');
+const registrarBlogHandler = require('./backend/handlers/blogHandler');
+registrarBlogHandler();
 
 // Registra os handlers de IPC
 registrarCadastroHandler(ipcMain);
@@ -48,3 +50,4 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+

@@ -14,12 +14,22 @@ contextBridge.exposeInMainWorld("nativo", {
   descriptografarComMestra,
 });
 
-// Teste direto:
+// ✅ Expor API para o renderer
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
   salvarCadastro: async (dados) => ipcRenderer.invoke('salvar-cadastro', dados),
   teste: () => console.log("✅ teste chamado do preload"),
+  buscarUltimaPublicacao: () => {
+    console.log("📡 preload: buscarUltimaPublicacao foi chamada");
+    return ipcRenderer.invoke('blog:buscarUltimaPublicacao');
+  }
 });
 
-console.log("🧠 preload.js executado");
-window.api = { testar: () => console.log("✅ API disponível!") };
+// ✅ Log fora da definição do objeto
+console.log("🧪 blogAPI disponível no preload:", typeof window.api?.buscarUltimaPublicacao);
+
+// ✅ Atribuição direta no contexto da janela (útil para debug)
+window.api = {
+  ...window.api,
+  testar: () => console.log("✅ API disponível!")
+};
