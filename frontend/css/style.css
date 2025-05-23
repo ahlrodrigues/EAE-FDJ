@@ -50,6 +50,39 @@ input {
   border: 1px solid #ccc;
 }
 
+.blog-titulo {
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+  font-size: 1.5rem;
+  color: black;
+}
+
+.blog-descricao {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2; /* ✅ Compatibilidade futura e navegadores que suportam sem prefixo */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: black;
+  line-height: 1.6;
+}
+
+.blog-link-container {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.blog-link {
+  color: #28a745;
+  text-decoration: none;
+  
+}
+
+.blog-link:hover {
+  text-decoration: underline;
+}
+
 .botao-container {
   text-align: center;
   margin-top: 2rem;
