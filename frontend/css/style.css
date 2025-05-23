@@ -100,6 +100,59 @@ input {
   padding-right: 2.5rem;
 }
 
+/* Estilo padrão de cartão branco */
+.card-login {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 3rem;
+  margin: 1.5rem auto;
+  max-width: 800px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin: 1.5rem auto;
+  max-width: 800px;
+  box-sizing: border-box;
+}
+
+/* Centraliza os títulos */
+.card h3 {
+  text-align: center;
+}
+
+/* Justifica os textos */
+#mensagem-dirigente,
+#mensagem-randomica {
+  text-align: justify;
+}
+
+/* Vídeo responsivo e centralizado */
+#youtubeContainer iframe {
+  width: 100%;
+  max-width: 480px;
+  height: 270px;
+  border: none;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Imagem da revista proporcional e centralizada */
+#revistaTrevoContainer img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+
 .login-links {
   margin-top: 1.5rem;
   text-align: center; /* Alinha os links ao centro */
