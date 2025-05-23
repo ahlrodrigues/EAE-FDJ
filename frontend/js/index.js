@@ -114,7 +114,7 @@ function buscarPlanilha(codigoTemas, aba) {
 }
 
 function carregarUltimoVideo() {
-  const API_KEY = "AIzaSyBTVmAPRawYx35cbiiqff32jtie06fWjy4";
+  const API_KEY = "################################3";
   const CHANNEL_ID = "UCNvAIY83zX7c6j7bWAv7yAQ";
 
   fetch(
