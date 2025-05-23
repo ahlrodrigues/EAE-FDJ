@@ -19,10 +19,8 @@ contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
   salvarCadastro: async (dados) => ipcRenderer.invoke('salvar-cadastro', dados),
   teste: () => console.log("✅ teste chamado do preload"),
-  buscarUltimaPublicacao: () => {
-    console.log("📡 preload: buscarUltimaPublicacao foi chamada");
-    return ipcRenderer.invoke('blog:buscarUltimaPublicacao');
-  }
+  buscarUltimaPublicacao: () => ipcRenderer.invoke('blog:buscarUltimaPublicacao'),
+  verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
 });
 
 // ✅ Log fora da definição do objeto

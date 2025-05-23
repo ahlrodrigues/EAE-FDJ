@@ -1,26 +1,25 @@
-console.log("📥 loginHandler.js carregado")
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+const bcrypt = require("bcryptjs");
+const { app } = require("electron");
+const { decryptData } = require("../lib/criptografia");
 
 function registrarLoginHandler(ipcMain) {
-  console.log("✅ registrando handler validar-login");
-
-  const fs = require("fs");
-  const path = require("path");
-  const bcrypt = require("bcryptjs"); 
-  const os = require("os");
+  console.log("📥 loginHandler.js carregado");
 
   const usuarioPath = path.join(
-  os.homedir(),
-  ".config",
-  "escola-aprendizes",
-  "config",
-  "usuario.json"
-);
-  console.log("📄 Verificando usuário em:", usuarioPath);
-
+    os.homedir(),
+    ".config",
+    "escola-aprendizes",
+    "config",
+    "usuario.json"
+  );
 
   console.log("📄 Caminho resolvido do usuario.json:", usuarioPath);
   console.log("📄 Arquivo existe?", fs.existsSync(usuarioPath));
 
+  // Handler de login
   ipcMain.handle("validar-login", async (_, emailDigitado, senhaDigitada) => {
     console.log("🔐 Validando login para:", emailDigitado);
 
@@ -39,20 +38,25 @@ function registrarLoginHandler(ipcMain) {
       return { sucesso: false, erro: "Formato de dados inválido." };
     }
 
-    const usuario = dados.usuarios.find(u => u.email.toLowerCase() === emailDigitado.toLowerCase());
-
-    if (!usuario) {
-      return { sucesso: false, erro: "E-mail não encontrado." };
+    for (const usuario of dados.usuarios) {
+      try {
+        const emailSalvo = decryptData(usuario.emailCriptografado, process.env.CRYPTO_SECRET);
+        if (emailSalvo.toLowerCase() === emailDigitado.toLowerCase()) {
+          const senhaSalva = decryptData(usuario.senhaCriptografada, process.env.CRYPTO_SECRET);
+          const senhaOk = await bcrypt.compare(senhaDigitada, senhaSalva);
+          if (senhaOk) {
+            console.log("✅ Login autorizado para:", emailSalvo);
+            return { sucesso: true };
+          } else {
+            return { sucesso: false, erro: "Senha incorreta." };
+          }
+        }
+      } catch (erroInterno) {
+        console.warn("⚠️ Erro ao comparar credenciais:", erroInterno);
+      }
     }
 
-    const senhaOk = await bcrypt.compare(senhaDigitada, usuario.senha);
-    if (!senhaOk) {
-      return { sucesso: false, erro: "Senha incorreta." };
-    }
-
-    console.log("✅ Login autorizado para:", usuario.email);
-    return { sucesso: true };
+    return { sucesso: false, erro: "E-mail não encontrado." };
   });
 }
-
 module.exports = registrarLoginHandler;

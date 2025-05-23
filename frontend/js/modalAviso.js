@@ -1,4 +1,18 @@
-export function exibirAviso({ tipo = "Aviso", mensagem = "", aoFechar = null }) {
+
+export function exibirAviso(input) {
+  let tipo = "Aviso";
+  let mensagem = "";
+  let aoFechar = null;
+
+  // Permite chamar com string simples: exibirAviso("Mensagem direta")
+  if (typeof input === "object" && input !== null) {
+    tipo = input.tipo || "Aviso";
+    mensagem = input.mensagem || "";
+    aoFechar = input.aoFechar || null;
+  } else {
+    mensagem = String(input);
+  }
+
   const modal = document.getElementById("modalAviso");
   const tituloEl = document.getElementById("modalAvisoTitulo");
   const textoEl = document.getElementById("modalAvisoTexto");

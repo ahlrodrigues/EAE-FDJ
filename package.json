@@ -4,9 +4,8 @@
   "description": "<p align=\"center\" width=\"100%\">     <img src=\"https://geea.com.br/imagem/trevo.png\"> </p>",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    "start": "electron ."
+     },
   "keywords": [],
   "author": "",
   "license": "ISC",

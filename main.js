@@ -7,11 +7,14 @@ const usuarioPath = path.resolve(process.cwd(), 'config/usuario.json');
 const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
 const registrarLoginHandler = require('./backend/handlers/loginHandler');
 const registrarBlogHandler = require('./backend/handlers/blogHandler');
-registrarBlogHandler();
+const registrarVerificacaoHandler = require("./backend/handlers/verificacaoHandler");
 
 // Registra os handlers de IPC
 registrarCadastroHandler(ipcMain);
 registrarLoginHandler(ipcMain);
+registrarBlogHandler(ipcMain);
+registrarVerificacaoHandler(ipcMain);
+
 
 const preloadPath = path.join(__dirname, 'preload.js');
 console.log("🧪 Caminho absoluto do preload:", preloadPath);
