@@ -16,7 +16,7 @@
   <h2>Login</h2>
 
   <!-- Cartão de login -->
-  <div class="card">
+  <div class="card-login">
     <form id="form-login">
       <input type="email" id="email" placeholder="E-mail" required />
 
@@ -29,16 +29,17 @@
         <button type="submit" class="btn-principal">Entrar</button>
       </div>
     </form>
+    <div class="login-links">
+      <a href="cadastro.html">Criar cadastro</a>
+      <a href="esqueciSenha.html">Esqueci a senha</a>
+    </div>
 
   </div>
 
-  <div class="login-links">
-    <a href="cadastro.html">Criar cadastro</a>
-    <a href="esqueciSenha.html">Esqueci a senha</a>
-  </div>
+
   <!-- Modal de aviso (injetado dinamicamente) -->
   <div id="modalAvisoContainer"></div>
-
+  
   <!-- Rodapé -->
   <div id="rodape"></div>
 
@@ -46,5 +47,6 @@
   <script type="module" src="js/incluirComponentes.js"></script>
   <script type="module" src="js/modalAviso.js"></script>
   <script type="module" src="js/login.js"></script>
+  <script type="module" src="js/revista.js"></script>
 </body>
 </html>

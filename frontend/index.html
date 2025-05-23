@@ -7,38 +7,56 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- Cabeçalho dinâmico -->
   <div id="cabecalho"></div>
-  <div id="menu"></div>
-  <main class="conteudo">
-    <div class="card">
-    <div class="cartao" id="cartao-dirigente">
-      <h3>Mensagem do Dirigente</h3>
-      <div id="mensagem-dirigente">Carregando...</div>
+
+  <!-- Menu dinâmico -->
+<div id="menu"></div>
+
+<main class="conteudo">
+<!-- MENSAGEM DO DIRIGENTE -->
+<section id="cartao-dirigente"class="card">
+  <h3>Mensagem do Dirigente</h3>
+  <div id="mensagem-dirigente">...</div>
+</section>
+
+  <!-- VÍDEO -->
+<div id="cartao-youtube" class="card">
+  <h3>Último Vídeo</h3>
+  <div id="youtubeContainer iframe"></div>
+</div>
+
+<!-- REVISTA -->
+<div id="cartao-revista" class="card">
+  <h3>O Trevo</h3>
+  <div id="revistaTrevoContainer">
     </div>
 </div>
 
-<div class="card">
-    <div class="cartao" id="cartao2" style="display: flex; gap: 20px; flex-wrap: wrap;">
-      <div id="cartao-youtube" style="flex: 1 1 50%">
-        <h3>Último Vídeo</h3>
-        <!-- iframe inserido via JS -->
-      </div>
-      <div id="cartao-revista" style="flex: 1 1 45%">
-        <h3>Revista "O Trevo"</h3>
-        <div id="capa-revista">Carregando...</div>
-      </div>
-    </div></div>
 
-    <div class="card">
-    <div class="cartao" id="cartao-randomico">
-      <h3>Mensagem Aleatória</h3>
-      <div id="mensagem-randomica">Carregando...</div>
-    </div></div>
-  </main>
+<!-- MENSAGEM ALEATÓRIA -->
+<section id="cartao-randomico"class="card">
+  <h3>Mensagem Edificante</h3>
+  <div id="mensagem-randomica">...</div>
+</section>
 
+</main>
+
+
+  <!-- Rodapé dinâmico -->
   <div id="rodape"></div>
 
+  <!-- Scripts principais -->
   <script type="module" src="js/incluirComponentes.js"></script>
   <script type="module" src="js/index.js"></script>
+  <script type="module" src="js/revista.js"></script>
+
+  <!-- Logs para rastreio de carregamento -->
+  <script>
+    console.log("✅ Página index.html carregada.");
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log("🚀 DOM completamente carregado.");
+    });
+  </script>
 </body>
 </html>
