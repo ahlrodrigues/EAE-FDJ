@@ -1,5 +1,9 @@
+
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
+import { inicializarRegrasSenha } from "./senhaRegra.js";
+import { inicializarForcaSenha } from "./forcaSenha.js";
+import { inicializarBotaoVerSenha } from "./verSenha.js";
 
 async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   for (let i = 0; i < tentativas; i++) {
@@ -11,112 +15,88 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await esperarElemento("#cabecalho");
-  await esperarElemento("#rodape");
-  await esperarElemento("#modalAvisoContainer");
-  await esperarElemento("#senhaRegrasContainer");
   await componentesCarregados;
+  await esperarElemento("#cadastroForm");
 
-  console.log("✅ Todos os componentes foram carregados. Iniciando lógica do cadastro.");
+  inicializarRegrasSenha();
+  inicializarForcaSenha();
+  inicializarBotaoVerSenha();
 
+  console.log("✅ Componentes de senha e botões carregados.");
 
-  // Código original do cadastro.js
-  // === js/cadastro.js ===
-
-
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🔄 DOMContentLoaded iniciado");
-
-  // Garante que o modal está no DOM antes de qualquer uso
-  await incluir("modalAvisoContainer", "componentes/modalAviso.html");
-  console.log("✅ modalAviso incluído");
-
-  // Formulário e campos principais
   const form = document.getElementById("cadastroForm");
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmarsenha");
 
-  if (!form || !senhaInput || !confirmarSenhaInput) {
-    console.error("❌ Elementos do formulário não encontrados.");
-    return;
-  }
-
-  // Verifica se API de salvarCadastro está disponível via preload
-  if (!window.api?.salvarCadastro) {
-    console.warn("⚠️ API salvarCadastro não disponível no preload");
+  // Testador de modal
+  setTimeout(() => {
+    console.log("🧪 Testando aviso manual...");
     exibirAviso({
-      tipo: "erro",
-      mensagem: "API de cadastro não está disponível. Verifique preload.js."
+      tipo: "❗ Teste",
+      mensagem: "Modal aberto manualmente para validar funcionamento."
     });
-    return;
-  }
+  }, 3000);
 
-  // Botões para exibir/ocultar senha
-  document.getElementById("toggleSenha1")?.addEventListener("click", () => {
-    senhaInput.type = senhaInput.type === "password" ? "text" : "password";
-  });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  document.getElementById("toggleSenha2")?.addEventListener("click", () => {
-    confirmarSenhaInput.type = confirmarSenhaInput.type === "password" ? "text" : "password";
-  });
+    const email = document.getElementById("email").value.trim();
+    const senha = senhaInput.value.trim();
+    const confirmarSenha = confirmarSenhaInput.value.trim();
 
-  // Inclui visual das regras de senha
-  incluir("senhaRegrasContainer", "componentes/senhaRegras.html", () => {
-    import("./validacaoSenha.js")
-      .then(() => console.log("✅ validacaoSenha.js carregado"))
-      .catch(err => console.error("❌ Erro ao importar validacaoSenha.js:", err));
-  });
+    console.log("📩 E-mail digitado:", email);
 
-  // Evento de envio do formulário
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // Confirmação de senha
-    if (senhaInput.value !== confirmarSenhaInput.value) {
-      exibirAviso({ tipo: "erro", mensagem: "As senhas não coincidem." });
+    if (senha !== confirmarSenha) {
+      console.log("⚠️ Senhas não coincidem.");
+      exibirAviso({
+        tipo: "❌ Erro",
+        mensagem: "As senhas não coincidem."
+      });
       return;
     }
 
-    // Monta objeto com dados do formulário
-    const dados = {
-      casaEspírita: form.casaEspírita.value.trim(),
-      numeroTurma: form.numeroTurma.value.trim(),
-      dirigente: form.dirigente.value.trim(),
-      emailDirigente: form.emailDirigente.value.trim(),
-      secretarios: form.secretarios.value.trim(),
-      aluno: form.aluno.value.trim(),
-      email: form.email.value.trim(),
-      telefone: form.telefone.value.trim(),
-      senha: senhaInput.value,
-      codigoTemas: form.codigoTemas.value.trim(),
+    console.log("🔍 Verificando se e-mail já existe...");
+    const emailExiste = await window.api.verificarEmailExistente(email);
+    console.log("🔁 Resultado da verificação:", emailExiste);
+
+    if (emailExiste) {
+      console.log("⚠️ E-mail já está em uso. Exibindo aviso.");
+      exibirAviso({
+        tipo: "❌ Erro",
+        mensagem: "O e-mail informado já está em uso. Por favor, tente outro."
+      });
+      return;
+    }
+
+    const dadosUsuario = {
+      email,
+      senha,
+      aluno: document.getElementById("aluno").value,
+      casaEspírita: document.getElementById("casaEspírita").value,
+      numeroTurma: document.getElementById("numeroTurma").value,
+      dirigente: document.getElementById("dirigente").value,
+      emailDirigente: document.getElementById("emailDirigente").value,
+      secretarios: document.getElementById("secretarios").value,
+      telefone: document.getElementById("telefone").value,
+      codigoTemas: document.getElementById("codigoTemas").value
     };
 
-    // Validação de campos obrigatórios
-    if (!dados.email || !dados.senha || !dados.aluno) {
-      exibirAviso({ tipo: "erro", mensagem: "Preencha todos os campos obrigatórios." });
-      return;
-    }
+    console.log("📤 Enviando dados para salvar cadastro:", dadosUsuario);
 
-    try {
-      console.log("📤 Enviando dados para salvarCadastro:", dados);
-      const resultado = await window.api.salvarCadastro(dados);
+    const resultado = await window.api.salvarCadastro(dadosUsuario);
+    console.log("📬 Resultado do salvamento:", resultado);
 
-      if (resultado.sucesso) {
-        console.log("✅ Cadastro salvo com sucesso");
-        exibirAviso({
-          tipo: "sucesso",
-          mensagem: "Usuário cadastrado com sucesso!",
-          aoFechar: () => window.location.href = "login.html"
-        });
-      } else {
-        console.warn("⚠️ Falha ao salvar cadastro:", resultado.erro);
-        exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Erro ao salvar cadastro." });
-      }
-    } catch (erro) {
-      console.error("❌ Erro inesperado ao tentar salvar cadastro:", erro);
-      exibirAviso({ tipo: "erro", mensagem: "Erro inesperado ao tentar salvar." });
+    if (resultado.sucesso) {
+      exibirAviso({
+        tipo: "✅ Sucesso",
+        mensagem: "Cadastro realizado com sucesso!"
+      });
+      form.reset();
+    } else {
+      exibirAviso({
+        tipo: "❌ Erro",
+        mensagem: resultado.erro || "Erro desconhecido ao salvar."
+      });
     }
   });
-});
-
 });

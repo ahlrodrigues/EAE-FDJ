@@ -1,4 +1,7 @@
-const { ipcMain } = require('electron');
+
+function registrarBlogHandler(ipcMain) {
+// ipcMain removido - será passado como argumento
+// const { ipcMain } = require('electron');
 const https = require('https');
 
 function registrarBlogHandler() {
@@ -59,6 +62,10 @@ resolve({ titulo, link, descricao });
       });
     });
   });
+}
+
+module.exports = registrarBlogHandler;
+
 }
 
 module.exports = registrarBlogHandler;
