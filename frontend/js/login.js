@@ -7,11 +7,7 @@ console.log("🔍 window.api no início:", window.api);
 window.api?.teste?.();
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("📄 DOMContentLoaded carregado");
-
-  // Removido: await incluir("modalAvisoContainer", "componentes/modalAviso.html");
-
-  console.log("✅ DOM pronto e componentes fixos assumidos");
+  console.log("📄 DOMContentLoaded carregado");  
 
   if (!window.api?.validarLogin) {
     console.error("❌ API de login não está disponível.");
@@ -63,4 +59,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       exibirAviso({ tipo: "erro", mensagem: "Erro interno ao tentar login." });
     }
   });
+
+
+  /* //Esqueci a senha
+  const link = document.getElementById("linkEsqueciSenha");
+
+  if (!link) {
+    console.warn("⚠️ Elemento #linkEsqueciSenha não encontrado.");
+    return;
+  }
+
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    console.log("🔗 Redirecionando para solicitarToken.html");
+    window.location.href = "solicitarToken.html";
+  }); */
 });
+

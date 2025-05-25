@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitar Token</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+
+  <h2>Redefinir Senha</h2>
+
+  <div class="card">
+    <form id="solicitarTokenForm">
+      <input type="email" id="email" placeholder="Digite seu e-mail" required />
+      <button type="submit" class="btn-principal">Solicitar Token</button>
+    </form>
+  </div>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <!-- ✅ Colocado dentro do script -->
+  <script type="module">
+    console.log("🧪 preload ativo?", typeof window.electronAPI);
+
+    import { exibirAviso } from "./js/modalAviso.js";
+    import { componentesCarregados } from "./js/incluirComponentes.js";
+
+    // Aguarda carregamento dos componentes visuais
+    document.addEventListener("DOMContentLoaded", async () => {
+      await componentesCarregados;
+
+      console.log("✅ Componentes carregados na página solicitarToken.html");
+
+      const form = document.getElementById("solicitarTokenForm");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = form.email.value.trim();
+        if (!email) {
+          exibirAviso("Por favor, preencha seu e-mail.");
+          return;
+        }
+
+        console.log(`📨 Solicitando token para ${email}`);
+
+        try {
+          const resultado = await window.electronAPI.solicitarToken(email);
+
+          if (resultado.sucesso) {
+            console.log("✅ Token enviado com sucesso");
+            exibirAviso("Token enviado para seu e-mail!", "sucesso");
+
+            // Aguarda 2 segundos e redireciona para redefinirSenha.html
+            setTimeout(() => {
+              window.location.href = `redefinirSenha.html?email=${encodeURIComponent(email)}`;
+            }, 2000);
+          } else {
+            console.warn("⚠️ Erro ao solicitar token:", resultado.erro);
+            exibirAviso(`Erro: ${resultado.erro}`);
+          }
+        } catch (erro) {
+          console.error("❌ Erro inesperado:", erro);
+          exibirAviso("Erro inesperado ao solicitar token.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

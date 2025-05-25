@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redefinir Senha</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+
+  <h2>Redefinir Senha</h2>
+
+  <div class="card">
+    <form id="redefinirSenhaForm">
+      <input type="text" id="token" placeholder="Token recebido por e-mail" required />
+      <input type="password" id="novaSenha" placeholder="Nova senha" required />
+      <input type="password" id="confirmarSenha" placeholder="Confirmar nova senha" required />
+      <button type="submit" class="btn-principal">Redefinir Senha</button>
+    </form>
+  </div>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <!-- Script modular ES6 -->
+  <script type="module" src="./js/redefinirSenha.js"></script>
+</body>
+</html>

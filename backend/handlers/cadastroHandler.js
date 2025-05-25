@@ -58,23 +58,30 @@ function registrarCadastroHandler(ipcMain) {
         }
       }
 
-      // Verifica se já existe pelo campo em texto plano
+      const { gerarHashEmailComMestra } = require("../lib/criptografia");
+      const CRYPTO_SECRET = process.env.CRYPTO_SECRET || "segredoPadrao";
+
+      // Gera hash determinístico do e-mail informado
+      const emailHash = gerarHashEmailComMestra(emailNormalizado, CRYPTO_SECRET);
+
+      // Verifica se já existe algum usuário com o mesmo emailHash
       const jaExiste = lista.usuarios.some((u) => {
-        if (!u.emailVisivel) {
-          console.warn("⚠️ Usuário no JSON não possui emailVisivel:", u);
+        if (!u.emailHash) {
+          console.warn("⚠️ Usuário no JSON não possui emailHash:", u);
           return false;
         }
 
-        const comparado = u.emailVisivel.trim().toLowerCase();
-        const atual = emailNormalizado;
-        console.log("🔍 Comparando:", comparado, "<->", atual);
+        const comparado = u.emailHash;
+        const atual = emailHash;
+        console.log("🔍 Comparando hash:", comparado, "<->", atual);
         return comparado === atual;
       });
 
       if (jaExiste) {
-        console.warn("❌ Tentativa de cadastro com e-mail já existente:", emailNormalizado);
+        console.warn("❌ Tentativa de cadastro com e-mail já existente (hash):", emailHash);
         return { sucesso: false, erro: "E-mail já cadastrado." };
       }
+
 
       // Cria diretório se não existir
       fs.mkdirSync(path.dirname(USUARIO_PATH), { recursive: true });
@@ -86,7 +93,7 @@ function registrarCadastroHandler(ipcMain) {
       console.log("✅ Usuário salvo com sucesso:", emailNormalizado);
       return { sucesso: true };
 
-    } catch (erro) {
+      } catch (erro) {
       console.error("❌ Erro inesperado ao salvar cadastro:", erro);
       return { sucesso: false, erro: "Erro ao salvar cadastro." };
     }

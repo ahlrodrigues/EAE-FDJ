@@ -28,16 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmarsenha");
 
-  // Testador de modal
-  setTimeout(() => {
-    console.log("🧪 Testando aviso manual...");
-    exibirAviso({
-      tipo: "❗ Teste",
-      mensagem: "Modal aberto manualmente para validar funcionamento."
-    });
-  }, 3000);
-
-  form.addEventListener("submit", async (event) => {
+    form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();

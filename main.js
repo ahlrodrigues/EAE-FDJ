@@ -8,12 +8,15 @@ const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
 const registrarLoginHandler = require('./backend/handlers/loginHandler');
 const registrarBlogHandler = require('./backend/handlers/blogHandler');
 const registrarVerificacaoHandler = require("./backend/handlers/verificacaoHandler");
+const registrarSenhaHandler = require('./backend/handlers/senhaTokenHandler');
+
 
 // Registra os handlers de IPC
 registrarCadastroHandler(ipcMain);
 registrarLoginHandler(ipcMain);
 registrarBlogHandler(ipcMain);
 registrarVerificacaoHandler(ipcMain);
+registrarSenhaHandler(ipcMain);
 
 
 const preloadPath = path.join(__dirname, 'preload.js');
