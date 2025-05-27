@@ -23,7 +23,17 @@ function descriptografarComMestra(entrada) {
   return texto.toString("utf8");
 }
 
+function gerarHashEmailComMestra(email) {
+  const crypto = require("crypto");
+  const CRYPTO_SECRET = process.env.CRYPTO_SECRET || "segredoPadrao";
+  return crypto
+    .createHmac("sha256", CRYPTO_SECRET)
+    .update(email.trim().toLowerCase())
+    .digest("hex");
+}
+
 module.exports = {
   criptografarComMestra,
   descriptografarComMestra,
+  gerarHashEmailComMestra
 };

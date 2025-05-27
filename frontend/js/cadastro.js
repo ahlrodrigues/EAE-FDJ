@@ -28,6 +28,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmarsenha");
 
+  // Idioma e bandeiras
+  const idiomaEl = document.getElementById("idioma");
+  const bandeiraEl = document.getElementById("bandeiraIdioma");
+
+  idiomaEl.addEventListener("change", () => {
+  const flagCode = idiomaEl.selectedOptions[0].dataset.flag;
+  bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
+  });
+
   // Testador de modal
   setTimeout(() => {
     console.log("🧪 Testando aviso manual...");
