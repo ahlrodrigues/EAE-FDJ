@@ -5,13 +5,14 @@ console.log("🧠 preload.js carregado");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { descriptografarComMestra } = require("./backend/lib/criptografia");
+const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
 
 contextBridge.exposeInMainWorld("nativo", {
   fs,
   path,
   os,
   descriptografarComMestra,
+  criptografarComMestra,
 });
 
 // ✅ Expor API para o renderer
@@ -21,6 +22,7 @@ contextBridge.exposeInMainWorld("api", {
   teste: () => console.log("✅ teste chamado do preload"),
   buscarUltimaPublicacao: () => ipcRenderer.invoke('blog:buscarUltimaPublicacao'),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
+  redefinirSenha: (token, novaSenha) => ipcRenderer.invoke("redefinir-senha", token, novaSenha),
 });
 
 // ✅ Log fora da definição do objeto

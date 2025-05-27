@@ -37,15 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
   });
 
-  // Testador de modal
-  setTimeout(() => {
-    console.log("🧪 Testando aviso manual...");
-    exibirAviso({
-      tipo: "❗ Teste",
-      mensagem: "Modal aberto manualmente para validar funcionamento."
-    });
-  }, 3000);
-
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 

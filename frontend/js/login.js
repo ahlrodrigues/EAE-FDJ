@@ -50,10 +50,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const resultado = await window.api.validarLogin(email, senha);
-
+    
       if (resultado.sucesso) {
         console.log("✅ Login bem-sucedido");
-        window.location.href = "index.html";
+        sessionStorage.setItem("emailHash", resultado.emailHash);
+        window.location.href = "config.html";
       } else {
         console.warn("⚠️ Login inválido:", resultado.erro);
         exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Não foi possível fazer login." });

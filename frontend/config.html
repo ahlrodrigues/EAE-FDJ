@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro / Edição</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+
+  <h2 id="titulo-formulario">Cadastro de Usuário</h2>
+  <div class="card">
+    <form id="formUsuario">
+    <label for="aluno">Nome da casa espírita</label>
+    <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
+    <label for="aluno">Número da turma</label>
+    <input type="number" id="numeroTurma" placeholder="Número da turma" required />
+    <label for="aluno">Nome do dirigente</label>
+    <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
+    <label for="aluno">E-mail do dirigente</label>
+    <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
+    <label for="aluno">Nomes dos secretários</label>
+    <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
+    <label for="aluno">Nome do aluno</label>
+    <input type="text" id="aluno" placeholder="Nome do aluno" required />
+    <label for="aluno">E-mail do aluno</label>
+    <input type="email" id="email" placeholder="E-mail do aluno" required />
+    <label for="aluno">Telefone com DDI e DDD</label>
+    <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
+      
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <label for="idioma">Idioma:</label>
+    <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
+    <select id="idioma" name="idioma">
+      <option value="pt" data-flag="br" selected>Português</option>
+      <option value="en" data-flag="us">English</option>
+      <option value="fr" data-flag="fr">Français</option>
+      <option value="de" data-flag="de">Deutsch</option>
+      <option value="it" data-flag="it">Italiano</option>
+    </select>
+  </div>
+
+      <button type="submit" class="btn-principal" id="btn-acao">Salvar Alterações</button>
+      </form>
+  </div>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <script type="module" src="js/config.js"></script>
+</body>
+</html>
