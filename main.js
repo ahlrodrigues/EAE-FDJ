@@ -4,7 +4,7 @@ const fs = require("fs");
 const usuarioPath = path.resolve(process.cwd(), 'config/usuario.json');
 
 // Handlers
-const registrarCadastroHandler = require('./backend/handlers/cadastroHandler');
+const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
 const registrarLoginHandler = require('./backend/handlers/loginHandler');
 const registrarBlogHandler = require('./backend/handlers/blogHandler');
 const registrarVerificacaoHandler = require("./backend/handlers/verificacaoHandler");

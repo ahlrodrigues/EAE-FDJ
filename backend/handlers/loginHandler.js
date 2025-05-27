@@ -3,7 +3,7 @@ const path = require("path");
 const os = require("os");
 const bcrypt = require("bcryptjs");
 const { app } = require("electron");
-const { decryptData } = require("../lib/criptografia");
+const { descriptografarComMestra } = require("../lib/criptografia");
 
 function registrarLoginHandler(ipcMain) {
   console.log("📥 loginHandler.js carregado");
@@ -40,9 +40,9 @@ function registrarLoginHandler(ipcMain) {
 
     for (const usuario of dados.usuarios) {
       try {
-        const emailSalvo = decryptData(usuario.emailCriptografado, process.env.CRYPTO_SECRET);
+        const emailSalvo = descriptografarComMestra(usuario.emailCriptografado, process.env.CRYPTO_SECRET);
         if (emailSalvo.toLowerCase() === emailDigitado.toLowerCase()) {
-          const senhaSalva = decryptData(usuario.senhaCriptografada, process.env.CRYPTO_SECRET);
+          const senhaSalva = descriptografarComMestra(usuario.senhaCriptografada, process.env.CRYPTO_SECRET);
           const senhaOk = await bcrypt.compare(senhaDigitada, senhaSalva);
           if (senhaOk) {
             console.log("✅ Login autorizado para:", emailSalvo);
