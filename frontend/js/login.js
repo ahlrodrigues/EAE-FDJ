@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (resultado.sucesso) {
         console.log("✅ Login bem-sucedido");
         sessionStorage.setItem("emailHash", resultado.emailHash);
-        window.location.href = "config.html";
+        window.location.href = "index.html";
       } else {
         console.warn("⚠️ Login inválido:", resultado.erro);
         exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Não foi possível fazer login." });
