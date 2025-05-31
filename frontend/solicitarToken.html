@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitar Token</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+
+  <div class="card">
+    <h2>Recuperar Senha</h2>
+    <form id="form-token">
+      <label for="email">Digite seu e-mail cadastrado:</label>
+      <input type="email" id="email" required placeholder="seu@email.com" />
+      <button class="btn-principal" type="submit">Enviar Token</button>
+    </form>
+  </div>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <script type="module" src="js/solicitarToken.js"></script>
+  <script type="module" src="js/incluirComponentes.js"></script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+// backend/handlers/verificacaoEmailHandler.js
+
 const fs = require("fs");
 const path = require("path");
 const { descriptografarComMestra } = require("../lib/criptografia");
@@ -13,7 +15,7 @@ const USUARIO_PATH = path.join(
 /**
  * Handler para verificar se um e-mail já está cadastrado (criptografado)
  */
-function registrarVerificacaoHandler(ipcMain) {
+function registrarVerificacaoEmailHandler(ipcMain) {
   ipcMain.handle("verificar-email-existente", async (_, emailDigitado) => {
     try {
       console.log("🔍 Verificando se e-mail já está cadastrado:", emailDigitado);
@@ -28,7 +30,7 @@ function registrarVerificacaoHandler(ipcMain) {
 
       for (const usuario of usuarios) {
         try {
-          const emailDescriptografado = descriptografarComMestra(usuario.emailCriptografado);
+          const emailDescriptografado = descriptografarComMestra(usuario.emailCriptografado, process.env.CRYPTO_SECRET);
 
           if (emailDescriptografado?.toLowerCase() === emailDigitado.trim().toLowerCase()) {
             console.log("⚠️ E-mail já existente:", emailDigitado);
@@ -49,4 +51,4 @@ function registrarVerificacaoHandler(ipcMain) {
   });
 }
 
-module.exports = registrarVerificacaoHandler;
+module.exports = { registrarVerificacaoEmailHandler };

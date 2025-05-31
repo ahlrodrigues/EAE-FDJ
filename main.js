@@ -7,14 +7,21 @@ const usuarioPath = path.resolve(process.cwd(), 'config/usuario.json');
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
 const registrarLoginHandler = require('./backend/handlers/loginHandler');
 const registrarBlogHandler = require('./backend/handlers/blogHandler');
-const registrarVerificacaoHandler = require("./backend/handlers/verificacaoHandler");
+const { registrarRedefinirSenhaHandler } = require("./backend/handlers/redefinirSenhaHandler");
+const { registrarSolicitarTokenHandler } = require("./backend/handlers/solicitarTokenHandler");
+const { registrarVerificacaoEmailHandler } = require("./backend/handlers/verificacaoEmailHandler");
+
+
+
+
 
 // Registra os handlers de IPC
 registrarCadastroHandler(ipcMain);
 registrarLoginHandler(ipcMain);
 registrarBlogHandler(ipcMain);
-registrarVerificacaoHandler(ipcMain);
-
+registrarRedefinirSenhaHandler(ipcMain);
+registrarSolicitarTokenHandler(ipcMain);
+registrarVerificacaoEmailHandler(ipcMain);
 
 const preloadPath = path.join(__dirname, 'preload.js');
 console.log("🧪 Caminho absoluto do preload:", preloadPath);
@@ -25,8 +32,8 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
-    icon: path.join(__dirname, 'frontend', 'assets', 'trevo.png'),
-    webPreferences: {
+    icon: path.join(__dirname, "assets", "icon.png"),
+      webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
       preload: preloadPath,

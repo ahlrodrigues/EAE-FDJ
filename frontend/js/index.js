@@ -13,7 +13,7 @@ componentesCarregados.then(() => {
     const fs = window.nativo.fs;
     const path = window.nativo.path;
     const os = window.nativo.os;
-    const descriptografar = window.nativo.descriptografarComMestra;
+    const descriptografar = window.nativo.descriptografarComMestra; // ✅ Atribuição direta para facilitar
 
     const usuarioPath = path.join(
       os.homedir(),
@@ -23,29 +23,5 @@ componentesCarregados.then(() => {
       "usuario.json"
     );
 
-    try {
-      const raw = fs.readFileSync(usuarioPath, "utf-8");
-      const dados = JSON.parse(raw);
-      const usuario = dados.usuarios?.[0];
-
-      if (usuario?.codigoTemas) {
-        try {
-          const codigoTemas = descriptografar(usuario.codigoTemas);
-          console.log("📌 codigoTemas carregado:", codigoTemas);
-
-          buscarMensagensDoDirigente(codigoTemas);
-          buscarMensagemAleatoria(codigoTemas);
-        } catch (e) {
-          console.error("❌ Erro ao descriptografar codigoTemas:", e);
-        }
-      } else {
-        console.warn("⚠️ Campo codigoTemas ausente ou inválido.");
-      }
-
-      carregarUltimoVideo();
-    } catch (erro) {
-      console.error("❌ Erro ao ler ou descriptografar usuario.json:", erro);
-    }
-
-  }); // ← fechamento do incluirCartoes().then()
-}); // ← fechamento do componentesCarregados.then()
+  });
+});
