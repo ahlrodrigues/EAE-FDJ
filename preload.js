@@ -1,35 +1,30 @@
 // === preload.js ===
-const { contextBridge, ipcRenderer } = require('electron');
-console.log("🧠 preload.js carregado");
-
+const { contextBridge, ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
 
+console.log("🧠 preload.js carregado");
+
+// ✅ Expor acesso nativo ao sistema
 contextBridge.exposeInMainWorld("nativo", {
   fs,
   path,
   os,
-  descriptografarComMestra,
   criptografarComMestra,
+  descriptografarComMestra,
 });
 
-// ✅ Expor API para o renderer
+// ✅ Expor API de comunicação com o main.js
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
-  salvarCadastro: async (dados) => ipcRenderer.invoke('salvar-cadastro', dados),
-  teste: () => console.log("✅ teste chamado do preload"),
-  buscarUltimaPublicacao: () => ipcRenderer.invoke('blog:buscarUltimaPublicacao'),
+  salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
-  redefinirSenha: (token, novaSenha) => ipcRenderer.invoke("redefinir-senha", token, novaSenha),
+  solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
+  buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
+  redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
 });
 
-// ✅ Log fora da definição do objeto
-console.log("🧪 blogAPI disponível no preload:", typeof window.api?.buscarUltimaPublicacao);
-
-// ✅ Atribuição direta no contexto da janela (útil para debug)
-window.api = {
-  ...window.api,
-  testar: () => console.log("✅ API disponível!")
-};
+// ✅ Log de teste
+console.log("🧪 preload pronto. APIs carregadas.");
