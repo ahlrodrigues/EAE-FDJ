@@ -1,27 +1,44 @@
-import { componentesCarregados } from "./incluirComponentes.js";
-import { incluirCartoes } from "./incluirCartoes.js";
-import { buscarMensagensDoDirigente } from "./mensagensDirigente.js";
-import { buscarMensagemAleatoria } from "./mensagemAleatoria.js";
-import { carregarUltimoVideo } from "./carregarUltimoVideo.js";
+// js/index.js
 
-componentesCarregados.then(() => {
-  console.log("📦 Componentes carregados. Iniciando aplicação...");
+window.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 DOM completamente carregado.');
+  console.log('📦 Iniciando leitura dos dados do usuário...');
 
-  incluirCartoes().then(() => {
-    console.log("🧩 Cartões HTML incluídos.");
+  try {
+    const resultado = await window.api.lerUsuario();
+    console.log('📁 Conteúdo bruto de usuario.json:', resultado);
 
-    const fs = window.nativo.fs;
-    const path = window.nativo.path;
-    const os = window.nativo.os;
-    const descriptografar = window.nativo.descriptografarComMestra; // ✅ Atribuição direta para facilitar
+    const usuario = resultado.usuarios?.[0];
 
-    const usuarioPath = path.join(
-      os.homedir(),
-      ".config",
-      "escola-aprendizes",
-      "config",
-      "usuario.json"
-    );
+    if (!usuario) {
+      console.warn('⚠️ Nenhum usuário encontrado. Redirecionando para login...');
+      window.location.href = 'login.html';
+      return;
+    }
 
-  });
+    console.log('🧾 Usuário lido com sucesso (criptografado):', usuario);
+
+    // Tenta descriptografar o campo codigoTemas
+    if (usuario.codigoTemas) {
+      try {
+        const codigoTemas = await window.api.descriptografarComMestra(usuario.codigoTemas);
+        console.log('🔓 codigoTemas descriptografado com sucesso:', codigoTemas);
+
+        // ⚠️ Gatilho para carregar os dados da planilha
+        if (codigoTemas) {
+          carregarMensagensPlanilha(codigoTemas);
+        } else {
+          console.warn('⚠️ codigoTemas descriptografado está vazio.');
+        }
+
+      } catch (erro) {
+        console.error('❌ Erro ao descriptografar codigoTemas:', erro.message || erro);
+      }
+    } else {
+      console.warn('⚠️ Campo codigoTemas não encontrado no JSON do usuário.');
+    }
+
+  } catch (erro) {
+    console.error('❌ Erro ao carregar dados do usuário:', erro.message || erro);
+  }
 });

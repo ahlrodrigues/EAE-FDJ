@@ -10,6 +10,8 @@ const registrarBlogHandler = require('./backend/handlers/blogHandler');
 const { registrarRedefinirSenhaHandler } = require("./backend/handlers/redefinirSenhaHandler");
 const { registrarSolicitarTokenHandler } = require("./backend/handlers/solicitarTokenHandler");
 const { registrarVerificacaoEmailHandler } = require("./backend/handlers/verificacaoEmailHandler");
+const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler");
+
 
 
 
@@ -22,6 +24,7 @@ registrarBlogHandler(ipcMain);
 registrarRedefinirSenhaHandler(ipcMain);
 registrarSolicitarTokenHandler(ipcMain);
 registrarVerificacaoEmailHandler(ipcMain);
+registrarUsuarioHandler();
 
 const preloadPath = path.join(__dirname, 'preload.js');
 console.log("🧪 Caminho absoluto do preload:", preloadPath);

@@ -37,7 +37,7 @@ function registrarCadastroHandler(ipcMain) {
       const usuarioCriptografado = {
         emailHash,
         senha: senhaHash,
-        idioma: dados.idioma || "pt", // idioma fica aberto
+        idioma: dados.idioma || "pt_BR", // idioma fica aberto
         emailCriptografado: criptografarComMestra(dados.email),
         aluno: criptografarComMestra(dados.aluno),
         codigoTemas: criptografarComMestra(dados.codigoTemas || ""),

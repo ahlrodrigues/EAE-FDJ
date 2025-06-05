@@ -89,7 +89,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (resultado.sucesso) {
       exibirAviso({
         tipo: "✅ Sucesso",
-        mensagem: "Cadastro realizado com sucesso!"
+        mensagem: "Cadastro realizado com sucesso!",
+        aoFechar: () => {
+          window.location.href = "login.html";
+        }
       });
       form.reset();
     } else {

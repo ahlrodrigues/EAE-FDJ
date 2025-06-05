@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld("api", {
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
   buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
+  lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
 });
 
 // ✅ Log de teste

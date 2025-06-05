@@ -25,7 +25,7 @@ function registrarBlogHandler(ipcMain) {
             }
 
             const item = match[1];
-            console.log("📦 [MAIN] XML do item:", item);
+            //console.log("📦 [MAIN] XML do item:", item);
 
             const tituloMatch = item.match(/<title>([\s\S]*?)<\/title>/i);
             const linkMatch = item.match(/<link>([\s\S]*?)<\/link>/i);
