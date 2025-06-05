@@ -35,21 +35,28 @@
       <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
     </div>
 
-    <input type="text" id="codigoTemas" placeholder="Código temas" required />
-      </br></br> 
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <label for="idioma">Idioma:</label>
-      <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
-      <select id="idioma" name="idioma">
-        <option value="pt" data-flag="br" selected>Português</option>
-        <option value="en" data-flag="us">English</option>
-        <option value="fr" data-flag="fr">Français</option>
-        <option value="de" data-flag="de">Deutsch</option>
-        <option value="it" data-flag="it">Italiano</option>
-      </select>
-    </div>
+   <!-- ... campos anteriores ... -->
 
-    <div id="mensagem" class="mensagem-sucesso"></div>
+<input type="text" id="codigoTemas" placeholder="Código temas" required />
+</br></br> 
+<div style="display: flex; align-items: center; gap: 0.5rem;">
+  <label for="idioma">Idioma:</label>
+  <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
+  <select id="idioma" name="idioma">
+    <option value="pt" data-flag="br" selected>Português</option>
+    <option value="en" data-flag="us">English</option>
+    <option value="fr" data-flag="fr">Français</option>
+    <option value="de" data-flag="de">Deutsch</option>
+    <option value="it" data-flag="it">Italiano</option>
+  </select>
+</div>
+
+<!-- Botão de salvar -->
+<br />
+<button type="submit" class="btn-principal" id="btnSalvar">Salvar Cadastro</button>
+
+<div id="mensagem" class="mensagem-sucesso"></div>
+
     
   </form>
 </div>
