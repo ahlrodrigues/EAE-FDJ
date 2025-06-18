@@ -1,8 +1,16 @@
+// js/config.js
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
+  console.log("⚙️ Página de configuração carregada.");
+
+  const form = document.getElementById("configForm");
+  if (!form) {
+    console.error("❌ Formulário #configForm não encontrado.");
+    return;
+  }
 
   const fs = window.nativo.fs;
   const path = window.nativo.path;
@@ -18,80 +26,65 @@ document.addEventListener("DOMContentLoaded", async () => {
     "usuario.json"
   );
 
-  const emailHashLogado = sessionStorage.getItem("emailHash");
-
-  if (!emailHashLogado) {
-    exibirAviso({ tipo: "erro", mensagem: "Usuário não autenticado." });
-    return;
-  }
-
-  let dadosUsuarios;
+  let dados;
   try {
     const raw = fs.readFileSync(usuarioPath, "utf-8");
-    const json = JSON.parse(raw);
-    dadosUsuarios = json.usuarios || [];
+    dados = JSON.parse(raw);
+    console.log("📂 Dados do usuário carregados.");
   } catch (erro) {
-    console.error("❌ Erro ao ler usuario.json:", erro);
-    exibirAviso({ tipo: "erro", mensagem: "Erro ao carregar os dados." });
+    console.error("❌ Erro ao ler usuario.json:", erro.message);
+    exibirAviso({ tipo: "erro", mensagem: "Erro ao carregar os dados do usuário." });
     return;
   }
 
-  const usuario = dadosUsuarios.find(u => u.emailHash === emailHashLogado);
+  const usuario = dados.usuarios?.[0];
   if (!usuario) {
-    exibirAviso({ tipo: "erro", mensagem: "Usuário não encontrado." });
+    console.warn("⚠️ Nenhum usuário encontrado.");
     return;
   }
 
-  // Preenche os campos, se existirem no HTML
-  const preencher = (id, valorCriptografado) => {
-    const el = document.getElementById(id);
-    if (el) el.value = descriptografar(valorCriptografado || "");
+  // 🔓 Descriptografar e preencher os campos
+  const preencherCampo = (id, valorCriptografado) => {
+    try {
+      const campo = document.getElementById(id);
+      if (campo && valorCriptografado) {
+        campo.value = descriptografar(valorCriptografado);
+        console.log(`🔓 Campo ${id} preenchido com valor descriptografado.`);
+      }
+    } catch (erro) {
+      console.warn(`⚠️ Erro ao descriptografar ${id}:`, erro.message);
+    }
   };
 
-  preencher("email", usuario.emailCriptografado);
-  preencher("aluno", usuario.aluno);
-  preencher("casaEspírita", usuario.casaEspírita);
-  preencher("codigoTemas", usuario.codigoTemas);
-  preencher("numeroTurma", usuario.numeroTurma);
-  preencher("dirigente", usuario.dirigente);
-  preencher("emailDirigente", usuario.emailDirigente);
-  preencher("secretarios", usuario.secretarios);
-  preencher("telefone", usuario.telefone);
+  preencherCampo("aluno", usuario.aluno);
+  preencherCampo("email", usuario.emailCriptografado);
+  preencherCampo("telefone", usuario.telefone);
+  preencherCampo("codigoTemas", usuario.codigoTemas); // ✅ incluso
 
+  // idioma (não criptografado)
   const idiomaEl = document.getElementById("idioma");
-  if (idiomaEl) idiomaEl.value = usuario.idioma || "pt";
+  if (idiomaEl && usuario.idioma) {
+    idiomaEl.value = usuario.idioma;
+  }
 
-  console.log("✅ Dados do usuário carregados para edição.");
-
-  // Salvamento
-  const form = document.getElementById("formUsuario");
-  form.addEventListener("submit", (e) => {
+  // 💾 Evento de salvamento
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-      const atualizar = (id, destino) => {
-        const el = document.getElementById(id);
-        if (el) usuario[destino] = criptografar(el.value.trim());
-      };
+      usuario.aluno = criptografar(document.getElementById("aluno").value.trim());
+      usuario.emailCriptografado = criptografar(document.getElementById("email").value.trim());
+      usuario.telefone = criptografar(document.getElementById("telefone").value.trim());
+      usuario.codigoTemas = criptografar(document.getElementById("codigoTemas").value.trim()); // 🔁 recriptografado
+      usuario.idioma = document.getElementById("idioma").value;
 
-      atualizar("aluno", "aluno");
-      atualizar("casaEspírita", "casaEspírita");
-      atualizar("codigoTemas", "codigoTemas");
-      atualizar("numeroTurma", "numeroTurma");
-      atualizar("dirigente", "dirigente");
-      atualizar("emailDirigente", "emailDirigente");
-      atualizar("secretarios", "secretarios");
-      atualizar("telefone", "telefone");
+      fs.writeFileSync(usuarioPath, JSON.stringify(dados, null, 2));
+      console.log("✅ Configurações salvas com sucesso.");
+      exibirAviso({ tipo: "sucesso", mensagem: "Configurações atualizadas com sucesso!" });
 
-      if (idiomaEl) usuario.idioma = idiomaEl.value;
-
-      fs.writeFileSync(usuarioPath, JSON.stringify({ usuarios: dadosUsuarios }, null, 2), "utf-8");
-
-      console.log("💾 Alterações salvas com sucesso.");
-      exibirAviso({ tipo: "sucesso", mensagem: "Dados atualizados com sucesso!" });
     } catch (erro) {
-      console.error("❌ Erro ao salvar alterações:", erro);
-      exibirAviso({ tipo: "erro", mensagem: "Erro ao salvar os dados." });
+      console.error("❌ Erro ao salvar as configurações:", erro.message);
+      exibirAviso({ tipo: "erro", mensagem: "Erro ao salvar as configurações." });
     }
   });
 });

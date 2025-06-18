@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld("api", {
   buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
   lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
+  descriptografarComMestra: (texto) => {return ipcRenderer.invoke("descriptografar-com-mestra", texto);},
 });
 
 // ✅ Log de teste

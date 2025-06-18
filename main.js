@@ -11,10 +11,7 @@ const { registrarRedefinirSenhaHandler } = require("./backend/handlers/redefinir
 const { registrarSolicitarTokenHandler } = require("./backend/handlers/solicitarTokenHandler");
 const { registrarVerificacaoEmailHandler } = require("./backend/handlers/verificacaoEmailHandler");
 const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler");
-
-
-
-
+const { registrarDescriptografarHandler } = require("./backend/handlers/descriptografarHandler");
 
 
 // Registra os handlers de IPC
@@ -25,6 +22,7 @@ registrarRedefinirSenhaHandler(ipcMain);
 registrarSolicitarTokenHandler(ipcMain);
 registrarVerificacaoEmailHandler(ipcMain);
 registrarUsuarioHandler();
+registrarDescriptografarHandler();
 
 const preloadPath = path.join(__dirname, 'preload.js');
 console.log("🧪 Caminho absoluto do preload:", preloadPath);
