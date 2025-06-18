@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
+const dotenv = require("dotenv");
+dotenv.config();
 
 console.log("🧠 preload.js carregado");
 
@@ -14,6 +16,7 @@ contextBridge.exposeInMainWorld("nativo", {
   os,
   criptografarComMestra,
   descriptografarComMestra,
+  getEnv: (chave) => process.env[chave] || null,
 });
 
 // ✅ Expor API de comunicação com o main.js
@@ -26,6 +29,7 @@ contextBridge.exposeInMainWorld("api", {
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
   lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
   descriptografarComMestra: (texto) => {return ipcRenderer.invoke("descriptografar-com-mestra", texto);},
+  
 });
 
 // ✅ Log de teste

@@ -1,5 +1,5 @@
 export async function carregarUltimoVideo() {
-    const API_KEY = "################################3";
+    const API_KEY = window.nativo?.getEnv("YOUTUBE_API");
     const CHANNEL_ID = "UCNvAIY83zX7c6j7bWAv7yAQ";
   
     try {
@@ -16,11 +16,16 @@ export async function carregarUltimoVideo() {
         iframe.setAttribute("frameborder", "0");
         iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
         iframe.style.width = "100%";
+        iframe.style.aspectRatio = "16 / 9";
         iframe.style.height = "100%";
   
-        const container = document.getElementById("cartao-youtube");
-        container?.appendChild(iframe);
-        console.log("✅ Último vídeo carregado.");
+        const container = document.getElementById("youtubeContainer");
+if (container) {
+  container.innerHTML = ""; // limpa conteúdo anterior
+  container.appendChild(iframe);
+  console.log("✅ Último vídeo carregado.");
+}
+
       } else {
         console.warn("⚠️ Nenhum vídeo encontrado.");
       }
