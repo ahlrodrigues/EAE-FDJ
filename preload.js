@@ -39,6 +39,38 @@ function obterNomeUsuario() {
   }
 }
 
+async function obterNomeAlunoDescriptografado() {
+  try {
+    const usuarioPath = path.join(
+      os.homedir(),
+      ".config",
+      "escola-aprendizes",
+      "config",
+      "usuario.json"
+    );
+
+    if (!fs.existsSync(usuarioPath)) {
+      console.warn("⚠️ usuario.json não encontrado.");
+      return null;
+    }
+
+    const raw = fs.readFileSync(usuarioPath, "utf-8");
+    const dados = JSON.parse(raw);
+    const alunoCriptografado = dados.usuarios?.[0]?.aluno;
+
+    if (!alunoCriptografado) {
+      console.warn("⚠️ Campo aluno vazio ou ausente.");
+      return null;
+    }
+
+    const descriptografado = await ipcRenderer.invoke("descriptografar-com-mestra", alunoCriptografado);
+    return descriptografado?.replace(/[^\w\-]/g, "_") || "usuario";
+  } catch (erro) {
+    console.error("❌ Erro ao obter nome do aluno descriptografado:", erro);
+    return null;
+  }
+}
+
 // ✅ Expor API de comunicação com o main.js
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
@@ -50,7 +82,8 @@ contextBridge.exposeInMainWorld("api", {
   lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
   descriptografarComMestra: (texto) => {return ipcRenderer.invoke("descriptografar-com-mestra", texto);},
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
-  obterNomeUsuario: () => obterNomeUsuario()
+  obterNomeUsuario: () => obterNomeUsuario(),
+  obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
 });
 
 // ✅ Log de teste
