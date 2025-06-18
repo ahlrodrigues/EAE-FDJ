@@ -9,66 +9,63 @@
 </head>
 <body>
   <div id="cabecalho"></div>
+
   <h2>Cadastro de Usuário</h2>
   <div class="card">
-  <form id="cadastroForm">
-    <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
-    <input type="number" id="numeroTurma" placeholder="Número da turma" required />
-    <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
-    <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
-    <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
-    <input type="text" id="aluno" placeholder="Nome do aluno" required />
-    <input type="email" id="email" placeholder="E-mail do aluno" required />
-    <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
+    <form id="cadastroForm">
+      <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
+      <input type="number" id="numeroTurma" placeholder="Número da turma" required />
+      <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
+      <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
+      <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
+      <input type="text" id="aluno" placeholder="Nome do aluno" required />
+      <input type="email" id="email" placeholder="E-mail do aluno" required />
+      <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
 
-    <div class="campo-senha">
-      <input type="password" id="senha" placeholder="Senha" required />
-      <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
-    </div>
+      <div class="campo-senha">
+        <input type="password" id="senha" placeholder="Senha" required />
+        <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
+      </div>
 
-    <div id="forcaSenha" class="mensagem-sucesso"></div>
+      <div id="forcaSenha" class="mensagem-sucesso"></div>
+      <div id="senhaRegrasContainer"></div>
 
-    <div id="senhaRegrasContainer"></div>
+      <div class="campo-senha">
+        <input type="password" id="confirmarsenha" placeholder="Confirmar senha" required />
+        <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
+      </div>
 
-    <div class="campo-senha">
-      <input type="password" id="confirmarsenha" placeholder="Confirmar senha" required />
-      <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
-    </div>
+      <!-- Campo codigoTemas com label -->
+      <label for="codigoTemas">Código da planilha</label>
+      <input type="text" id="codigoTemas" placeholder="Código da planilha" required />
 
-   <!-- ... campos anteriores ... -->
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+        <label for="idioma">Idioma:</label>
+        <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
+        <select id="idioma" name="idioma">
+          <option value="pt" data-flag="br" selected>Português</option>
+          <option value="en" data-flag="us">English</option>
+          <option value="fr" data-flag="fr">Français</option>
+          <option value="de" data-flag="de">Deutsch</option>
+          <option value="it" data-flag="it">Italiano</option>
+        </select>
+      </div>
 
-<input type="text" id="codigoTemas" placeholder="Código temas" required />
-</br></br> 
-<div style="display: flex; align-items: center; gap: 0.5rem;">
-  <label for="idioma">Idioma:</label>
-  <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
-  <select id="idioma" name="idioma">
-    <option value="pt" data-flag="br" selected>Português</option>
-    <option value="en" data-flag="us">English</option>
-    <option value="fr" data-flag="fr">Français</option>
-    <option value="de" data-flag="de">Deutsch</option>
-    <option value="it" data-flag="it">Italiano</option>
-  </select>
-</div>
+      <!-- Botão de salvar -->
+      <br />
+      <button type="submit" class="btn-principal" id="btnSalvar">Salvar Cadastro</button>
+      <div id="mensagem" class="mensagem-sucesso"></div>
+    </form>
+  </div>
 
-<!-- Botão de salvar -->
-<br />
-<button type="submit" class="btn-principal" id="btnSalvar">Salvar Cadastro</button>
-
-<div id="mensagem" class="mensagem-sucesso"></div>
-
-    
-  </form>
-</div>
-<div id="modalAvisoContainer"></div>
+  <div id="modalAvisoContainer"></div>
   <div id="rodape"></div>
 
+  <!-- Scripts principais -->
   <script type="module" src="js/incluirComponentes.js"></script>
   <script type="module" src="js/modalAviso.js"></script>
   <script type="module" src="js/cadastro.js"></script>
   <script type="module" src="js/verSenha.js"></script>
   <script type="module" src="js/forcaSenha.js"></script>
-
-  
 </body>
 </html>
