@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const hoje = new Date().toISOString().split("T")[0];
   dataEl.value = hoje;
 
+  // Foca no campo data se sinalizado no localStorage
+  if (localStorage.getItem("focarCampoData") === "sim") {
+    dataEl.focus();
+    localStorage.removeItem("focarCampoData");
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -22,15 +28,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       proposta: document.getElementById("proposta").value.trim()
     };
 
-    let nome = window.api?.obterNomeUsuario?.();
-if (!nome) nome = "usuario";
+    let nome = await window.api.obterNomeAlunoDescriptografado();
+    if (!nome) nome = "usuario";
 
-// Sanitize: remover caracteres perigosos
-nome = nome.replace(/[^\w\-]/g, "_");
-    if (!nome) {
-      exibirAviso({ tipo: "erro", mensagem: "Usuário não identificado." });
-      return;
-    }
+    const dataParte = dados.data.replace(/-/g, "-");
+    const agora = new Date();
+    const hora = `${String(agora.getSeconds()).padStart(2, "0")}-${String(agora.getMinutes()).padStart(2, "0")}-${String(agora.getHours()).padStart(2, "0")}`;
+    const nomeArquivo = `${dataParte}-${hora}_${nome}.txt`;
 
     const conteudo = `
 🗓️ Data: ${dados.data}
@@ -40,15 +44,14 @@ nome = nome.replace(/[^\w\-]/g, "_");
 💡 Proposta Renovadora: ${dados.proposta}
 `.trim();
 
-    const agora = new Date();
-    const nomeArquivo = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, "0")}-${String(agora.getDate()).padStart(2, "0")}-${String(agora.getHours()).padStart(2, "0")}-${String(agora.getMinutes()).padStart(2, "0")}-${String(agora.getSeconds()).padStart(2, "0")}_${nome}.txt`;
-
     try {
       const resultado = await window.api.salvarAnotacao(conteudo, nomeArquivo);
       if (resultado.sucesso) {
-        exibirAviso({ tipo: "✅ Sucesso", mensagem: "Anotação salva com sucesso." });
-        form.reset();
-        dataEl.value = hoje;
+        await exibirAviso({ tipo: "✅ Sucesso", mensagem: "Anotação salva com sucesso." });
+
+        // Sinaliza para focar o campo ao recarregar
+        localStorage.setItem("focarCampoData", "sim");
+        window.location.reload(); // Recarrega a página para ambiente limpo
       } else {
         exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Erro ao salvar anotação." });
       }
