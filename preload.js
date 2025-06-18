@@ -7,6 +7,7 @@ const { criptografarComMestra, descriptografarComMestra } = require("./backend/l
 const dotenv = require("dotenv");
 dotenv.config();
 
+
 console.log("🧠 preload.js carregado");
 
 // ✅ Expor acesso nativo ao sistema
@@ -19,6 +20,25 @@ contextBridge.exposeInMainWorld("nativo", {
   getEnv: (chave) => process.env[chave] || null,
 });
 
+function obterNomeUsuario() {
+  try {
+    const usuarioPath = path.join(
+      os.homedir(),
+      ".config",
+      "escola-aprendizes",
+      "config",
+      "usuario.json"
+    );
+    const raw = fs.readFileSync(usuarioPath, "utf-8");
+    const dados = JSON.parse(raw);
+    const nome = dados.usuarios?.[0]?.aluno || "usuario";
+    return nome.replace(/\s+/g, "_");
+  } catch (e) {
+    console.warn("⚠️ Não foi possível obter nome do usuário:", e.message);
+    return null;
+  }
+}
+
 // ✅ Expor API de comunicação com o main.js
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
@@ -29,7 +49,8 @@ contextBridge.exposeInMainWorld("api", {
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
   lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
   descriptografarComMestra: (texto) => {return ipcRenderer.invoke("descriptografar-com-mestra", texto);},
-  
+  salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
+  obterNomeUsuario: () => obterNomeUsuario()
 });
 
 // ✅ Log de teste

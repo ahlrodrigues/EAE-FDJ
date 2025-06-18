@@ -22,4 +22,22 @@ export const componentesCarregados = (async function incluirComponentes() {
   await incluirHTML("senhaRegrasContainer", "componentes/senhaRegras.html");
   await incluirHTML("modalAvisoContainer", "componentes/modalAviso.html");
   await incluirHTML("rodape", "componentes/rodape.html");
+  await incluirHTML("menuSuperior", "componentes/menuSuperior.html");
 })();
+
+// ✅ Espera os componentes serem carregados para ativar o item do menu
+componentesCarregados.then(() => {
+  const atual = window.location.pathname.split("/").pop() || "index.html";
+  const links = document.querySelectorAll(".menu-superior a");
+
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    if (href === atual) {
+      link.classList.add("ativo");
+      link.addEventListener("click", (e) => {
+        e.preventDefault(); // ✅ Evita reload
+        console.log("🔄 Clique ignorado: já está na página atual.");
+      });
+    }
+  });
+});

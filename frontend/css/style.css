@@ -241,3 +241,86 @@ input {
     font-size: 1rem;
   }
 }
+.menu-superior {
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu-superior ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+.menu-superior li a {
+  color: #333;
+  text-decoration: none;
+  text-align: center;
+  font-size: 1rem; /* ⬆️ texto maior */
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  transition: color 0.2s, transform 0.2s;
+}
+.menu-superior li a span {
+  font-size: 1.3rem; /* ⬆️ ícone maior */
+  margin-bottom: 0.2rem;
+}
+.menu-superior li a:hover {
+  color: #1e7e34;
+  transform: scale(1.10);
+}
+.menu-superior li a.ativo {
+  color: #28a745;
+  font-weight: bold;
+  background-color: #f0f8ff; /* azul clarinho */
+  border-radius: 8px;
+}
+
+.menu-superior a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+.menu-superior a:hover {
+  color: #1e7e34;
+}
+
+form#formAnotacao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+form#formAnotacao label {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+form#formAnotacao input,
+form#formAnotacao textarea{
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
