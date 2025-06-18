@@ -4,6 +4,8 @@ import { incluirCartoes } from "./incluirCartoes.js";
 import { buscarMensagensDoDirigente } from "./mensagensDirigente.js";
 import { buscarMensagemAleatoria } from "./mensagemAleatoria.js";
 import { carregarUltimoVideo } from "./carregarUltimoVideo.js";
+carregarUltimoVideo();
+
 
 componentesCarregados.then(async () => {
   console.log("📦 Componentes carregados. Iniciando aplicação...");

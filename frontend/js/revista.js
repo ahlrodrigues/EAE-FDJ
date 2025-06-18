@@ -46,7 +46,7 @@ async function buscarCapaRevistaComData() {
     container.innerHTML = `
       <a href="${urlPdf}" target="_blank">
         <img src="${urlCapa}" alt="Capa da Revista O Trevo"
-          style="width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);" />
+          style="width:60%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);" />
       </a>
       <p style="text-align: center; font-size: 0.9rem;">Edição ${edicaoAtual}</p>
     `;
