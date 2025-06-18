@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anotações</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+   <!-- Menus -->
+   <div id="menuSuperior"></div>
+
+  <h2>Caderneta Pessoal - Anotação</h2>
+  <div class="card">
+    <form id="formAnotacao">
+      <label for="data">Data</label>
+      <input type="date" id="data" name="data" required />
+      
+      <label for="fato">Fato</label>
+      <textarea id="fato" rows="4" required></textarea>
+      
+      <label for="acao">Ação/Reação</label>
+      <textarea id="acao" rows="4" required></textarea>
+      
+      <label for="sentimento">Sentimento</label>
+      <input type="text" id="sentimento" required />
+      
+      <label for="proposta">Proposta Renovadora</label>
+      <textarea id="proposta" rows="4" required></textarea>
+
+      <button type="submit" class="btn-principal">Salvar Anotação</button>
+    </form>
+  </div>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <script type="module" src="js/anotacoes.js"></script>
+</body>
+</html>
