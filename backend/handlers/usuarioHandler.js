@@ -14,11 +14,13 @@ const USUARIO_PATH = path.join(
 function registrarUsuarioHandler() {
   ipcMain.handle("ler-usuario", async () => {
     try {
-      const conteudo = fs.readFileSync(USUARIO_PATH, "utf-8");
-      return JSON.parse(conteudo);
+      const conteudo = await fs.promises.readFile(USUARIO_PATH, "utf-8");
+      const json = JSON.parse(conteudo);
+      console.log("🧾 Usuário lido com sucesso:", json);
+      return json;
     } catch (erro) {
-      console.error("❌ Erro ao ler usuario.json:", erro);
-      throw erro;
+      console.error("❌ Erro ao ler usuario.json:", erro.message);
+      return null;
     }
   });
 }

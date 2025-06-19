@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+</head>
+<body>
+  <div id="cabecalho"></div>
+
+  <h2>Relatórios</h2>
+
+  <!-- Abas -->
+  <div class="tabs">
+    <button class="tab-button active" data-tab="anotacoes">Anotações</button>
+    <button class="tab-button" data-tab="temas">Temas</button>
+  </div>
+
+  <!-- Tabela de Anotações -->
+  <div class="tab-content active" id="anotacoes">
+    <div class="botoes-topo">
+      <label for="filtroDataInicio">Data:</label>
+      <input type="date" id="filtroDataInicio" class="filtro-data">
+      <span>até</span>
+      <input type="date" id="filtroDataFim" class="filtro-data">
+      <button id="btnVerAnotacoes" title="Visualizar conteúdo das anotações selecionadas">Ver</button>
+      <button id="btnExportarAnotacoes" title="Exportar as anotações selecionadas em PDF">Exportar</button>
+      <button id="btnExcluirAnotacoes" title="Excluir as anotações selecionadas">Excluir</button>
+      <button id="btnEnviarAnotacoes" title="Enviar as anotações selecionadas">Enviar</button>
+    </div>
+    <table id="tabelaAnotacoes" class="display">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selecionarTodosAnotacoes"></th>
+          <th>#</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Tabela de Temas -->
+  <div class="tab-content" id="temas">
+    <div class="botoes-topo">
+      <input type="text" id="campoBuscaTemas" placeholder="Buscar temas">
+      <button id="btnVerTemas" title="Visualizar conteúdo dos temas selecionados">Ver</button>
+      <button id="btnExportarTemas" title="Exportar os temas selecionados em PDF">Exportar</button>
+      <button id="btnExcluirTemas" title="Excluir os temas selecionados">Excluir</button>
+      <button id="btnEnviarTemas" title="Enviar os temas selecionados">Enviar</button>
+    </div>
+    <table id="tabelaTemas" class="display">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selecionarTodosTemas"></th>
+          <th>#</th>
+          <th>Tema</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="rodape"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach(btn => btn.classList.remove("active"));
+          tabContents.forEach(content => content.classList.remove("active"));
+
+          button.classList.add("active");
+          const tabId = button.dataset.tab;
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+    });
+  </script>
+
+  <script type="module" src="js/relatorio.js"></script>
+</body>
+</html>

@@ -84,6 +84,16 @@ contextBridge.exposeInMainWorld("api", {
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
+  listarArquivosNotas: async () => {
+    const json = await ipcRenderer.invoke("ler-usuario");
+    const usuario = json?.usuarios?.[0];
+    const emailHash = usuario?.emailHash;
+  
+    if (!emailHash) throw new Error("emailHash não encontrado");
+  
+    return await ipcRenderer.invoke("listar-arquivos-notas", emailHash);
+  }
+  
 });
 
 // ✅ Log de teste
