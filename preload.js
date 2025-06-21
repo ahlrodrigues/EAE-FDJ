@@ -3,14 +3,15 @@ const { contextBridge, ipcRenderer } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
 const dotenv = require("dotenv");
 dotenv.config();
 
+// 🔐 Criptografia
+const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
 
 console.log("🧠 preload.js carregado");
 
-// ✅ Expor acesso nativo ao sistema
+// ✅ Expor acesso nativo ao sistema (útil para o renderer)
 contextBridge.exposeInMainWorld("nativo", {
   fs,
   path,
@@ -20,6 +21,7 @@ contextBridge.exposeInMainWorld("nativo", {
   getEnv: (chave) => process.env[chave] || null,
 });
 
+// 🧾 Função auxiliar para obter o nome do aluno (não criptografado)
 function obterNomeUsuario() {
   try {
     const usuarioPath = path.join(
@@ -39,6 +41,7 @@ function obterNomeUsuario() {
   }
 }
 
+// 🔐 Função que usa o handler do main para descriptografar o nome do aluno
 async function obterNomeAlunoDescriptografado() {
   try {
     const usuarioPath = path.join(
@@ -59,7 +62,7 @@ async function obterNomeAlunoDescriptografado() {
     const alunoCriptografado = dados.usuarios?.[0]?.aluno;
 
     if (!alunoCriptografado) {
-      console.warn("⚠️ Campo aluno vazio ou ausente.");
+      console.warn("⚠️ Campo 'aluno' está vazio ou ausente.");
       return null;
     }
 
@@ -71,30 +74,47 @@ async function obterNomeAlunoDescriptografado() {
   }
 }
 
-// ✅ Expor API de comunicação com o main.js
+// ✅ Expor API de comunicação segura com o processo principal
 contextBridge.exposeInMainWorld("api", {
+  // Autenticação e cadastro
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
+
+  // Recuperação de senha
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
-  buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
-  lerUsuario: async () => ipcRenderer.invoke("ler-usuario"),
-  descriptografarComMestra: (texto) => {return ipcRenderer.invoke("descriptografar-com-mestra", texto);},
+
+  // Conteúdo e dados
+  buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
+  lerUsuario: () => ipcRenderer.invoke("ler-usuario"),
+
+  // Criptografia
+  descriptografarComMestra: (texto) => ipcRenderer.invoke("descriptografar-com-mestra", texto),
+
+  // Notas
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
+  lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
+
+  // Utilitários internos
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
+
+  // Listagem de arquivos da pasta de anotações
   listarArquivosNotas: async () => {
-    const json = await ipcRenderer.invoke("ler-usuario");
-    const usuario = json?.usuarios?.[0];
-    const emailHash = usuario?.emailHash;
-  
-    if (!emailHash) throw new Error("emailHash não encontrado");
-  
-    return await ipcRenderer.invoke("listar-arquivos-notas", emailHash);
-  }
-  
+    try {
+      const json = await ipcRenderer.invoke("ler-usuario");
+      const usuario = json?.usuarios?.[0];
+      const emailHash = usuario?.emailHash;
+
+      if (!emailHash) throw new Error("emailHash não encontrado");
+
+      return await ipcRenderer.invoke("listar-arquivos-notas", emailHash);
+    } catch (erro) {
+      console.error("❌ Erro ao listar arquivos de anotações:", erro.message);
+      return [];
+    }
+  },
 });
 
-// ✅ Log de teste
 console.log("🧪 preload pronto. APIs carregadas.");
