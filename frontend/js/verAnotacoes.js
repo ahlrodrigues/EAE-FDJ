@@ -68,8 +68,7 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
 
         const bloco = `
           <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ccc; border-radius: 10px;">
-            <img src="assets/trevo.png" alt="Trevo" style="height: 50px; display: block; margin: 0 auto;" />
-            <h3 style="text-align: center; margin: 0.5rem 0;">${dataFormatada}</h3>
+            <img src="../assets/trevo.png" alt="Trevo" style="height: 50px; display: block; margin: 0 auto;" />
             <p style="text-align: left; white-space: pre-wrap; font-size: 1rem;">${texto}</p>
           </div>
         `;

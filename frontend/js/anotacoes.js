@@ -37,11 +37,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const nomeArquivo = `${dataParte}-${hora}_${nome}.txt`;
 
     const conteudo = `
-🗓️ Data: ${dados.data}
-📌 Fato: ${dados.fato}
-🔁 Ação/Reação: ${dados.acao}
-❤️ Sentimento: ${dados.sentimento}
-💡 Proposta Renovadora: ${dados.proposta}
+Data: ${dados.data}
+Fato: ${dados.fato}
+Ação/Reação: ${dados.acao}
+Sentimento: ${dados.sentimento}
+Proposta Renovadora: ${dados.proposta}
 `.trim();
 
     try {
