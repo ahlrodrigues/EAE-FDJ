@@ -1,6 +1,6 @@
 // === preload.js ===
 const { contextBridge, ipcRenderer } = require("electron");
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const os = require("os");
 const dotenv = require("dotenv");
@@ -103,15 +103,26 @@ contextBridge.exposeInMainWorld("api", {
   // Listagem de arquivos da pasta de anotações
   listarArquivosNotas: async () => {
     try {
-      const json = await ipcRenderer.invoke("ler-usuario");
-      const usuario = json?.usuarios?.[0];
-      const emailHash = usuario?.emailHash;
+      const usuario = await ipcRenderer.invoke("ler-usuario");
+      const emailHash = usuario?.usuarios?.[0]?.emailHash;
 
-      if (!emailHash) throw new Error("emailHash não encontrado");
+      if (!emailHash) throw new Error("❌ emailHash não encontrado");
 
-      return await ipcRenderer.invoke("listar-arquivos-notas", emailHash);
+      const pastaNotas = path.join(
+        os.homedir(),
+        ".config",
+        "escola-aprendizes",
+        "notas",
+        emailHash
+      );
+
+      const nomes = await fs.readdir(pastaNotas); // ✅ sem callback
+      const caminhos = nomes.map(nome => path.join(pastaNotas, nome));
+
+      console.log("📂 Caminhos absolutos das anotações:", caminhos);
+      return caminhos;
     } catch (erro) {
-      console.error("❌ Erro ao listar arquivos de anotações:", erro.message);
+      console.error("❌ Erro ao listar arquivos de notas:", erro);
       return [];
     }
   },
