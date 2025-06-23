@@ -1,0 +1,15 @@
+🔐 Verificando descriptografia dos campos dos usuários (array):
+
+🧑‍💻 Usuário [0]
+  ℹ️ emailHash: (não criptografado ou formato inválido)
+  ℹ️ senha: (não criptografado ou formato inválido)
+  ℹ️ idioma: (não criptografado ou formato inválido)
+  ❌ emailCriptografado: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ✅ aluno: Maria Vitória
+  ❌ codigoTemas: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ casaEspírita: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ numeroTurma: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ dirigente: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ emailDirigente: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ secretarios: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt
+  ❌ telefone: ❌ Erro ao descriptografar: error:1C800064:Provider routines::bad decrypt

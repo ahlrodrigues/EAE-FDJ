@@ -2,9 +2,17 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const { isLoginAtivo } = require("./backend/lib/sessionStore");
 
 // 📁 Caminho do arquivo de usuário
-const usuarioPath = path.resolve(process.cwd(), "config/usuario.json");
+const usuarioPath = path.join(
+  process.env.HOME || process.env.USERPROFILE,
+  ".config",
+  "escola-aprendizes",
+  "config",
+  "usuario.json"
+);
+
 
 // 🧩 Handlers de funcionalidades
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
@@ -17,7 +25,7 @@ const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler")
 const { registrarDescriptografarHandler } = require("./backend/handlers/descriptografarHandler");
 const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
 const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHandler");
-
+const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
 // ✅ Registra todos os handlers de IPC
 console.log("🔧 Registrando handlers de backend...");
 registrarCadastroHandler(ipcMain);
@@ -26,10 +34,11 @@ registrarBlogHandler(ipcMain);
 registrarRedefinirSenhaHandler(ipcMain);
 registrarSolicitarTokenHandler(ipcMain);
 registrarVerificacaoEmailHandler(ipcMain);
-registrarUsuarioHandler(); // Este não requer ipcMain explicitamente
-registrarDescriptografarHandler(); // Também não usa ipcMain diretamente
+registrarUsuarioHandler();
+registrarDescriptografarHandler();
 registrarNotasHandler(ipcMain);
 registrarLerArquivoHandler();
+registrarSessionHandler();
 console.log("✅ Todos os handlers registrados com sucesso.");
 
 // 🛠️ Caminho do preload
@@ -53,8 +62,16 @@ function createWindow() {
     },
   });
 
-  console.log("🌐 Carregando frontend/login.html com preload ativo...");
-  mainWindow.loadFile("frontend/login.html");
+  if (!fs.existsSync(usuarioPath)) {
+    console.warn("📂 usuario.json não encontrado. Redirecionando para cadastro.");
+    mainWindow.loadFile("frontend/cadastro.html");
+  } else if (!isLoginAtivo()) {
+    console.log("🔐 Sessão inativa. Abrindo login.");
+    mainWindow.loadFile("frontend/login.html");
+  } else {
+    console.log("✅ Sessão ativa. Abrindo app.");
+    mainWindow.loadFile("frontend/index.html");
+  }
 }
 
 // 🚀 Inicialização do app
@@ -62,7 +79,6 @@ app.whenReady().then(() => {
   console.log("⚙️ App pronto. Inicializando...");
   createWindow();
 
-  // No macOS, reabre a janela se não houver nenhuma aberta
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       console.log("🪟 Reabrindo janela após ativação...");
@@ -71,7 +87,7 @@ app.whenReady().then(() => {
   });
 });
 
-// ⛔ Encerramento do app (exceto no macOS)
+// ⛔ Encerramento do app
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     console.log("🛑 Todas as janelas fechadas. Encerrando app...");
