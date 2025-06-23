@@ -1,94 +1,77 @@
+const { ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");
+const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
-const { criptografarComMestra, gerarHashEmailComMestra } = require("../lib/criptografia");
+const {
+  criptografarComMestra,
+  criptografarCamposUsuario
+} = require("../lib/criptografia");
 
-// 📍 Caminho absoluto do arquivo onde os dados dos usuários são armazenados
-const USUARIO_PATH = path.join(
+// 🧪 Carrega .env e chave de criptografia
+dotenv.config();
+const chaveMestra = process.env.CRYPTO_SECRET || "chavePadrao";
+
+if (!process.env.CRYPTO_SECRET) {
+  console.warn("⚠️ Variável CRYPTO_SECRET não definida. Usando chaveMestra padrão.");
+}
+console.log("🔐 CRYPTO_SECRET recebido:", chaveMestra);
+
+// 📁 Caminho do JSON
+const pastaConfig = path.join(
   process.env.HOME || process.env.USERPROFILE,
-  ".config",
-  "escola-aprendizes",
-  "config",
-  "usuario.json"
+  ".config/escola-aprendizes/config"
 );
+const caminhoArquivo = path.join(pastaConfig, "usuario.json");
 
-/**
- * Handler para salvar ou atualizar o cadastro de usuário
- */
-function registrarCadastroHandler(ipcMain) {
-  ipcMain.handle("salvar-cadastro", async (_, dados) => {
-    console.log("📝 Iniciando salvamento de cadastro...");
-
+// ✅ Função principal de cadastro
+function registrarCadastroHandler() {
+  ipcMain.handle("salvar-cadastro", async (event, dados) => {
     try {
-      // 🚫 Verificação de campos obrigatórios
-      if (!dados?.email || !dados?.senha || !dados?.aluno) {
-        console.warn("⚠️ Campos obrigatórios ausentes:", dados);
-        return {
-          sucesso: false,
-          erro: "Preencha todos os campos obrigatórios.",
-        };
+      console.log("📥 Dados recebidos para cadastro:", dados);
+
+      if (!dados.emailHash) {
+        throw new Error("Campo 'emailHash' ausente");
       }
 
-      // 🔐 Hash do e-mail para identificação anônima e hash da senha com bcrypt
-      const emailHash = gerarHashEmailComMestra(dados.email.trim().toLowerCase());
-      const senhaHash = await bcrypt.hash(dados.senha, 10);
+      // 🔐 Criptografa o e-mail
+      dados.emailCriptografado = criptografarComMestra(dados.email, chaveMestra);
+      delete dados.email;
 
-      // 🔒 Criptografia individual dos campos sensíveis
-      const usuarioCriptografado = {
-        emailHash,
-        senha: senhaHash,
-        idioma: dados.idioma || "pt_BR", // idioma fica aberto
-        emailCriptografado: criptografarComMestra(dados.email),
-        aluno: criptografarComMestra(dados.aluno),
-        codigoTemas: criptografarComMestra(dados.codigoTemas || ""),
-        casaEspírita: criptografarComMestra(dados.casaEspírita || ""),
-        numeroTurma: criptografarComMestra(dados.numeroTurma || ""),
-        dirigente: criptografarComMestra(dados.dirigente || ""),
-        emailDirigente: criptografarComMestra(dados.emailDirigente || ""),
-        secretarios: criptografarComMestra(dados.secretarios || ""),
-        telefone: criptografarComMestra(dados.telefone || "")
-      };
+      // 🔒 Hash da senha
+      dados.senhaCriptografada = await bcrypt.hash(dados.senha, 10);
+      delete dados.senha;
 
-      // 📦 Carrega usuários existentes (se houver)
-      let usuarios = [];
-      if (fs.existsSync(USUARIO_PATH)) {
-        try {
-          const conteudo = fs.readFileSync(USUARIO_PATH, "utf8");
-          const json = JSON.parse(conteudo);
-          usuarios = Array.isArray(json.usuarios) ? json.usuarios : [];
-          console.log(`📂 ${usuarios.length} usuário(s) carregado(s) do arquivo.`);
-        } catch (erroLeitura) {
-          console.error("❌ Erro ao ler ou parsear usuario.json:", erroLeitura);
-          return {
-            sucesso: false,
-            erro: "Não foi possível acessar os dados salvos.",
-          };
-        }
+      // 🔐 Criptografa os demais campos sensíveis
+      const dadosCriptografados = await criptografarCamposUsuario(dados, chaveMestra);
+      console.log("🔐 Dados criptografados:", dadosCriptografados);
+
+      // 📂 Garante que a pasta existe
+      fs.mkdirSync(pastaConfig, { recursive: true });
+
+      // 📄 Lê arquivo existente se houver
+      let dadosExistentes = {};
+      if (fs.existsSync(caminhoArquivo)) {
+        console.log("📄 Lendo arquivo existente...");
+        dadosExistentes = JSON.parse(fs.readFileSync(caminhoArquivo, "utf-8"));
       }
 
-      // 🔁 Atualiza ou adiciona novo usuário
-      const indexExistente = usuarios.findIndex(u => u.emailHash === emailHash);
-      if (indexExistente !== -1) {
-        console.log("♻️ Usuário já existente. Atualizando informações...");
-        usuarios[indexExistente] = usuarioCriptografado;
-      } else {
-        console.log("🆕 Novo usuário adicionado.");
-        usuarios.push(usuarioCriptografado);
+      // 📦 Inicializa estrutura se necessário
+      if (!dadosExistentes.usuarios) {
+        console.log("📁 Criando estrutura inicial de usuários...");
+        dadosExistentes.usuarios = {};
       }
 
-      // 💾 Garante que a pasta existe e salva o novo arquivo
-      fs.mkdirSync(path.dirname(USUARIO_PATH), { recursive: true });
-      fs.writeFileSync(USUARIO_PATH, JSON.stringify({ usuarios }, null, 2), "utf8");
+      // 💾 Salva novo usuário
+      dadosExistentes.usuarios[dados.emailHash] = dadosCriptografados;
+      const jsonFinal = JSON.stringify(dadosExistentes, null, 2);
+      fs.writeFileSync(caminhoArquivo, jsonFinal, "utf-8");
 
-      console.log("✅ Cadastro salvo com sucesso.");
+      console.log("✅ Usuário salvo com sucesso:", dados.emailHash);
       return { sucesso: true };
-
     } catch (erro) {
-      console.error("❌ Erro inesperado ao salvar cadastro:", erro);
-      return {
-        sucesso: false,
-        erro: "Erro interno ao salvar os dados do usuário.",
-      };
+      console.error("❌ Erro ao salvar usuário:", erro);
+      return { sucesso: false, erro: erro.message };
     }
   });
 }

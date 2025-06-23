@@ -29,20 +29,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     let nome = await window.api.obterNomeAlunoDescriptografado();
-    if (!nome) nome = "usuario";
-
-    const dataParte = dados.data.replace(/-/g, "-");
+    console.log("👤 Nome retornado do preload:", nome);
+    
+    if (!nome || typeof nome !== "string" || nome.trim() === "") {
+      console.warn("⚠️ Nome do aluno não encontrado, usando 'usuario'");
+      nome = "usuario";
+    }
+    
+    // 📁 Nome do arquivo (formato: YYYY-MM-DD-HH-MM-SS_nome.txt)
     const agora = new Date();
     const hora = `${String(agora.getSeconds()).padStart(2, "0")}-${String(agora.getMinutes()).padStart(2, "0")}-${String(agora.getHours()).padStart(2, "0")}`;
-    const nomeArquivo = `${dataParte}-${hora}_${nome}.txt`;
-
+    const nomeArquivo = `${dados.data}-${hora}_${nome}.txt`;
+    
+    // 🗓️ Formata data para o conteúdo da nota: DD-MM-YYYY
+    const [ano, mes, dia] = dados.data.split("-");
+    const dataFormatada = `${dia}-${mes}-${ano}`;
+    
+    // ✍️ Conteúdo da anotação
     const conteudo = `
-Data: ${dados.data}
-Fato: ${dados.fato}
-Ação/Reação: ${dados.acao}
-Sentimento: ${dados.sentimento}
-Proposta Renovadora: ${dados.proposta}
-`.trim();
+    Data: ${dataFormatada}
+    Fato: ${dados.fato}
+    Ação/Reação: ${dados.acao}
+    Sentimento: ${dados.sentimento}
+    Proposta Renovadora: ${dados.proposta}
+    `.trim();
 
     try {
       const resultado = await window.api.salvarAnotacao(conteudo, nomeArquivo);

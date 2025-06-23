@@ -5,10 +5,13 @@ const path = require("path");
 const os = require("os");
 const dotenv = require("dotenv");
 dotenv.config();
+const crypto = require("crypto");
+
+const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
 
 // 🔐 Criptografia
 const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
-
+console.log("🔐 CRYPTO_SECRET usado no preload:", process.env.CRYPTO_SECRET);
 console.log("🧠 preload.js carregado");
 
 // ✅ Expor acesso nativo ao sistema (útil para o renderer)
@@ -19,6 +22,13 @@ contextBridge.exposeInMainWorld("nativo", {
   criptografarComMestra,
   descriptografarComMestra,
   getEnv: (chave) => process.env[chave] || null,
+
+  gerarEmailHash: (email) => {
+    return crypto
+      .createHmac('sha256', CRYPTO_SECRET)
+      .update(email)
+      .digest('hex');
+  }   
 });
 
 // 🧾 Função auxiliar para obter o nome do aluno (não criptografado)
@@ -42,36 +52,39 @@ function obterNomeUsuario() {
 }
 
 // 🔐 Função que usa o handler do main para descriptografar o nome do aluno
-async function obterNomeAlunoDescriptografado() {
+// 🔐 Função que usa a chave mestra para descriptografar o nome do aluno
+function obterNomeAlunoDescriptografado() {
+  const fsSync = require("fs"); // usamos 'fsSync' para evitar conflito com 'fs' async
+  const usuarioPath = path.join(
+    os.homedir(),
+    ".config",
+    "escola-aprendizes",
+    "config",
+    "usuario.json"
+  );
+
   try {
-    const usuarioPath = path.join(
-      os.homedir(),
-      ".config",
-      "escola-aprendizes",
-      "config",
-      "usuario.json"
-    );
-
-    if (!fs.existsSync(usuarioPath)) {
-      console.warn("⚠️ usuario.json não encontrado.");
-      return null;
-    }
-
-    const raw = fs.readFileSync(usuarioPath, "utf-8");
+    const raw = fsSync.readFileSync(usuarioPath, "utf-8");
     const dados = JSON.parse(raw);
-    const alunoCriptografado = dados.usuarios?.[0]?.aluno;
+    const usuario = dados.usuarios?.[0];
 
-    if (!alunoCriptografado) {
-      console.warn("⚠️ Campo 'aluno' está vazio ou ausente.");
-      return null;
+    if (usuario?.aluno) {
+      console.log("🔐 Campo 'aluno' criptografado:", usuario.aluno);
+      try {
+        const nome = descriptografarComMestra(usuario.aluno);
+        console.log("✅ Nome do aluno descriptografado:", nome);
+        return nome;
+      } catch (erroDesc) {
+        console.error("❌ Erro ao descriptografar aluno:", erroDesc.message);
+      }
+    } else {
+      console.warn("⚠️ Campo 'aluno' não encontrado.");
     }
-
-    const descriptografado = await ipcRenderer.invoke("descriptografar-com-mestra", alunoCriptografado);
-    return descriptografado?.replace(/[^\w\-]/g, "_") || "usuario";
   } catch (erro) {
-    console.error("❌ Erro ao obter nome do aluno descriptografado:", erro);
-    return null;
+    console.error("❌ Erro ao acessar usuario.json:", erro.message);
   }
+
+  return null;
 }
 
 // ✅ Expor API de comunicação segura com o processo principal

@@ -81,6 +81,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       codigoTemas: document.getElementById("codigoTemas").value
     };
 
+    // 🔐 Gera o emailHash antes de enviar
+    dadosUsuario.emailHash = window.nativo.gerarEmailHash(dadosUsuario.email);
+    console.log("📤 Gerando o emailHash:", dadosUsuario.emailHash);
+
     console.log("📤 Enviando dados para salvar cadastro:", dadosUsuario);
 
     const resultado = await window.api.salvarCadastro(dadosUsuario);
