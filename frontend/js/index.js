@@ -2,9 +2,10 @@ import { componentesCarregados } from "./incluirComponentes.js";
 import { incluirCartoes } from "./incluirCartoes.js";
 import { buscarMensagensDoDirigente } from "./mensagensDirigente.js";
 import { buscarMensagemAleatoria } from "./mensagemAleatoria.js";
-import { carregarUltimoVideo } from "./carregarUltimoVideo.js";
+//import { carregarUltimoVideo } from "./carregarUltimoVideo.js";
+import { carregarVideoAleatorio } from "./carregarVideoAleatorio.js";
 
-// ⏳ Aguarda todos os componentes estarem prontos
+
 componentesCarregados.then(async () => {
   console.log("📦 Componentes carregados. Iniciando aplicação...");
 
@@ -42,17 +43,14 @@ componentesCarregados.then(async () => {
     const usuario = dados.usuarios[chaves[0]];
     console.log("📄 Usuário carregado com sucesso:", usuario);
 
-    if (typeof window.api?.descriptografarComMestra !== "function") {
-      throw new Error("❌ API de descriptografia não disponível.");
-    }
-
     const codigoTemas = await window.api.descriptografarComMestra(usuario.codigoTemas);
     console.log("🔓 codigoTemas descriptografado:", codigoTemas);
 
-    // 🔄 Carrega conteúdo dinâmico com base na planilha
     await buscarMensagensDoDirigente(codigoTemas);
     await buscarMensagemAleatoria(codigoTemas);
-    await carregarUltimoVideo();
+    //await carregarUltimoVideo(); 
+    await carregarVideoAleatorio();
+
 
   } catch (erro) {
     console.error("❌ Erro na leitura do código de temas:", erro.message);
