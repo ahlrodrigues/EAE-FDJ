@@ -1,6 +1,6 @@
-// === preload.js ===
 const { contextBridge, ipcRenderer } = require("electron");
 const fs = require("fs").promises;
+const fsSync = require("fs"); // síncrono para leitura rápida
 const path = require("path");
 const os = require("os");
 const dotenv = require("dotenv");
@@ -10,8 +10,12 @@ const crypto = require("crypto");
 const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
 
 // 🔐 Criptografia
-const { criptografarComMestra, descriptografarComMestra } = require("./backend/lib/criptografia");
-console.log("🔐 CRYPTO_SECRET usado no preload:", process.env.CRYPTO_SECRET);
+const {
+  criptografarComMestra,
+  descriptografarComMestra
+} = require("./backend/lib/criptografia");
+
+console.log("🔐 CRYPTO_SECRET usado no preload:", CRYPTO_SECRET);
 console.log("🧠 preload.js carregado");
 
 // ✅ Expor acesso nativo ao sistema (útil para o renderer)
@@ -25,13 +29,37 @@ contextBridge.exposeInMainWorld("nativo", {
 
   gerarEmailHash: (email) => {
     return crypto
-      .createHmac('sha256', CRYPTO_SECRET)
+      .createHmac("sha256", CRYPTO_SECRET)
       .update(email)
-      .digest('hex');
-  }   
+      .digest("hex");
+  },
+
+  arquivoExiste: async (caminhoRelativo) => {
+    const completo = path.join(
+      os.homedir(),
+      ".config",
+      "escola-aprendizes",
+      "config",
+      caminhoRelativo
+    );
+    try {
+      await fs.access(completo);
+      console.log("✅ Arquivo existe:", completo);
+      return true;
+    } catch {
+      console.warn("❌ Arquivo não existe:", completo);
+      return false;
+    }
+  },
 });
 
-// 🧾 Função auxiliar para obter o nome do aluno (não criptografado)
+// 🧾 Função auxiliar para obter o nome do primeiro usuário (key do objeto)
+function obterPrimeiroUsuario(dados) {
+  const chaves = Object.keys(dados.usuarios || {});
+  return dados.usuarios?.[chaves[0]] || null;
+}
+
+// ✅ Nome do usuário sem descriptografar (ex: salvar nome de arquivo)
 function obterNomeUsuario() {
   try {
     const usuarioPath = path.join(
@@ -41,9 +69,11 @@ function obterNomeUsuario() {
       "config",
       "usuario.json"
     );
-    const raw = fs.readFileSync(usuarioPath, "utf-8");
+    const raw = fsSync.readFileSync(usuarioPath, "utf-8");
     const dados = JSON.parse(raw);
-    const nome = dados.usuarios?.[0]?.aluno || "usuario";
+    const usuario = obterPrimeiroUsuario(dados);
+
+    const nome = usuario?.aluno || "usuario";
     return nome.replace(/\s+/g, "_");
   } catch (e) {
     console.warn("⚠️ Não foi possível obter nome do usuário:", e.message);
@@ -51,10 +81,8 @@ function obterNomeUsuario() {
   }
 }
 
-// 🔐 Função que usa o handler do main para descriptografar o nome do aluno
-// 🔐 Função que usa a chave mestra para descriptografar o nome do aluno
+// 🔐 Nome descriptografado do aluno
 function obterNomeAlunoDescriptografado() {
-  const fsSync = require("fs"); // usamos 'fsSync' para evitar conflito com 'fs' async
   const usuarioPath = path.join(
     os.homedir(),
     ".config",
@@ -66,17 +94,13 @@ function obterNomeAlunoDescriptografado() {
   try {
     const raw = fsSync.readFileSync(usuarioPath, "utf-8");
     const dados = JSON.parse(raw);
-    const usuario = dados.usuarios?.[0];
+    const usuario = obterPrimeiroUsuario(dados);
 
     if (usuario?.aluno) {
       console.log("🔐 Campo 'aluno' criptografado:", usuario.aluno);
-      try {
-        const nome = descriptografarComMestra(usuario.aluno);
-        console.log("✅ Nome do aluno descriptografado:", nome);
-        return nome;
-      } catch (erroDesc) {
-        console.error("❌ Erro ao descriptografar aluno:", erroDesc.message);
-      }
+      const nome = descriptografarComMestra(usuario.aluno, CRYPTO_SECRET);
+      console.log("✅ Nome do aluno descriptografado:", nome);
+      return nome;
     } else {
       console.warn("⚠️ Campo 'aluno' não encontrado.");
     }
@@ -87,37 +111,31 @@ function obterNomeAlunoDescriptografado() {
   return null;
 }
 
-// ✅ Expor API de comunicação segura com o processo principal
+// ✅ API principal exposta para o renderer
 contextBridge.exposeInMainWorld("api", {
-  // Autenticação e cadastro
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
 
-  // Recuperação de senha
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
 
-  // Conteúdo e dados
   buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
   lerUsuario: () => ipcRenderer.invoke("ler-usuario"),
 
-  // Criptografia
   descriptografarComMestra: (texto) => ipcRenderer.invoke("descriptografar-com-mestra", texto),
 
-  // Notas
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
 
-  // Utilitários internos
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
 
-  // Listagem de arquivos da pasta de anotações
   listarArquivosNotas: async () => {
     try {
-      const usuario = await ipcRenderer.invoke("ler-usuario");
-      const emailHash = usuario?.usuarios?.[0]?.emailHash;
+      const dados = await ipcRenderer.invoke("ler-usuario");
+      const usuario = obterPrimeiroUsuario(dados);
+      const emailHash = usuario?.emailHash;
 
       if (!emailHash) throw new Error("❌ emailHash não encontrado");
 
@@ -129,9 +147,8 @@ contextBridge.exposeInMainWorld("api", {
         emailHash
       );
 
-      const nomes = await fs.readdir(pastaNotas); // ✅ sem callback
-      const caminhos = nomes.map(nome => path.join(pastaNotas, nome));
-
+      const nomes = await fs.readdir(pastaNotas);
+      const caminhos = nomes.map((nome) => path.join(pastaNotas, nome));
       console.log("📂 Caminhos absolutos das anotações:", caminhos);
       return caminhos;
     } catch (erro) {
