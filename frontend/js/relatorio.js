@@ -56,7 +56,7 @@ async function carregarAnotacoes() {
     let contador = 1;
     for (const item of ordenadas) {
       const tr = document.createElement("tr");
-      tr.dataset.caminho = item.caminho; // 🔐 Caminho será usado para visualização
+      tr.dataset.caminho = item.caminho;
       tr.innerHTML = `
         <td><input type="checkbox"></td>
         <td>${contador++}</td>
@@ -99,8 +99,7 @@ document.getElementById("btnVerAnotacoes").addEventListener("click", async () =>
     const resultados = await Promise.all(
       criptografados.map(async (textoCript) => {
         try {
-          const textoPlano = await window.api.descriptografarComMestra(textoCript);
-          return textoPlano;
+          return await window.api.descriptografarComMestra(textoCript);
         } catch (erro) {
           console.warn("⚠️ Erro ao descriptografar anotação:", erro.message);
           return "[Erro ao descriptografar]";
@@ -111,12 +110,26 @@ document.getElementById("btnVerAnotacoes").addEventListener("click", async () =>
     const conteudoDiv = document.getElementById("modalAnotacoesConteudo");
     conteudoDiv.innerHTML = "";
 
-    resultados.forEach((anotacao, idx) => {
+    resultados.forEach((anotacao) => {
+      const textoAjustado = anotacao
+        .split('\n')
+        .map(linha => linha.trimStart())
+        .join('\n');
+
       const bloco = document.createElement("div");
       bloco.innerHTML = `
-        <div style="text-align: left; padding: 1rem; background: #f8f8f8; border-radius: 6px; box-shadow: 0 0 4px rgba(0,0,0,0.1); margin-bottom: 1rem;">
-          <strong style="color: #333;">Anotação ${idx + 1}</strong>
-          <pre style="white-space: pre-wrap; margin-top: 0.5rem; color: #444;">${anotacao}</pre>
+        <div style="
+          text-align: left;
+          padding: 1rem;
+          background: #f8f8f8;
+          border-radius: 6px;
+          box-shadow: 0 0 4px rgba(0,0,0,0.1);
+          margin-bottom: 1.5rem;
+        ">
+          <div style="text-align: center; margin-bottom: 0.5rem;">
+            <img src="../assets/trevo.png" alt="Trevo" style="max-height: 60px;" />
+          </div>
+          <pre style="white-space: pre-wrap; margin: 0; color: #444; font-size: 1.1rem; line-height: 1.6;">${textoAjustado}</pre>
         </div>
       `;
       conteudoDiv.appendChild(bloco);
