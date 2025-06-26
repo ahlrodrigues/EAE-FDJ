@@ -40,6 +40,22 @@ function registrarLerArquivoHandler() {
   });
 }
 
+ipcMain.handle("ler-anotacoes-selecionadas", async (event, caminhos) => {
+  try {
+    const resultados = await Promise.all(
+      caminhos.map(async (caminho) => {
+        const conteudo = await fs.readFile(caminho, "utf-8");
+        return conteudo;
+      })
+    );
+    return resultados;
+  } catch (erro) {
+    console.error("❌ Erro ao ler anotações selecionadas:", erro);
+    throw erro;
+  }
+});
+
+
 module.exports = {
   registrarLerArquivoHandler,
 };
