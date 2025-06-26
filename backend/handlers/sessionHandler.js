@@ -1,9 +1,18 @@
-// backend/handlers/sessionHandler.js
 const { ipcMain } = require("electron");
-const { isLoginAtivo, setLoginAtivo } = require("../lib/sessionStore");
+const {
+  isLoginAtivo,
+  definirSessaoAtiva,
+  limparSessao,
+  obterEmailHashAtivo,
+} = require("../lib/sessionStore");
 
 function registrarSessionHandler() {
   console.log("🧩 Registrando sessionHandler...");
+
+  ipcMain.on("sessao-definir", (event, emailHash) => {
+    console.log("🧩 Sessão ativa definida para:", emailHash);
+    definirSessaoAtiva(emailHash);
+  });
 
   ipcMain.handle("session:isLoginAtivo", () => {
     const status = isLoginAtivo();
@@ -13,8 +22,12 @@ function registrarSessionHandler() {
 
   ipcMain.handle("session:logout", () => {
     console.log("🔓 Logout requisitado. Finalizando sessão...");
-    setLoginAtivo(false);
+    limparSessao();
     return true;
+  });
+
+  ipcMain.handle("session:emailHash", () => {
+    return obterEmailHashAtivo();
   });
 }
 

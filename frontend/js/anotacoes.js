@@ -1,5 +1,6 @@
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
+const emailHash = window.api.obterEmailHash();
 
 document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;

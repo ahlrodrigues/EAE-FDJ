@@ -1,93 +1,61 @@
-// js/verAnotacoes.js
-import { descriptografarComSecret } from "./criptografiaUtils.js";
+// verNota.js
 
-// 🔄 Função auxiliar: aguarda um elemento aparecer no DOM
-async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
-  console.log(`⏳ Aguardando elemento: ${seletor}`);
-  for (let i = 0; i < tentativas; i++) {
-    const el = document.querySelector(seletor);
-    if (el) {
-      console.log(`✅ Elemento encontrado: ${seletor}`);
-      return el;
-    }
-    await new Promise(resolve => setTimeout(resolve, intervalo));
-  }
-  console.error(`❌ Elemento ${seletor} não encontrado após ${tentativas} tentativas.`);
-  return null;
-}
+const modal = document.getElementById("modalAnotacoes");
+const conteudo = document.getElementById("modalAnotacoesConteudo");
+const btnFechar = document.getElementById("modalAnotacoesFechar");
 
-// 🚀 Inicialização do script
-(async () => {
-  console.log("📦 verAnotacoes.js carregado");
+// 🧭 Extrai os caminhos da URL
+const params = new URLSearchParams(window.location.search);
+const caminhos = params.getAll("caminho");
 
-  const btnVer = await esperarElemento("#btnVerAnotacoes");
-  const modal = await esperarElemento("#modalAnotacoes");
-  const modalConteudo = await esperarElemento("#modalAnotacoesConteudo");
-  const btnFechar = await esperarElemento("#modalAnotacoesFechar");
-
-  if (!btnVer || !modal || !modalConteudo) {
-    console.error("❌ Elementos do modal não encontrados. Abortando.");
+async function exibirAnotacoes() {
+  if (!conteudo || !modal) {
+    console.error("❌ Elementos do modal não encontrados.");
     return;
   }
 
-  // 📌 Evento de clique no botão "Ver"
-  btnVer.addEventListener("click", async () => {
-    console.log("🟢 Botão 'Ver' clicado.");
-
-    const checkboxes = document.querySelectorAll('#anotacoes input[type="checkbox"]:checked');
-    console.log(`📦 Total de checkboxes selecionados: ${checkboxes.length}`);
-
-    if (checkboxes.length === 0) {
-      alert("Selecione ao menos uma anotação para visualizar.");
-      return;
-    }
-
-    modalConteudo.innerHTML = ""; // limpa modal anterior
-
-    for (const checkbox of checkboxes) {
-      const caminho = checkbox.dataset.caminho;
-      const nomeArquivo = caminho?.split("/").pop();
-
-      console.log("📁 Lendo anotação:", caminho);
-
-      try {
-        const textoCriptografado = await window.api.lerArquivo(caminho);
-        console.log("🔐 Texto criptografado carregado.");
-
-        const texto = await descriptografarComSecret(textoCriptografado);
-        console.log("🔓 Texto descriptografado com sucesso.");
-
-        let dataFormatada = "Data inválida";
-        const partes = nomeArquivo?.split("_")[0]?.split("-");
-        if (partes?.length >= 5) {
-          const [ano, mes, dia, hora, minuto] = partes;
-          dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}`;
-        } else {
-          console.warn("⚠️ Nome do arquivo fora do padrão esperado:", nomeArquivo);
-        }
-
-        const bloco = `
-          <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ccc; border-radius: 10px;">
-            <img src="../assets/trevo.png" alt="Trevo" style="height: 50px; display: block; margin: 0 auto;" />
-            <p style="text-align: left; white-space: pre-wrap; font-size: 1rem;">${texto}</p>
-          </div>
-        `;
-        modalConteudo.innerHTML += bloco;
-
-      } catch (erro) {
-        console.error("❌ Erro ao processar anotação:", nomeArquivo, erro);
-        modalConteudo.innerHTML += `<div style="color:red; padding: 1rem;">Erro ao carregar: ${nomeArquivo}</div>`;
-      }
-    }
-
-    // 🪟 Exibe o modal
+  if (caminhos.length === 0) {
+    console.warn("⚠️ Nenhum caminho recebido na URL.");
+    conteudo.innerHTML = "<p>Nenhuma anotação foi selecionada.</p>";
     modal.style.display = "flex";
-    console.log("🪟 Modal exibido.");
-  });
+    return;
+  }
 
-  // 🔙 Botão de fechar modal
-  btnFechar?.addEventListener("click", () => {
-    modal.style.display = "none";
-    console.log("🛑 Modal fechado.");
-  });
-})();
+  console.log("📦 Caminhos recebidos:", caminhos);
+
+  for (const caminho of caminhos) {
+    try {
+      const resultado = await window.api.lerArquivo(caminho);
+      if (!resultado || !resultado.sucesso) throw new Error("Erro na leitura");
+
+      const texto = await window.api.descriptografarNota(resultado.conteudo);
+      if (!texto) throw new Error("Texto descriptografado inválido");
+
+      const bloco = document.createElement("div");
+      bloco.classList.add("bloco-nota");
+      bloco.innerHTML = `
+        <h4>📝 ${caminho.split("/").pop()}</h4>
+        <pre>${texto}</pre>
+        <hr>
+      `;
+      conteudo.appendChild(bloco);
+
+    } catch (erro) {
+      console.error("❌ Erro ao processar anotação:", caminho, erro);
+      const erroMsg = document.createElement("p");
+      erroMsg.textContent = `Erro ao carregar ${caminho}`;
+      conteudo.appendChild(erroMsg);
+    }
+  }
+
+  modal.style.display = "flex";
+}
+
+btnFechar?.addEventListener("click", () => {
+  // Apenas fecha o modal, não a janela inteira
+  const modal = document.getElementById("modalAnotacoes");
+  if (modal) modal.style.display = "none";
+});
+
+// Inicia o processo quando o DOM estiver pronto
+window.addEventListener("DOMContentLoaded", exibirAnotacoes);

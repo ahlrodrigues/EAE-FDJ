@@ -3,7 +3,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 const { ipcMain } = require("electron");
 const { descriptografarComMestra } = require("../lib/criptografia");
-const { setLoginAtivo } = require("../lib/sessionStore");
+const { definirSessaoAtiva } = require("../lib/sessionStore");
 
 require("dotenv").config();
 const chaveMestra = process.env.CRYPTO_SECRET || "chavePadrao";
@@ -53,9 +53,13 @@ function registrarLoginHandler(ipcMain) {
 
           if (senhaValida) {
             console.log("✅ Login bem-sucedido para:", emailDescriptografado);
-            setLoginAtivo(true);
-            return { sucesso: true };
-          } else {
+            definirSessaoAtiva(emailHash);
+            return {
+              sucesso: true,
+              emailHash,
+            };
+          }
+           else {
             console.warn("🔒 Senha incorreta para:", emailDescriptografado);
             return { sucesso: false, erro: "Senha incorreta." };
           }

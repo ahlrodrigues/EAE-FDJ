@@ -50,18 +50,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const resultado = await window.api.validarLogin(email, senha);
+      console.log("📥 Resultado recebido:", resultado);
     
-      if (resultado.sucesso) {
-        console.log("✅ Login bem-sucedido");
+      if (resultado?.sucesso && resultado.emailHash) {
+        window.api.definirSessao(resultado.emailHash);
         sessionStorage.setItem("emailHash", resultado.emailHash);
         window.location.href = "index.html";
       } else {
-        console.warn("⚠️ Login inválido:", resultado.erro);
-        exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Não foi possível fazer login." });
+        const msg = resultado?.erro || "Erro desconhecido ao fazer login.";
+        exibirAviso({ tipo: "erro", mensagem: msg });
       }
+    
     } catch (erro) {
-      console.error("❌ Erro ao tentar login:", erro);
+      console.error("❌ Erro inesperado ao tentar login:", erro);
       exibirAviso({ tipo: "erro", mensagem: "Erro interno ao tentar login." });
     }
+    
   });
 });

@@ -2,7 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { criptografarComMestra } = require("../lib/criptografia");
+const { criptografarComMestra } = require("../../backend/lib/criptografia");
 
 async function handleSalvarAnotacao(_, conteudo, nomeArquivo) {
   console.log("📝 [MAIN] Pedido para salvar anotação recebido.");
@@ -27,7 +27,7 @@ async function handleSalvarAnotacao(_, conteudo, nomeArquivo) {
     const pastaNotas = path.join(os.homedir(), ".config", "escola-aprendizes", "notas", usuario.emailHash);
     await fs.promises.mkdir(pastaNotas, { recursive: true });
 
-    const conteudoCriptografado = criptografarComMestra(conteudo, process.env.CRYPTO_SECRET);
+    const conteudoCriptografado = criptografarComMestra(anotacao, process.env.CRYPTO_SECRET);
     const caminhoFinal = path.join(pastaNotas, nomeArquivo);
 
     await fs.promises.writeFile(caminhoFinal, conteudoCriptografado, "utf-8");
