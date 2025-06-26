@@ -17,17 +17,25 @@ async function handleSalvarAnotacao(_, conteudo, nomeArquivo) {
 
     const dadosStr = await fs.promises.readFile(usuarioPath, "utf-8");
     const dados = JSON.parse(dadosStr);
-    const usuario = dados.usuarios?.[0];
+
+    const listaEmailHashes = Object.keys(dados.usuarios || {});
+    if (listaEmailHashes.length === 0) {
+      console.error("❌ Nenhum usuário encontrado no arquivo.");
+      return { sucesso: false, erro: "Nenhum usuário disponível." };
+    }
+
+    const emailHash = listaEmailHashes[0]; // Você pode trocar isso se tiver um emailHash ativo
+    const usuario = dados.usuarios[emailHash];
 
     if (!usuario?.emailHash) {
       console.error("❌ emailHash não encontrado no usuário.");
       return { sucesso: false, erro: "Usuário inválido." };
     }
 
-    const pastaNotas = path.join(os.homedir(), ".config", "escola-aprendizes", "notas", usuario.emailHash);
+    const pastaNotas = path.join(os.homedir(), ".config", "escola-aprendizes", "notas", emailHash);
     await fs.promises.mkdir(pastaNotas, { recursive: true });
 
-    const conteudoCriptografado = criptografarComMestra(anotacao, process.env.CRYPTO_SECRET);
+    const conteudoCriptografado = criptografarComMestra(conteudo, process.env.CRYPTO_SECRET);
     const caminhoFinal = path.join(pastaNotas, nomeArquivo);
 
     await fs.promises.writeFile(caminhoFinal, conteudoCriptografado, "utf-8");
