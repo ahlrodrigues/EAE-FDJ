@@ -65,7 +65,29 @@ async function carregarAnotacoes() {
       tbody.appendChild(tr);
     }
 
-    inicializarDataTable("#tabelaAnotacoes");
+    const tabela = inicializarDataTable("#tabelaAnotacoes");
+
+    // ✅ Garante que os elementos de busca e página sejam movidos após renderização do DataTables
+    setTimeout(() => {
+      const wrapper = $('#tabelaAnotacoes_wrapper');
+      const length = wrapper.find('.dataTables_length');
+      const filter = wrapper.find('.dataTables_filter');
+
+      // Altera texto da label de pesquisa
+      const label = filter.find('label');
+      const input = label.find('input');
+      label.html('<span style="margin-right: 6px;">Pesquisa:</span>');
+      label.append(input);
+      
+      input.css({ width: '180px', padding: '6px' });
+
+      const container = $('<div class="barra-controles"></div>');
+      const esquerda = $('<div class="barra-esquerda"></div>').append(length);
+      const direita = $('<div class="barra-direita"></div>').append(filter);
+      container.append(esquerda).append(direita);
+      wrapper.prepend(container);
+    }, 0);
+
     console.log(`✅ Tabela com ${ordenadas.length} anotações carregada.`);
   } catch (erro) {
     console.error("❌ Erro ao carregar anotações:", erro);

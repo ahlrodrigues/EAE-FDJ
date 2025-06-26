@@ -24,16 +24,20 @@
 
   <!-- Tabela de Anotações -->
   <div class="tab-content active" id="anotacoes">
-    <div class="botoes-topo">
+    <div class="filtros-topo">
       <label for="filtroDataInicio">Data:</label>
-      <input type="date" id="filtroDataInicio" class="filtro-data">
+      <input type="date" id="filtroDataInicio" class="filtro-data" />
       <span>até</span>
-      <input type="date" id="filtroDataFim" class="filtro-data">
-      <button id="btnVerAnotacoes" title="Visualizar conteúdo das anotações selecionadas">Ver</button>
-      <button id="btnExportarAnotacoes" title="Exportar as anotações selecionadas em PDF">Exportar</button>
-      <button id="btnExcluirAnotacoes" title="Excluir as anotações selecionadas">Excluir</button>
-      <button id="btnEnviarAnotacoes" title="Enviar as anotações selecionadas">Enviar</button>
+      <input type="date" id="filtroDataFim" class="filtro-data" />
     </div>
+    <div class="botoes-centro">
+      <button class="btn-principal" id="btnVerAnotacoes">Ver</button>
+      <button class="btn-principal" id="btnExportarAnotacoes">Exportar</button>
+      <button class="btn-principal" id="btnExcluirAnotacoes">Excluir</button>
+      <button class="btn-principal" id="btnEnviarAnotacoes">Enviar</button>
+    </div>
+    </div>
+    
     <table id="tabelaAnotacoes" class="display">
       <thead>
         <tr>
