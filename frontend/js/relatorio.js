@@ -7,7 +7,7 @@ import {
   inicializarDataTable
 } from "./utils/dataUtils.js";
 
-// 📌 Carrega e exibe as anotações disponíveis
+// 📌 Carrega e exibe as anotações disponíveis na tabela
 async function carregarAnotacoes() {
   try {
     console.log("🔄 Iniciando carregamento de anotações...");
@@ -56,8 +56,9 @@ async function carregarAnotacoes() {
     let contador = 1;
     for (const item of ordenadas) {
       const tr = document.createElement("tr");
+      tr.dataset.caminho = item.caminho; // 🔐 Caminho será usado para visualização
       tr.innerHTML = `
-        <td><input type="checkbox" data-caminho="${item.caminho}"></td>
+        <td><input type="checkbox"></td>
         <td>${contador++}</td>
         <td>${formatarData(item.data)}</td>
       `;
@@ -67,7 +68,7 @@ async function carregarAnotacoes() {
     inicializarDataTable("#tabelaAnotacoes");
     console.log(`✅ Tabela com ${ordenadas.length} anotações carregada.`);
   } catch (erro) {
-    console.error("❌ Erro ao carregar:", erro);
+    console.error("❌ Erro ao carregar anotações:", erro);
     exibirAviso({
       tipo: "Erro",
       mensagem: "Não foi possível carregar as anotações."
@@ -75,46 +76,66 @@ async function carregarAnotacoes() {
   }
 }
 
-// ▶️ Botão "Ver" — exibe a anotação diretamente no modal
-document.getElementById("btnVerAnotacoes")?.addEventListener("click", async () => {
-  console.log("📥 Clique em 'Ver' detectado.");
-
-  const checkboxes = document.querySelectorAll("#tabelaAnotacoes tbody input[type='checkbox']:checked");
-  const selecionadas = [...checkboxes];
-
-  if (selecionadas.length === 0) {
-    exibirAviso({ tipo: "Aviso", mensagem: "Selecione uma anotação para visualizar." });
+// ▶️ Botão "Ver" — exibe as anotações descriptografadas no modal
+document.getElementById("btnVerAnotacoes").addEventListener("click", async () => {
+  const linhasSelecionadas = Array.from(document.querySelectorAll("#tabelaAnotacoes tbody input[type=checkbox]:checked"));
+  if (linhasSelecionadas.length === 0) {
+    alert("Selecione pelo menos uma anotação para visualizar.");
     return;
   }
 
-  if (selecionadas.length > 1) {
-    exibirAviso({ tipo: "Aviso", mensagem: "Por favor, selecione apenas uma anotação por vez." });
+  const caminhos = linhasSelecionadas.map(cb => cb.closest("tr").dataset.caminho);
+  console.log("📂 Caminhos selecionados:", caminhos);
+
+  if (caminhos.some(c => !c)) {
+    alert("❌ Caminho inválido em uma ou mais anotações.");
     return;
   }
-
-  const caminho = selecionadas[0].dataset.caminho;
 
   try {
-    const resultado = await window.api.lerArquivo(caminho);
+    const criptografados = await window.api.lerAnotacoesSelecionadas(caminhos);
+    console.log("🔐 Conteúdos criptografados recebidos:", criptografados);
 
-    if (resultado?.sucesso) {
-      document.getElementById("modalAnotacoesConteudo").textContent = resultado.conteudo;
-      exibirModal("modalAnotacoes");
-    } else {
-      const msg = resultado?.erro || "Erro desconhecido ao ler anotação.";
-      exibirAviso({ tipo: "Erro", mensagem: msg });
-    }
+    const resultados = await Promise.all(
+      criptografados.map(async (textoCript) => {
+        try {
+          const textoPlano = await window.api.descriptografarComMestra(textoCript);
+          return textoPlano;
+        } catch (erro) {
+          console.warn("⚠️ Erro ao descriptografar anotação:", erro.message);
+          return "[Erro ao descriptografar]";
+        }
+      })
+    );
+
+    const conteudoDiv = document.getElementById("modalAnotacoesConteudo");
+    conteudoDiv.innerHTML = "";
+
+    resultados.forEach((anotacao, idx) => {
+      const bloco = document.createElement("div");
+      bloco.innerHTML = `
+        <div style="text-align: left; padding: 1rem; background: #f8f8f8; border-radius: 6px; box-shadow: 0 0 4px rgba(0,0,0,0.1); margin-bottom: 1rem;">
+          <strong style="color: #333;">Anotação ${idx + 1}</strong>
+          <pre style="white-space: pre-wrap; margin-top: 0.5rem; color: #444;">${anotacao}</pre>
+        </div>
+      `;
+      conteudoDiv.appendChild(bloco);
+    });
+
+    document.getElementById("modalAnotacoes").style.display = "flex";
 
   } catch (erro) {
-    console.error("❌ Erro inesperado ao ler anotação:", erro);
-    exibirAviso({ tipo: "Erro", mensagem: "Não foi possível carregar o conteúdo da anotação." });
+    console.error("❌ Erro ao ler anotações:", erro);
+    alert("Erro ao ler as anotações.");
   }
 });
 
+// ❌ Fecha o modal de anotações
+document.getElementById("modalAnotacoesFechar").addEventListener("click", () => {
+  document.getElementById("modalAnotacoes").style.display = "none";
+});
 
-
-
-// ✅ Inicialização da página do relatório
+// ✅ Inicialização do relatório
 window.addEventListener("DOMContentLoaded", () => {
   console.log("🚀 DOM pronto. Iniciando relatório...");
 

@@ -138,17 +138,16 @@ contextBridge.exposeInMainWorld("api", {
   definirSessao: (emailHash) => ipcRenderer.send("sessao-definir", emailHash),
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
-
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
-
   buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
   lerUsuario: () => ipcRenderer.invoke("ler-usuario"),
-
   descriptografarComMestra: (texto) => ipcRenderer.invoke("descriptografar-com-mestra", texto),
-
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
+
+  // ✅ FUNÇÃO QUE FALTAVA
+  lerAnotacoesSelecionadas: (caminhos) => ipcRenderer.invoke("ler-anotacoes-selecionadas", caminhos),
 
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
