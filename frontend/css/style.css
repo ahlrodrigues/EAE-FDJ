@@ -430,3 +430,63 @@ form#formAnotacao textarea{
   background-color: #146c43;
 }
 
+.filtros-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.filtro-data {
+  height: 32px;
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.botoes-centro {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter {
+  justify-content: flex-end;
+}
+.barra-controles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.barra-esquerda,
+.barra-direita {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.barra-direita label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.barra-direita input[type="search"] {
+  width: 180px !important;
+  padding: 6px;
+  font-size: 14px;
+}
