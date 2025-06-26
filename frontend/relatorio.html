@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatórios</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Início - Escola de Aprendizes</title>
+  <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 </head>
 <body>
-  <div id="cabecalho"></div>
+  <script type="module" src="js/incluirComponentes.js"></script>
 
-  <h2>Relatórios</h2>
+  <!-- Cabeçalho dinâmico -->
+  <div id="cabecalho"></div>
+  
+   <!-- Menus -->
+  <div id="menuSuperior"></div>
 
   <!-- Abas -->
   <div class="tabs">
-    <button class="tab-button active" data-tab="anotacoes">Anotações</button>
-    <button class="tab-button" data-tab="temas">Temas</button>
+    <button class="btn-principal" data-tab="anotacoes">Anotações</button>
+    <button class="btn-principal" data-tab="temas">Temas</button>
   </div>
 
   <!-- Tabela de Anotações -->
