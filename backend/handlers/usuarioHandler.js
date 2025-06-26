@@ -1,4 +1,3 @@
-// backend/usuarioHandler.js
 const { ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");

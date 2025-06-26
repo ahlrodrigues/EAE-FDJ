@@ -26,6 +26,7 @@ const { registrarDescriptografarHandler } = require("./backend/handlers/descript
 const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
 const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHandler");
 const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
+
 // ✅ Registra todos os handlers de IPC
 console.log("🔧 Registrando handlers de backend...");
 registrarCadastroHandler(ipcMain);

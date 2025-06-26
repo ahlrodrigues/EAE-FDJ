@@ -1,14 +1,26 @@
-// backend/lib/sessionStore.js
-let sessaoAtiva = false;
+let sessaoAtiva = {
+  emailHash: null,
+};
 
-function setLoginAtivo(estado) {
-  console.log("🧩 Sessão ativa definida para:", estado);
-  sessaoAtiva = estado;
+function definirSessaoAtiva(emailHash) {
+  sessaoAtiva.emailHash = emailHash;
+}
+
+function obterEmailHashAtivo() {
+  return sessaoAtiva.emailHash;
 }
 
 function isLoginAtivo() {
-  return sessaoAtiva;
+  return !!sessaoAtiva.emailHash;
 }
 
-module.exports = { setLoginAtivo, isLoginAtivo };
+function limparSessao() {
+  sessaoAtiva.emailHash = null;
+}
 
+module.exports = {
+  definirSessaoAtiva,
+  obterEmailHashAtivo,
+  isLoginAtivo,
+  limparSessao,
+};

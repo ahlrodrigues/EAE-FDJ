@@ -81,6 +81,27 @@ function obterNomeUsuario() {
   }
 }
 
+function obterEmailHash() {
+  const usuarioPath = path.join(
+    os.homedir(),
+    ".config",
+    "escola-aprendizes",
+    "config",
+    "usuario.json"
+  );
+
+  try {
+    const raw = fsSync.readFileSync(usuarioPath, "utf-8");
+    const dados = JSON.parse(raw);
+    const chaves = Object.keys(dados.usuarios || {});
+
+    return chaves[0] || null;
+  } catch (erro) {
+    console.error("❌ Erro ao obter emailHash:", erro.message);
+    return null;
+  }
+}
+
 // 🔐 Nome descriptografado do aluno
 function obterNomeAlunoDescriptografado() {
   const usuarioPath = path.join(
@@ -114,6 +135,7 @@ function obterNomeAlunoDescriptografado() {
 // ✅ API principal exposta para o renderer
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
+  definirSessao: (emailHash) => ipcRenderer.send("sessao-definir", emailHash),
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
 
@@ -130,6 +152,7 @@ contextBridge.exposeInMainWorld("api", {
 
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
+  obterEmailHash: () => obterEmailHash(),
 
   listarArquivosNotas: async () => {
     try {
