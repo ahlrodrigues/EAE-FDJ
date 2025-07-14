@@ -5,14 +5,17 @@
   "main": "main.js",
   "scripts": {
     "start": "electron ."
-     },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.0",
     "electron": "^36.2.1",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.5",
     "zxcvbn": "^4.4.2"
   },
   "repository": {

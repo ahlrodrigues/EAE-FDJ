@@ -145,6 +145,7 @@ contextBridge.exposeInMainWorld("api", {
   descriptografarComMestra: (texto) => ipcRenderer.invoke("descriptografar-com-mestra", texto),
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
+  obterCaminhoCapaRevista: () => ipcRenderer.invoke('revista:obter-caminho-capa'),
 
   // ✅ FUNÇÃO QUE FALTAVA
   lerAnotacoesSelecionadas: (caminhos) => ipcRenderer.invoke("ler-anotacoes-selecionadas", caminhos),
