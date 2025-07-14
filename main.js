@@ -26,6 +26,7 @@ const { registrarDescriptografarHandler } = require("./backend/handlers/descript
 const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
 const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHandler");
 const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
+const { registrarRevistaHandler, verificarAtualizacaoCapaEmSegundoPlano } = require('./backend/handlers/revistaHandler.js');
 
 // ✅ Registra todos os handlers de IPC
 console.log("🔧 Registrando handlers de backend...");
@@ -40,6 +41,12 @@ registrarDescriptografarHandler();
 registrarNotasHandler(ipcMain);
 registrarLerArquivoHandler();
 registrarSessionHandler();
+registrarRevistaHandler();
+
+app.whenReady().then(() => {
+  verificarAtualizacaoCapaEmSegundoPlano();
+});
+
 console.log("✅ Todos os handlers registrados com sucesso.");
 
 // 🛠️ Caminho do preload
