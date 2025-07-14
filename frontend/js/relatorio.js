@@ -1,3 +1,6 @@
+// === RELATORIO.JS ===
+// 🔄 Carrega e exibe as anotações no DataTable
+
 import { exibirAviso } from "./modalAviso.js";
 import { carregarArquivosNotas } from "../../backend/servicos/notasService.js";
 import {
@@ -7,53 +10,38 @@ import {
   inicializarDataTable
 } from "./utils/dataUtils.js";
 
-// 📌 Carrega e exibe as anotações disponíveis na tabela
+// 📌 Carrega e exibe a tabela
 async function carregarAnotacoes() {
   try {
     console.log("🔄 Iniciando carregamento de anotações...");
-
     const arquivos = await carregarArquivosNotas();
+
     if (!Array.isArray(arquivos)) {
-      console.error("❌ Resultado inválido:", arquivos);
       throw new Error("Erro ao recuperar lista de arquivos.");
     }
 
-    console.log("📁 Arquivos encontrados:", arquivos);
-
     const tbody = document.querySelector("#tabelaAnotacoes tbody");
-    if (!tbody) {
-      console.error("❌ Elemento tbody da tabela não encontrado.");
-      return;
-    }
+    if (!tbody) return console.error("❌ tbody não encontrado.");
     tbody.innerHTML = "";
 
     const dataInicio = document.getElementById("filtroDataInicio")?.value;
     const dataFim = document.getElementById("filtroDataFim")?.value;
-    console.log(`📆 Filtro: Início = ${dataInicio || "sem filtro"}, Fim = ${dataFim || "sem filtro"}`);
 
-    const linhas = [];
-
-    for (const caminho of arquivos) {
+    const linhas = arquivos.map(caminho => {
       const nome = caminho.split("/").pop();
       const data = extrairDataDoNome(nome);
-      console.log(`🔍 Analisando: ${nome} → Data extraída: ${data}`);
-
-      if (!data) {
-        console.warn(`⚠️ Nome fora do padrão: ${nome}`);
-        continue;
-      }
-
+      if (!data) return null;
       const dataObj = new Date(data);
-      if (dataInicio && dataObj < new Date(dataInicio)) continue;
-      if (dataFim && dataObj > new Date(dataFim)) continue;
-
-      linhas.push({ caminho, data: dataObj });
-    }
+      return { caminho, data: dataObj };
+    }).filter(item =>
+      item &&
+      (!dataInicio || item.data >= new Date(dataInicio)) &&
+      (!dataFim || item.data <= new Date(dataFim))
+    );
 
     const ordenadas = ordenarPorDataDesc(linhas);
-    console.log("📊 Ordenadas:", ordenadas.map(l => l.caminho));
-
     let contador = 1;
+
     for (const item of ordenadas) {
       const tr = document.createElement("tr");
       tr.dataset.caminho = item.caminho;
@@ -65,20 +53,17 @@ async function carregarAnotacoes() {
       tbody.appendChild(tr);
     }
 
-    const tabela = inicializarDataTable("#tabelaAnotacoes");
+    inicializarDataTable("#tabelaAnotacoes");
 
-    // ✅ Garante que os elementos de busca e página sejam movidos após renderização do DataTables
+    // Ajusta layout da barra de controles do DataTable
     setTimeout(() => {
       const wrapper = $('#tabelaAnotacoes_wrapper');
       const length = wrapper.find('.dataTables_length');
       const filter = wrapper.find('.dataTables_filter');
-
-      // Altera texto da label de pesquisa
       const label = filter.find('label');
       const input = label.find('input');
       label.html('<span style="margin-right: 6px;">Pesquisa:</span>');
       label.append(input);
-      
       input.css({ width: '180px', padding: '6px' });
 
       const container = $('<div class="barra-controles"></div>');
@@ -91,100 +76,101 @@ async function carregarAnotacoes() {
     console.log(`✅ Tabela com ${ordenadas.length} anotações carregada.`);
   } catch (erro) {
     console.error("❌ Erro ao carregar anotações:", erro);
-    exibirAviso({
-      tipo: "Erro",
-      mensagem: "Não foi possível carregar as anotações."
-    });
+    exibirAviso({ tipo: "Erro", mensagem: "Não foi possível carregar as anotações." });
   }
 }
 
-// ▶️ Botão "Ver" — exibe as anotações descriptografadas no modal
+// 📂 Modal de leitura das anotações
 document.getElementById("btnVerAnotacoes").addEventListener("click", async () => {
-  const linhasSelecionadas = Array.from(document.querySelectorAll("#tabelaAnotacoes tbody input[type=checkbox]:checked"));
-  if (linhasSelecionadas.length === 0) {
-    alert("Selecione pelo menos uma anotação para visualizar.");
-    return;
-  }
+  const linhas = Array.from(document.querySelectorAll("#tabelaAnotacoes tbody input[type=checkbox]:checked"));
+  if (!linhas.length) return alert("Selecione pelo menos uma anotação para visualizar.");
 
-  const caminhos = linhasSelecionadas.map(cb => cb.closest("tr").dataset.caminho);
-  console.log("📂 Caminhos selecionados:", caminhos);
+  const caminhos = linhas.map(cb => cb.closest("tr").dataset.caminho);
+  const criptografados = await window.api.lerAnotacoesSelecionadas(caminhos);
 
-  if (caminhos.some(c => !c)) {
-    alert("❌ Caminho inválido em uma ou mais anotações.");
-    return;
-  }
+  const resultados = await Promise.all(
+    criptografados.map(async texto => {
+      try {
+        return await window.api.descriptografarComMestra(texto);
+      } catch {
+        return "[Erro ao descriptografar]";
+      }
+    })
+  );
 
-  try {
-    const criptografados = await window.api.lerAnotacoesSelecionadas(caminhos);
-    console.log("🔐 Conteúdos criptografados recebidos:", criptografados);
+  const conteudoDiv = document.getElementById("modalAnotacoesConteudo");
+  conteudoDiv.innerHTML = "";
 
-    const resultados = await Promise.all(
-      criptografados.map(async (textoCript) => {
-        try {
-          return await window.api.descriptografarComMestra(textoCript);
-        } catch (erro) {
-          console.warn("⚠️ Erro ao descriptografar anotação:", erro.message);
-          return "[Erro ao descriptografar]";
-        }
-      })
-    );
+  resultados.forEach(texto => {
+    const bloco = document.createElement("div");
+    bloco.innerHTML = `
+      <div style="padding: 1rem; background: #f8f8f8; border-radius: 6px; margin-bottom: 1.5rem;">
+        <div style="text-align: center;"><img src="../assets/trevo.png" alt="Trevo" style="max-height: 60px;" /></div>
+        <pre style="white-space: pre-wrap; color: #444; font-size: 1.1rem; line-height: 1.6;">${texto}</pre>
+      </div>
+    `;
+    conteudoDiv.appendChild(bloco);
+  });
 
-    const conteudoDiv = document.getElementById("modalAnotacoesConteudo");
-    conteudoDiv.innerHTML = "";
-
-    resultados.forEach((anotacao) => {
-      const textoAjustado = anotacao
-        .split('\n')
-        .map(linha => linha.trimStart())
-        .join('\n');
-
-      const bloco = document.createElement("div");
-      bloco.innerHTML = `
-        <div style="
-          text-align: left;
-          padding: 1rem;
-          background: #f8f8f8;
-          border-radius: 6px;
-          box-shadow: 0 0 4px rgba(0,0,0,0.1);
-          margin-bottom: 1.5rem;
-        ">
-          <div style="text-align: center; margin-bottom: 0.5rem;">
-            <img src="../assets/trevo.png" alt="Trevo" style="max-height: 60px;" />
-          </div>
-          <pre style="white-space: pre-wrap; margin: 0; color: #444; font-size: 1.1rem; line-height: 1.6;">${textoAjustado}</pre>
-        </div>
-      `;
-      conteudoDiv.appendChild(bloco);
-    });
-
-    document.getElementById("modalAnotacoes").style.display = "flex";
-
-  } catch (erro) {
-    console.error("❌ Erro ao ler anotações:", erro);
-    alert("Erro ao ler as anotações.");
-  }
+  document.getElementById("modalAnotacoes").style.display = "flex";
 });
 
-// ❌ Fecha o modal de anotações
 document.getElementById("modalAnotacoesFechar").addEventListener("click", () => {
   document.getElementById("modalAnotacoes").style.display = "none";
 });
 
-// ✅ Inicialização do relatório
+// ▶️ Inicializa relatório e abas
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("🚀 DOM pronto. Iniciando relatório...");
-
   document.getElementById("filtroDataInicio")?.addEventListener("change", carregarAnotacoes);
   document.getElementById("filtroDataFim")?.addEventListener("change", carregarAnotacoes);
 
   const selecionarTodos = document.getElementById("selecionarTodosAnotacoes");
-  if (selecionarTodos) {
-    selecionarTodos.addEventListener("change", e => {
-      const checkboxes = document.querySelectorAll("#tabelaAnotacoes tbody input[type='checkbox']");
-      checkboxes.forEach(cb => cb.checked = e.target.checked);
-      console.log(`🔁 ${checkboxes.length} checkboxes ${e.target.checked ? "selecionados" : "deselecionados"}`);
-    });
-  }
+  selecionarTodos?.addEventListener("change", e => {
+    document.querySelectorAll("#tabelaAnotacoes tbody input[type='checkbox']")
+      .forEach(cb => cb.checked = e.target.checked);
+  });
 
+  ativarAbaPorHash();
   carregarAnotacoes();
+
+  document.querySelectorAll(".tab-button").forEach(button => {
+    button.addEventListener("click", () => ativarAba(button.dataset.tab));
+  });
 });
+
+window.addEventListener("hashchange", ativarAbaPorHash);
+
+// === SUBMENU ===
+
+export function configurarLinksSubmenu() {
+  const links = document.querySelectorAll('.link-submenu');
+  if (!links.length) return;
+
+  links.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tab = link.dataset.tab;
+      if (tab) ativarAba(tab);
+    });
+  });
+}
+
+function ativarAba(tab) {
+  if (!tab) return;
+  const botao = document.querySelector(`.tab-button[data-tab="${tab}"]`);
+  const aba = document.getElementById(tab);
+  if (!botao || !aba) return;
+
+  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+  botao.classList.add('active');
+  aba.classList.add('active');
+  document.querySelector('.submenu')?.classList.remove('open');
+  window.history.pushState(null, '', `#${tab}`);
+}
+
+function ativarAbaPorHash() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash) ativarAba(hash);
+}
