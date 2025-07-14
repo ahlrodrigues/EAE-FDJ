@@ -83,7 +83,22 @@ async function carregarAnotacoes() {
 // 📂 Modal de leitura das anotações
 document.getElementById("btnVerAnotacoes").addEventListener("click", async () => {
   const linhas = Array.from(document.querySelectorAll("#tabelaAnotacoes tbody input[type=checkbox]:checked"));
-  if (!linhas.length) return alert("Selecione pelo menos uma anotação para visualizar.");
+  
+  if (!linhas.length) {
+    exibirAviso({
+      tipo: "⚠️ Aviso",
+      mensagem: "Selecione pelo menos uma anotação para visualizar."
+    });
+    return;
+  }
+
+// 📂 Reset modal  
+  document.getElementById("modalAnotacoesFechar").addEventListener("click", () => {
+    const modal = document.getElementById("modalAnotacoes");
+    modal.style.display = "none";
+    document.getElementById("modalAnotacoesConteudo").innerHTML = "";
+  });
+  
 
   const caminhos = linhas.map(cb => cb.closest("tr").dataset.caminho);
   const criptografados = await window.api.lerAnotacoesSelecionadas(caminhos);

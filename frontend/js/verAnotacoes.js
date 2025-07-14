@@ -16,10 +16,9 @@ async function exibirAnotacoes() {
 
   if (caminhos.length === 0) {
     console.warn("⚠️ Nenhum caminho recebido na URL.");
-    conteudo.innerHTML = "<p>Nenhuma anotação foi selecionada.</p>";
-    modal.style.display = "flex";
-    return;
+    return; // Não abre modal automaticamente
   }
+  
 
   console.log("📦 Caminhos recebidos:", caminhos);
 
