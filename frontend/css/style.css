@@ -242,16 +242,17 @@ input {
   }
 }
 .menu-superior {
-  width: 100%;
-  max-width: 800px;
-  margin: 1rem auto;
+  position: relative; /* permite que submenu absoluto funcione */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   padding: 0.5rem 1rem;
+  max-width: 800px;
+  margin: 1rem auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: visible; /* importante para submenu não ser cortado */
 }
 .menu-superior ul {
   display: flex;
@@ -489,4 +490,28 @@ form#formAnotacao textarea{
   width: 180px !important;
   padding: 6px;
   font-size: 14px;
+}
+
+.submenu-itens {
+  display: none !important;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 0;
+  z-index: 100;
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+
+.submenu.open .submenu-itens {
+  display: block !important;
+}
+
+.menu-superior li.submenu {
+  position: relative; /* Necessário para alinhar o submenu corretamente */
 }

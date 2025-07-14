@@ -15,26 +15,33 @@
   
    <!-- Menus -->
   <div id="menuSuperior"></div>
-
-  <!-- Abas -->
-  <div class="tabs">
-    <button class="btn-principal" data-tab="anotacoes">Anotações</button>
-    <button class="btn-principal" data-tab="temas">Temas</button>
-  </div>
+  <script type="module">
+    import { configurarMenuCompleto } from './js/menuSuperior.js';
+  
+    // Aguarda o evento do menu ser carregado
+    const menuEl = document.getElementById("menuSuperior");
+    menuEl.addEventListener("componenteCarregado", (e) => {
+      if (e.detail.id === "menuSuperior") {
+        console.log("✅ Menu carregado, configurando submenu...");
+        configurarMenuCompleto();
+      }
+    });
+  </script>
+  
 
   <!-- Tabela de Anotações -->
   <div class="tab-content active" id="anotacoes">
-    <div class="filtros-topo">
-      <label for="filtroDataInicio">Data:</label>
-      <input type="date" id="filtroDataInicio" class="filtro-data" />
-      <span>até</span>
-      <input type="date" id="filtroDataFim" class="filtro-data" />
-    </div>
     <div class="botoes-centro">
       <button class="btn-principal" id="btnVerAnotacoes">Ver</button>
       <button class="btn-principal" id="btnExportarAnotacoes">Exportar</button>
       <button class="btn-principal" id="btnExcluirAnotacoes">Excluir</button>
       <button class="btn-principal" id="btnEnviarAnotacoes">Enviar</button>
+    </div>
+    <div class="filtros-topo">
+      <label for="filtroDataInicio">Data:</label>
+      <input type="date" id="filtroDataInicio" class="filtro-data" />
+      <span>até</span>
+      <input type="date" id="filtroDataFim" class="filtro-data" />
     </div>
     </div>
     
