@@ -515,3 +515,6 @@ form#formAnotacao textarea{
 .menu-superior li.submenu {
   position: relative; /* Necessário para alinhar o submenu corretamente */
 }
+.menu-superior li.submenu:hover .submenu-itens {
+  display: block !important;
+}

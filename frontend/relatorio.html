@@ -27,57 +27,33 @@
       }
     });
   </script>
-  
 
   <!-- Tabela de Anotações -->
-  <div class="tab-content active" id="anotacoes">
-    <div class="botoes-centro">
-      <button class="btn-principal" id="btnVerAnotacoes">Ver</button>
-      <button class="btn-principal" id="btnExportarAnotacoes">Exportar</button>
-      <button class="btn-principal" id="btnExcluirAnotacoes">Excluir</button>
-      <button class="btn-principal" id="btnEnviarAnotacoes">Enviar</button>
-    </div>
-    <div class="filtros-topo">
-      <label for="filtroDataInicio">Data:</label>
-      <input type="date" id="filtroDataInicio" class="filtro-data" />
-      <span>até</span>
-      <input type="date" id="filtroDataFim" class="filtro-data" />
-    </div>
-    </div>
-    
-    <table id="tabelaAnotacoes" class="display">
-      <thead>
-        <tr>
-          <th><input type="checkbox" id="selecionarTodosAnotacoes"></th>
-          <th>#</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<div class="tab-content active" id="anotacoes">
+  <div class="botoes-centro">
+    <button class="btn-principal" id="btnVerAnotacoes">Ver</button>
+    <button class="btn-principal" id="btnExportarAnotacoes">Exportar</button>
+    <button class="btn-principal" id="btnExcluirAnotacoes">Excluir</button>
+    <button class="btn-principal" id="btnEnviarAnotacoes">Enviar</button>
+  </div>
+  <div class="filtros-topo">
+    <label for="filtroDataInicio">Data:</label>
+    <input type="date" id="filtroDataInicio" class="filtro-data" />
+    <span>até</span>
+    <input type="date" id="filtroDataFim" class="filtro-data" />
   </div>
 
-  <!-- Tabela de Temas -->
-  <div class="tab-content" id="temas">
-    <div class="botoes-topo">
-      <input type="text" id="campoBuscaTemas" placeholder="Buscar temas">
-      <button id="btnVerTemas" title="Visualizar conteúdo dos temas selecionados">Ver</button>
-      <button id="btnExportarTemas" title="Exportar os temas selecionados em PDF">Exportar</button>
-      <button id="btnExcluirTemas" title="Excluir os temas selecionados">Excluir</button>
-      <button id="btnEnviarTemas" title="Enviar os temas selecionados">Enviar</button>
-    </div>
-    <table id="tabelaTemas" class="display">
-      <thead>
-        <tr>
-          <th><input type="checkbox" id="selecionarTodosTemas"></th>
-          <th>#</th>
-          <th>Tema</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
+  <table id="tabelaAnotacoes" class="display">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="selecionarTodosAnotacoes"></th>
+        <th>#</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 <!-- Modal de Visualização de Anotações -->
 <div id="modalAnotacoes" class="modal" style="display: none;">
   <div class="modal-container">
@@ -94,6 +70,17 @@
 
 
   <div id="rodape"></div>
+
+  <!-- Modal de Aviso Padrão -->
+  <div id="modalAviso" class="modal" style="display: none;">
+    <div class="modal-container">
+      <h3 id="modalAvisoTitulo"></h3>
+      <p id="modalAvisoTexto"></p>
+      <button id="modalAvisoFechar" class="btn-padrao">Fechar</button>
+    </div>
+  </div>
+  
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -114,6 +101,20 @@
         });
       });
     });
+
+    // Ativar aba correta se URL tiver hash
+const hash = window.location.hash?.substring(1); // remove o #
+if (hash) {
+  const targetButton = document.querySelector(`.tab-button[data-tab="${hash}"]`);
+  const targetContent = document.getElementById(hash);
+  if (targetButton && targetContent) {
+    document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+    targetButton.classList.add("active");
+    targetContent.classList.add("active");
+  }
+}
+
   </script>
 
   <script type="module" src="js/relatorio.js"></script>
