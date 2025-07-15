@@ -20,42 +20,62 @@ async function carregarAnotacoes() {
       throw new Error("Erro ao recuperar lista de arquivos.");
     }
 
-    const tbody = document.querySelector("#tabelaAnotacoes tbody");
+    const tabela = $('#tabelaAnotacoes');
+
+    // ✅ Destrói o DataTable antes de limpar o conteúdo
+    if ($.fn.dataTable.isDataTable(tabela)) {
+      tabela.DataTable().clear().destroy();
+    }
+
+    const tbody = tabela.find('tbody')[0];
     if (!tbody) return console.error("❌ tbody não encontrado.");
     tbody.innerHTML = "";
 
-    const dataInicio = document.getElementById("filtroDataInicio")?.value;
-    const dataFim = document.getElementById("filtroDataFim")?.value;
+    // 🗓️ Captura e converte os filtros de data
+    const dataInicioStr = document.getElementById("filtroDataInicio")?.value;
+    const dataFimStr = document.getElementById("filtroDataFim")?.value;
 
+    const dataInicio = dataInicioStr ? new Date(`${dataInicioStr}T00:00:00`) : null;
+    const dataFim = dataFimStr ? new Date(`${dataFimStr}T23:59:59`) : null;
+
+    // 📂 Processa os arquivos
     const linhas = arquivos.map(caminho => {
       const nome = caminho.split("/").pop();
       const data = extrairDataDoNome(nome);
-      if (!data) return null;
-      const dataObj = new Date(data);
-      return { caminho, data: dataObj };
+      if (!data || isNaN(data)) return null;
+      return { caminho, data };
     }).filter(item =>
       item &&
-      (!dataInicio || item.data >= new Date(dataInicio)) &&
-      (!dataFim || item.data <= new Date(dataFim))
+      (!dataInicio || item.data >= dataInicio) &&
+      (!dataFim || item.data <= dataFim)
     );
 
-    const ordenadas = ordenarPorDataDesc(linhas);
-    let contador = 1;
+    console.log("📅 Filtro aplicado: ", {
+      dataInicio, dataFim,
+      totalEncontradas: arquivos.length,
+      totalFiltradas: linhas.length
+    });
 
+    const ordenadas = ordenarPorDataDesc(linhas);
+    console.log("🔢 Linhas no tbody (antes do DataTable):", ordenadas.length);
+
+    // 🧩 Preenche a tabela com os dados filtrados
+    let contador = 1;
     for (const item of ordenadas) {
       const tr = document.createElement("tr");
       tr.dataset.caminho = item.caminho;
       tr.innerHTML = `
-        <td><input type="checkbox"></td>
+        <td><input type="checkbox" /></td>
         <td>${contador++}</td>
         <td>${formatarData(item.data)}</td>
       `;
       tbody.appendChild(tr);
     }
 
+    // ✅ Inicializa o DataTable após preencher
     inicializarDataTable("#tabelaAnotacoes");
 
-    // Ajusta layout da barra de controles do DataTable
+    // 🎨 Ajusta visual do DataTable
     setTimeout(() => {
       const wrapper = $('#tabelaAnotacoes_wrapper');
       const length = wrapper.find('.dataTables_length');
@@ -79,6 +99,8 @@ async function carregarAnotacoes() {
     exibirAviso({ tipo: "Erro", mensagem: "Não foi possível carregar as anotações." });
   }
 }
+
+
 
 // 📂 Modal de leitura das anotações
 document.getElementById("btnVerAnotacoes").addEventListener("click", async () => {
