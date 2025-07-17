@@ -3,44 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Anotações</title>
+  <title>Início - Escola de Aprendizes</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <script type="module" src="js/incluirComponentes.js"></script>
+  
+  <!-- Cabeçalho dinâmico -->
   <div id="cabecalho"></div>
-   <!-- Menus -->
-   <div id="menuSuperior"></div>
+
+  <!-- Menus -->
+  <div id="menuSuperior"></div>
 
   <h2>Caderneta Pessoal - Anotação</h2>
-  
-    <!-- Modo de preenchimento -->
-    <div class="switch-container">
-      <label class="switch">
-        <input type="checkbox" id="modoToggle" />
-        <span class="slider"></span>
-      </label>
-      <span id="modoLabel">Modo bloco de texto</span>
-    </div>
-  
+
+  <!-- 🔁 Botão deslizante -->
+  <div class="switch-container">
+    <label class="switch">
+      <input type="checkbox" id="modoToggle" />
+      <span class="slider"></span>
+    </label>
+    <span id="modoLabel">Modo bloco de texto</span>
+  </div>
+
   <div class="card">
     <form id="formAnotacao">
-      <label for="data">Data</label>
-      <input type="date" id="data" name="data" required />
-      
-      <label for="fato">Fato</label>
-      <textarea id="fato" rows="4" required></textarea>
-      
-      <label for="acao">Ação/Reação</label>
-      <textarea id="acao" rows="4" required></textarea>
-      
-      <label for="sentimento">Sentimento</label>
-      <input type="text" id="sentimento" required />
-      
-      <label for="proposta">Proposta Renovadora</label>
-      <textarea id="proposta" rows="4" required></textarea>
-
+      <!-- 🔄 Formulário detalhado com 5 campos -->
+      <div id="formularioDetalhado">
+        <label for="data">Data</label>
+        <input type="date" id="data" name="data" required />
+    
+        <label for="fato">Fato</label>
+        <textarea id="fato" name="fato" rows="4" required></textarea>
+    
+        <label for="acao">Ação/Reação</label>
+        <textarea id="acao" name="acao" rows="4" required></textarea>
+    
+        <label for="sentimento">Sentimento</label>
+        <input type="text" id="sentimento" name="sentimento" required />
+    
+        <label for="proposta">Proposta Renovadora</label>
+        <textarea id="proposta" name="proposta" rows="4" required></textarea>
+      </div>
+    
+      <!-- ✍️ Formulário livre -->
+      <div id="formularioLivre" style="display: none;">
+        <label for="anotacaoLivre">Anotação</label>
+        <textarea
+          id="anotacaoLivre"
+          name="anotacaoLivre"
+          rows="10"
+          placeholder="Digite sua anotação..."
+          required
+        ></textarea>
+      </div>
+    
       <button type="submit" class="btn-principal">Salvar Anotação</button>
     </form>
+    
   </div>
 
   <!-- Modal de Aviso Padrão -->
@@ -51,7 +71,7 @@
       <button id="modalAvisoFechar" class="btn-padrao">Fechar</button>
     </div>
   </div>
-  
+
   <div id="rodape"></div>
 
   <script type="module" src="js/anotacoes.js"></script>

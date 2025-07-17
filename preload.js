@@ -146,13 +146,29 @@ contextBridge.exposeInMainWorld("api", {
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
   obterCaminhoCapaRevista: () => ipcRenderer.invoke('revista:obter-caminho-capa'),
-
-  // ✅ FUNÇÃO QUE FALTAVA
   lerAnotacoesSelecionadas: (caminhos) => ipcRenderer.invoke("ler-anotacoes-selecionadas", caminhos),
-
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
   obterEmailHash: () => obterEmailHash(),
+
+  salvarArquivo: async (caminho, conteudo) => {
+    try {
+      await fs.writeFile(caminho, conteudo, "utf-8");
+      console.log("💾 Arquivo salvo com sucesso:", caminho);
+      return { sucesso: true };
+    } catch (erro) {
+      console.error("❌ Erro ao salvar arquivo:", erro);
+      return { sucesso: false, erro: erro.message };
+    }
+  },
+
+  getUserConfigPath: () => path.join(
+    os.homedir(),
+    ".config",
+    "escola-aprendizes",
+    "config",
+    "usuario.json"
+  ),
 
   listarArquivosNotas: async () => {
     try {
