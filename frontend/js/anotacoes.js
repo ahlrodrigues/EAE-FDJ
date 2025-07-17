@@ -1,6 +1,5 @@
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
-import { lerUsuario, salvarUsuario } from './utils/usuarioConfig.js';
 
 const emailHash = window.api.obterEmailHash();
 
@@ -12,18 +11,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const toggle = document.getElementById("modoToggle");
   const label = document.getElementById("modoLabel");
 
-  // Sugere data atual
   const hoje = new Date().toISOString().split("T")[0];
   dataEl.value = hoje;
 
-  // Foca no campo data se sinalizado no localStorage
   if (localStorage.getItem("focarCampoData") === "sim") {
     dataEl.focus();
     localStorage.removeItem("focarCampoData");
   }
 
-  // Inicializa o modo preenchimento
-  const usuario = await lerUsuario();
+  const usuario = await lerUsuarioJson();
   const modo = usuario.modoPreenchimento || 'separado';
   const usarBloco = modo === 'unico';
 
@@ -39,9 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     alternarFormulario(usarBloco);
 
-    const usuario = await lerUsuario();
+    const usuario = await lerUsuarioJson();
     usuario.modoPreenchimento = usarBloco ? 'unico' : 'separado';
-    await salvarUsuario(usuario);
+    await salvarUsuarioJson(usuario);
   });
 
   form.addEventListener("submit", async (e) => {
@@ -52,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dados = usarBloco
       ? {
           data: dataEl.value,
-          textoUnico: document.getElementById("textoUnico").value.trim()
+          anotacaoLivre: document.getElementById("anotacaoLivre").value.trim()
         }
       : {
           data: dataEl.value,
@@ -75,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dataFormatada = `${dia}-${mes}-${ano}`;
 
     const conteudo = usarBloco
-      ? `Data: ${dataFormatada}\n\n${dados.textoUnico}`
+      ? `Data: ${dataFormatada}\n\n${dados.anotacaoLivre}`
       : `
         Data: ${dataFormatada}
         Fato: ${dados.fato}
@@ -89,9 +85,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (resultado.sucesso) {
         await exibirAviso({ tipo: "✅ Sucesso", mensagem: "Anotação salva com sucesso." });
 
-        // Limpa campos sem recarregar
         if (usarBloco) {
-          document.getElementById("textoUnico").value = "";
+          document.getElementById("anotacaoLivre").value = "";
         } else {
           document.getElementById("fato").value = "";
           document.getElementById("acao").value = "";
@@ -112,8 +107,57 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// Alterna entre os dois formulários
+// 🔁 Alterna visibilidade entre os dois formulários
 function alternarFormulario(usarTextoUnico) {
-  document.getElementById("formularioSeparado").classList.toggle("hidden", usarTextoUnico);
-  document.getElementById("formularioTextoUnico").classList.toggle("hidden", !usarTextoUnico);
+  const bloco = document.getElementById("formularioLivre");
+  const detalhado = document.getElementById("formularioDetalhado");
+
+  // 🔁 Alterna visibilidade
+  bloco.style.display = usarTextoUnico ? "block" : "none";
+  detalhado.style.display = usarTextoUnico ? "none" : "block";
+
+  // ✅ Ajusta obrigatoriedade dos campos
+  document.getElementById("anotacaoLivre").required = usarTextoUnico;
+
+  document.getElementById("fato").required = !usarTextoUnico;
+  document.getElementById("acao").required = !usarTextoUnico;
+  document.getElementById("sentimento").required = !usarTextoUnico;
+  document.getElementById("proposta").required = !usarTextoUnico;
+}
+
+// ✅ Leitura simplificada do usuario.json
+async function lerUsuarioJson() {
+  try {
+    const caminho = window.api.getUserConfigPath();
+    const conteudo = await window.api.lerArquivo(caminho);
+    const dados = JSON.parse(conteudo);
+    const usuarios = dados.usuarios || {};
+    const primeiroHash = Object.keys(usuarios)[0];
+    return usuarios[primeiroHash] || {};
+  } catch (erro) {
+    console.error("❌ Erro ao ler usuario.json:", erro);
+    return {};
+  }
+}
+
+// ✅ Salvamento simplificado no usuario.json
+async function salvarUsuarioJson(usuarioNovo) {
+  try {
+    const caminho = window.api.getUserConfigPath();
+    const conteudo = await window.api.lerArquivo(caminho);
+    const dados = JSON.parse(conteudo);
+    const usuarios = dados.usuarios || {};
+    const primeiroHash = Object.keys(usuarios)[0];
+
+    usuarios[primeiroHash] = {
+      ...usuarios[primeiroHash],
+      ...usuarioNovo
+    };
+
+    await window.api.salvarArquivo(caminho, JSON.stringify({ usuarios }, null, 2));
+    return true;
+  } catch (erro) {
+    console.error("❌ Erro ao salvar usuario.json:", erro);
+    return false;
+  }
 }
