@@ -1,38 +1,61 @@
 import { configurarLinksSubmenu } from "./relatorio.js";
 
-// 🔧 Ativa o submenu ao clicar no botão "Relatório"
-export function configurarMenuRelatorio() {
-  const relatorioBtn = document.getElementById('relatorioBtn');
-  const submenuItem = relatorioBtn?.closest('.submenu');
+// 🔧 Configura automaticamente os botões de submenu
+function observarBotaoSubmenu(btnId) {
+  const menuContainer = document.getElementById("menuSuperior");
 
-  if (!relatorioBtn) {
-    console.warn("⚠️ Botão #relatorioBtn não encontrado.");
+  if (!menuContainer) {
+    console.warn("⚠️ Container #menuSuperior não encontrado.");
     return;
   }
 
-  if (!submenuItem) {
-    console.warn("⚠️ Elemento .submenu não encontrado.");
-    return;
-  }
+  const observer = new MutationObserver((mutations, obs) => {
+    const btn = document.getElementById(btnId);
+    const submenuItem = btn?.closest('.submenu');
 
-  console.log("✅ Botão Relatório encontrado:", relatorioBtn);
+    if (btn && submenuItem) {
+      console.log(`✅ Botão ${btnId} detectado via observer`);
 
-  relatorioBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    submenuItem.classList.toggle('open');
-    console.log("🔁 Toggle submenu:", submenuItem.classList.contains('open'));
-  });
+      // Ativa submenu
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        submenuItem.classList.toggle("open");
+        console.log(`🔁 Toggle submenu ${btnId}`);
+      });
 
-  document.addEventListener('click', (e) => {
-    if (!submenuItem.contains(e.target)) {
-      submenuItem.classList.remove('open');
-      console.log("❌ Submenu fechado ao clicar fora");
+      // Fecha ao clicar fora
+      document.addEventListener("click", (e) => {
+        if (!submenuItem.contains(e.target)) {
+          submenuItem.classList.remove("open");
+          console.log(`❌ Submenu ${btnId} fechado ao clicar fora`);
+        }
+      });
+
+      // Interrompe a observação depois de encontrado
+      obs.disconnect();
     }
   });
+
+  observer.observe(menuContainer, { childList: true, subtree: true });
 }
 
-// ✅ Inicializa tudo depois que o menu for carregado
 export function configurarMenuCompleto() {
-  configurarMenuRelatorio();
+  observarBotaoSubmenu("relatorioBtn");
+  observarBotaoSubmenu("escreverBtn");
+
+  // Outros comportamentos do menu
   configurarLinksSubmenu();
 }
+
+
+// ✅ Inicializa todos os menus assim que carregados
+export function configurarMenuCompleto() {
+  setTimeout(() => {
+    configurarSubmenuDinamico([
+      'relatorioBtn',
+      'escreverBtn',
+    ]);
+    configurarLinksSubmenu();
+  }, 100); // tempo suficiente para garantir que o submenu foi incluso
+}
+
