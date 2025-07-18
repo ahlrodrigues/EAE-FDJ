@@ -59,6 +59,10 @@ async function carregarAnotacoes() {
     const ordenadas = ordenarPorDataDesc(linhas);
     console.log("🔢 Linhas no tbody (antes do DataTable):", ordenadas.length);
 
+    ordenadas.forEach((item, i) => {
+      console.log(`${i + 1} → ${formatarData(item.data)} → ${item.caminho}`);
+    });
+
     // 🧩 Preenche a tabela com os dados filtrados
     let contador = 1;
     for (const item of ordenadas) {
