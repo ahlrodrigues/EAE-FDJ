@@ -39,23 +39,13 @@ function observarBotaoSubmenu(btnId) {
   observer.observe(menuContainer, { childList: true, subtree: true });
 }
 
-export function configurarMenuCompleto() {
-  observarBotaoSubmenu("relatorioBtn");
-  observarBotaoSubmenu("escreverBtn");
-
-  // Outros comportamentos do menu
-  configurarLinksSubmenu();
-}
-
-
 // ✅ Inicializa todos os menus assim que carregados
 export function configurarMenuCompleto() {
-  setTimeout(() => {
-    configurarSubmenuDinamico([
+  setTimeout(() => 
       'relatorioBtn',
       'escreverBtn',
-    ]);
+    );
     configurarLinksSubmenu();
-  }, 100); // tempo suficiente para garantir que o submenu foi incluso
-}
+  } 100 // tempo suficiente para garantir que o submenu foi incluso
+
 

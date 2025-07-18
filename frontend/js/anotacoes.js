@@ -20,71 +20,80 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const usuario = await lerUsuarioJson();
-  const modo = usuario.modoPreenchimento || 'separado';
-  const usarBloco = modo === 'unico';
+  const modo = usuario.modoPreenchimento || "separado";
+  const usarBloco = modo === "unico";
 
   toggle.checked = usarBloco;
-  label.textContent = usarBloco ? 'Modo bloco de texto' : 'Modo estruturado por campos';
+  label.textContent = usarBloco ? "Modo bloco de texto" : "Modo estruturado por campos";
   alternarFormulario(usarBloco);
 
-  toggle.addEventListener('change', async (e) => {
+  toggle.addEventListener("change", async (e) => {
     const usarBloco = e.target.checked;
     label.textContent = usarBloco
-      ? 'Modo bloco de texto'
-      : 'Modo estruturado por campos';
+      ? "Modo bloco de texto"
+      : "Modo estruturado por campos";
 
     alternarFormulario(usarBloco);
 
     const usuario = await lerUsuarioJson();
-    usuario.modoPreenchimento = usarBloco ? 'unico' : 'separado';
+    usuario.modoPreenchimento = usarBloco ? "unico" : "separado";
     await salvarUsuarioJson(usuario);
   });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const usarBloco = toggle.checked;
 
+    // 🔍 Coleta os dados preenchidos
     const dados = usarBloco
       ? {
           data: dataEl.value,
-          anotacaoLivre: document.getElementById("anotacaoLivre").value.trim()
+          anotacaoLivre: document.getElementById("anotacaoLivre").value.trim(),
         }
       : {
           data: dataEl.value,
           fato: document.getElementById("fato").value.trim(),
           acao: document.getElementById("acao").value.trim(),
           sentimento: document.getElementById("sentimento").value.trim(),
-          proposta: document.getElementById("proposta").value.trim()
+          proposta: document.getElementById("proposta").value.trim(),
         };
 
+    // 📛 Garante nome válido
     let nome = await window.api.obterNomeAlunoDescriptografado();
     if (!nome || typeof nome !== "string" || nome.trim() === "") {
       nome = "usuario";
     }
 
+    // 🕒 Gera nome do arquivo: YYYY-MM-DD-HH-MM-SS_nome.txt
     const agora = new Date();
-    const hora = `${String(agora.getSeconds()).padStart(2, "0")}-${String(agora.getMinutes()).padStart(2, "0")}-${String(agora.getHours()).padStart(2, "0")}`;
+    const hora = `${String(agora.getHours()).padStart(2, "0")}-${String(
+      agora.getMinutes()
+    ).padStart(2, "0")}-${String(agora.getSeconds()).padStart(2, "0")}`;
     const nomeArquivo = `${dados.data}-${hora}_${nome}.txt`;
 
+    // 🧾 Conteúdo formatado
     const [ano, mes, dia] = dados.data.split("-");
     const dataFormatada = `${dia}-${mes}-${ano}`;
 
     const conteudo = usarBloco
       ? `Data: ${dataFormatada}\n\n${dados.anotacaoLivre}`
       : `
-        Data: ${dataFormatada}
-        Fato: ${dados.fato}
-        Ação/Reação: ${dados.acao}
-        Sentimento: ${dados.sentimento}
-        Proposta Renovadora: ${dados.proposta}
-      `.trim();
+Data: ${dataFormatada}
+Fato: ${dados.fato}
+Ação/Reação: ${dados.acao}
+Sentimento: ${dados.sentimento}
+Proposta Renovadora: ${dados.proposta}`.trim();
 
+    // 💾 Tenta salvar a anotação
     try {
       const resultado = await window.api.salvarAnotacao(conteudo, nomeArquivo);
       if (resultado.sucesso) {
-        await exibirAviso({ tipo: "✅ Sucesso", mensagem: "Anotação salva com sucesso." });
+        await exibirAviso({
+          tipo: "✅ Sucesso",
+          mensagem: "Anotação salva com sucesso.",
+        });
 
+        // 🧼 Limpa campos após salvar
         if (usarBloco) {
           document.getElementById("anotacaoLivre").value = "";
         } else {
@@ -98,34 +107,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         dataEl.value = hoje;
         dataEl.focus();
       } else {
-        exibirAviso({ tipo: "erro", mensagem: resultado.erro || "Erro ao salvar anotação." });
+        exibirAviso({
+          tipo: "erro",
+          mensagem: resultado.erro || "Erro ao salvar anotação.",
+        });
       }
     } catch (erro) {
       console.error("❌ Erro ao salvar anotação:", erro);
-      exibirAviso({ tipo: "erro", mensagem: "Erro ao salvar anotação." });
+      exibirAviso({
+        tipo: "erro",
+        mensagem: "Erro ao salvar anotação.",
+      });
     }
   });
 });
 
-// 🔁 Alterna visibilidade entre os dois formulários
+// 🔁 Alterna entre formulários estruturado ou livre
 function alternarFormulario(usarTextoUnico) {
   const bloco = document.getElementById("formularioLivre");
   const detalhado = document.getElementById("formularioDetalhado");
 
-  // 🔁 Alterna visibilidade
   bloco.style.display = usarTextoUnico ? "block" : "none";
   detalhado.style.display = usarTextoUnico ? "none" : "block";
 
-  // ✅ Ajusta obrigatoriedade dos campos
   document.getElementById("anotacaoLivre").required = usarTextoUnico;
-
   document.getElementById("fato").required = !usarTextoUnico;
   document.getElementById("acao").required = !usarTextoUnico;
   document.getElementById("sentimento").required = !usarTextoUnico;
   document.getElementById("proposta").required = !usarTextoUnico;
 }
 
-// ✅ Leitura simplificada do usuario.json
+// 🔍 Lê o conteúdo do arquivo usuario.json
 async function lerUsuarioJson() {
   try {
     const caminho = window.api.getUserConfigPath();
@@ -140,7 +152,7 @@ async function lerUsuarioJson() {
   }
 }
 
-// ✅ Salvamento simplificado no usuario.json
+// 💾 Salva preferências no usuario.json
 async function salvarUsuarioJson(usuarioNovo) {
   try {
     const caminho = window.api.getUserConfigPath();
@@ -151,7 +163,7 @@ async function salvarUsuarioJson(usuarioNovo) {
 
     usuarios[primeiroHash] = {
       ...usuarios[primeiroHash],
-      ...usuarioNovo
+      ...usuarioNovo,
     };
 
     await window.api.salvarArquivo(caminho, JSON.stringify({ usuarios }, null, 2));

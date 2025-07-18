@@ -567,3 +567,7 @@ form#formAnotacao textarea{
 .switch input:checked + .slider:before {
   transform: translateX(22px);
 }
+
+th:nth-child(2)::after {
+  display: none !important;
+}
