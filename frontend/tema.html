@@ -17,7 +17,7 @@
     <div id="aviso-tema" class="aviso-flutuante" style="display: none;">
       📌 Existe tema para ser feito!
     </div>
-    
+
     <div id="tabelaTemas" class="grid-cartoes">
       <!-- Cartões dos temas serão inseridos aqui pelo JS -->
     </div>
@@ -25,7 +25,10 @@
 <!-- Modal para preenchimento do tema -->
 <div id="modalTema" class="modal-tema" style="display: none;">
   <div class="modal-conteudo">
-    <h2 id="modalTitulo"></h2>
+    <div class="cabecalho-modal-tema">
+  <div id="modalNumero" class="tema-numero">Tema 0</div>
+  <div id="modalTitulo" class="tema-titulo">Título do tema</div>
+</div>
     <form id="formTema" class="form-modal">
       <input type="hidden" id="modalData" />
       <input type="hidden" id="modalNumero" />
