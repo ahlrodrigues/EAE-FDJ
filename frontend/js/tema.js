@@ -3,7 +3,7 @@
 import { exibirAviso } from "./modalAviso.js";
 import { buscarTemasFormatados } from "./buscarPlanilha.js";
 
-const tabela = document.querySelector("#tabelaTemas tbody");
+const containerTemas = document.querySelector("#tabelaTemas");
 const modal = document.querySelector("#modalTema");
 const form = document.querySelector("#formTema");
 const aviso = document.getElementById("aviso-tema");
@@ -38,24 +38,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dataTema = new Date(ano, mes, dia);
       if (dataTema > hoje) return;
 
-      const dataFormatada = `${ano}-${String(Number(mes) + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-      const nomeArquivoEsperado = `${dataFormatada}-tema${numero}-${emailHash}.txt`;
+      const nomeArquivoData = `${ano}-${String(Number(mes) + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+      const dataFormatada = `${String(dia).padStart(2, '0')}/${String(Number(mes) + 1).padStart(2, '0')}/${ano}`;
+      const nomeArquivoEsperado = `${nomeArquivoData}-tema${numero}-${emailHash}.txt`;
       const preenchido = arquivosSalvos.includes(nomeArquivoEsperado);
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${dataFormatada}</td>
-        <td>${numero}</td>
-        <td>${titulo}</td>
-        <td><button class="btn-principal" data-data="${dataFormatada}" data-numero="${numero}" data-titulo="${titulo}">Ver</button></td>
+      const card = document.createElement("div");
+      card.className = "cartao-tema";
+      if (!preenchido) card.classList.add("tema-pendente");
+
+      card.innerHTML = `
+        <p><strong>📅 ${dataFormatada}</strong></p>
+        <p>📚 ${numero} - ${titulo}</p>
+        <div class="espaco-botao">
+          <button class="btn-ver" data-data="${nomeArquivoData}" data-numero="${numero}" data-titulo="${titulo}">
+            Ver
+          </button>
+        </div>
       `;
 
-      if (!preenchido) tr.classList.add("tema-pendente");
-      tabela.appendChild(tr);
+      containerTemas.appendChild(card);
 
       if (!preenchido) temaEmAberto = true;
 
-      // Mostra o primeiro tema do dia no cabeçalho
       if (primeiroTemaHoje && dataTema.toDateString() === hoje.toDateString() && tituloTemaDia) {
         tituloTemaDia.textContent = `Tema do dia: ${titulo}`;
         primeiroTemaHoje = false;
@@ -70,57 +75,57 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // 👁️ Ao clicar em "Ver", abre o modal
 window.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("btn-principal")) {
-    const { data, numero, titulo } = e.target.dataset;
+  const btn = e.target.closest(".btn-ver");
+  if (!btn) return;
 
-    document.querySelector("#modalData").value = data;
-    document.querySelector("#modalNumero").value = numero;
-    document.querySelector("#modalTituloHidden").value = titulo;
-    document.querySelector("#modalTitulo").innerText = `${numero} - ${titulo}`;
+  const { data, numero, titulo } = btn.dataset;
+
+  document.querySelector("#modalData").value = data;
+  document.querySelector("#modalNumero").value = numero;
+  document.querySelector("#modalTituloHidden").value = titulo;
+  document.querySelector("#modalTitulo").innerText = `${numero} - ${titulo}`;
+
+  const emailHash = window.api.obterEmailHash();
+  const nomeArquivo = `${data}-tema${numero}-${emailHash}.txt`;
+
+  try {
+    const conteudo = await window.api.lerTema(emailHash, nomeArquivo);
+    document.querySelector("#modalTexto").value = conteudo?.texto || "";
+    console.log("✏️ Tema carregado:", conteudo);
+  } catch (erro) {
+    document.querySelector("#modalTexto").value = "";
+    console.warn("⚠️ Tema ainda não preenchido:", erro.message);
+  }
+
+  modal.style.display = "block";
+});
+
+// 💾 Salvar tema preenchido
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = document.querySelector("#modalData").value;
+  const numero = document.querySelector("#modalNumero").value;
+  const titulo = document.querySelector("#modalTituloHidden").value;
+  const texto = document.querySelector("#modalTexto").value;
+
+  console.log("📝 Salvando tema:", { data, numero, titulo, texto });
+
+  try {
+    if (!texto) return exibirAviso("Preencha o texto antes de salvar.");
 
     const emailHash = window.api.obterEmailHash();
     const nomeArquivo = `${data}-tema${numero}-${emailHash}.txt`;
 
-    try {
-      const conteudo = await window.api.lerTema(emailHash, nomeArquivo);
-      document.querySelector("#modalTexto").value = conteudo?.texto || "";
-      console.log("✏️ Tema carregado:", conteudo);
-    } catch (erro) {
-      document.querySelector("#modalTexto").value = "";
-      console.warn("⚠️ Tema ainda não preenchido:", erro.message);
-    }
-
-    modal.style.display = "block";
+    await window.api.salvarTema(emailHash, nomeArquivo, { data, numero, titulo, texto });
+    exibirAviso("✅ Tema salvo com sucesso!");
+    modal.style.display = "none";
+    location.reload();
+  } catch (erro) {
+    console.error("Erro ao salvar tema:", erro);
+    exibirAviso("Erro ao salvar o tema. Tente novamente.");
   }
 });
-
-
-// 💾 Salvar tema preenchido
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-  
-    const data = document.querySelector("#modalData").value;
-    const numero = document.querySelector("#modalNumero").value;
-    const titulo = document.querySelector("#modalTituloHidden").value;
-    const texto = document.querySelector("#modalTexto").value;
-  
-    console.log("📝 Salvando tema:", { data, numero, titulo, texto });
-  
-    try {
-      if (!texto) return exibirAviso("Preencha o texto antes de salvar.");
-  
-      const emailHash = window.api.obterEmailHash();
-      const nomeArquivo = `${data}-tema${numero}-${emailHash}.txt`;
-  
-      await window.api.salvarTema(emailHash, nomeArquivo, { data, numero, titulo, texto });
-      exibirAviso("✅ Tema salvo com sucesso!");
-      modal.style.display = "none";
-      location.reload();
-    } catch (erro) {
-      console.error("Erro ao salvar tema:", erro);
-      exibirAviso("Erro ao salvar o tema. Tente novamente.");
-    }
-  });
 
 // 🟦 Botão "Fechar" do modal
 const btnFecharModal = document.querySelector("#btnFecharModal");
