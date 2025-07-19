@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escola de Aprendizes</title>
+  <link rel="stylesheet" href="../frontend/css/style.css" />
+  
+</head>
+<body>
+  <header id="cabecalho"></header>
+  <nav id="menuSuperior"></nav>
+
+  <h2>Caderno de Temas</h2>
+
+  <main class="container">
+    <div id="aviso-tema" class="aviso-flutuante" style="display: none;">
+      📌 Existe tema para ser feito!
+    </div>
+    <table id="tabelaTemas">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>#</th>
+          <th>Tema</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Temas disponíveis serão carregados aqui -->
+      </tbody>
+    </table>
+
+<!-- Modal para preenchimento do tema -->
+<div id="modalTema" class="modal-tema" style="display: none;">
+  <div class="modal-conteudo">
+    <h2 id="modalTitulo"></h2>
+    <form id="formTema" class="form-modal">
+      <input type="hidden" id="modalData" />
+      <input type="hidden" id="modalNumero" />
+      <input type="hidden" id="modalTituloHidden" />
+
+      <label for="modalTexto">Texto:</label>
+      <textarea id="modalTexto" rows="40" required></textarea>
+
+      <div class="botoes-modal">
+        <button type="submit" class="btn-salvar">💾 Salvar</button>
+        <button type="button" id="btnFecharModal" class="btn-cancelar">✖️ Fechar</button>
+      </div>
+    </form>
+  </div>
+</div>
+  </main>
+
+  <script type="module" src="../frontend/js/incluirComponentes.js"></script>
+  <script type="module" src="./js/tema.js"></script>
+</body>
+</html>
