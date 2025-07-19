@@ -657,3 +657,48 @@ th:nth-child(2)::after {
   background-color: #f44336;
   color: white;
 }
+
+.grid-cartoes {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.cartao-tema {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px; /* ajustável conforme seu conteúdo */
+  position: relative;
+}
+
+.cartao-tema p {
+  margin: 0.4rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.espaco-botao {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cartao-tema .btn-ver {
+  background-color: #00008B;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cartao-tema .btn-ver:hover {
+  background-color: #000060;
+}
