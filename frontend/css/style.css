@@ -702,3 +702,38 @@ th:nth-child(2)::after {
 .cartao-tema .btn-ver:hover {
   background-color: #000060;
 }
+
+#modalTitulo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #00008B;
+  text-align: center;
+  word-break: break-word;
+  white-space: normal !important;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.cabecalho-modal-tema {
+  margin-bottom: 1.5rem;
+}
+
+.tema-numero {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #00008B;
+}
+
+.tema-titulo {
+  text-align: left;
+  font-size: 1.2rem;
+  color: #222;
+  margin-top: 0.5rem;
+}
+
+.tema-preenchido {
+  background-color: #f0fff4; /* verde muito claro */
+  border-left: 6px solid #28a745; /* verde escuro */
+}

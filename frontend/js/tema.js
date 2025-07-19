@@ -47,19 +47,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "cartao-tema";
       if (!preenchido) card.classList.add("tema-pendente");
 
-      card.innerHTML = `
-        <p><strong>📅 ${dataFormatada}</strong></p>
-        <p>📚 ${numero} - ${titulo}</p>
-        <div class="espaco-botao">
-          <button class="btn-ver" data-data="${nomeArquivoData}" data-numero="${numero}" data-titulo="${titulo}">
-            Ver
-          </button>
-        </div>
-      `;
+      const textoBotao = preenchido ? "👁️ Ver" : "✍️ Escrever";
+
+card.innerHTML = `
+  <p><strong>📅 ${dataFormatada}</strong></p>
+  <p>📚 ${numero} - ${titulo}</p>
+  <div class="espaco-botao">
+    <button class="btn-ver" data-data="${nomeArquivoData}" data-numero="${numero}" data-titulo="${titulo}">
+      ${textoBotao}
+    </button>
+  </div>
+`;
 
       containerTemas.appendChild(card);
 
       if (!preenchido) temaEmAberto = true;
+      else card.classList.add("tema-preenchido");
 
       if (primeiroTemaHoje && dataTema.toDateString() === hoje.toDateString() && tituloTemaDia) {
         tituloTemaDia.textContent = `Tema do dia: ${titulo}`;
@@ -81,9 +84,9 @@ window.addEventListener("click", async (e) => {
   const { data, numero, titulo } = btn.dataset;
 
   document.querySelector("#modalData").value = data;
-  document.querySelector("#modalNumero").value = numero;
+  document.querySelector("#modalNumero").textContent = `${numero}`;
   document.querySelector("#modalTituloHidden").value = titulo;
-  document.querySelector("#modalTitulo").innerText = `${numero} - ${titulo}`;
+  document.querySelector("#modalTitulo").textContent = titulo;
 
   const emailHash = window.api.obterEmailHash();
   const nomeArquivo = `${data}-tema${numero}-${emailHash}.txt`;
@@ -105,7 +108,7 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = document.querySelector("#modalData").value;
-  const numero = document.querySelector("#modalNumero").value;
+  const numero = document.querySelector("#modalNumero").textContent.replace("Tema ", "").trim();
   const titulo = document.querySelector("#modalTituloHidden").value;
   const texto = document.querySelector("#modalTexto").value;
 
