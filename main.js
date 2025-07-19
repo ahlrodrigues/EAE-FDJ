@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const { isLoginAtivo } = require("./backend/lib/sessionStore");
+const fsPromises = require("fs/promises");
 
 // 📁 Caminho do arquivo de usuário
 const usuarioPath = path.join(
@@ -27,6 +28,9 @@ const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
 const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHandler");
 const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
 const { registrarRevistaHandler, verificarAtualizacaoCapaEmSegundoPlano } = require('./backend/handlers/revistaHandler.js');
+const { registrarTemasHandler } = require("./backend/handlers/temasHandler");
+
+
 
 // ✅ Registra todos os handlers de IPC
 console.log("🔧 Registrando handlers de backend...");
@@ -42,6 +46,7 @@ registrarNotasHandler(ipcMain);
 registrarLerArquivoHandler();
 registrarSessionHandler();
 registrarRevistaHandler();
+registrarTemasHandler(ipcMain);
 
 app.whenReady().then(() => {
   verificarAtualizacaoCapaEmSegundoPlano();
@@ -102,3 +107,6 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+
+

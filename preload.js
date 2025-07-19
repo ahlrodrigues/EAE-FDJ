@@ -147,6 +147,8 @@ contextBridge.exposeInMainWorld("api", {
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
   obterCaminhoCapaRevista: () => ipcRenderer.invoke('revista:obter-caminho-capa'),
   lerAnotacoesSelecionadas: (caminhos) => ipcRenderer.invoke("ler-anotacoes-selecionadas", caminhos),
+  listarTemasSalvos: (emailHash) => ipcRenderer.invoke("listar-temas-salvos", emailHash),
+  salvarTema: (emailHash, nomeArquivo, dados) => ipcRenderer.invoke("salvar-tema", emailHash, nomeArquivo, dados),
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
   obterEmailHash: () => obterEmailHash(),
@@ -169,6 +171,25 @@ contextBridge.exposeInMainWorld("api", {
     "config",
     "usuario.json"
   ),
+
+  lerTema: (emailHash, nomeArquivo) => {
+    const caminho = path.join(
+      os.homedir(),
+      ".config",
+      "escola-aprendizes",
+      "temas",
+      emailHash,
+      nomeArquivo
+    );
+    return fs.readFile(caminho, "utf-8").then(conteudo => {
+      try {
+        return JSON.parse(descriptografarComMestra(conteudo, CRYPTO_SECRET));
+      } catch (e) {
+        console.warn("⚠️ Erro ao ler tema:", e.message);
+        return { texto: "" };
+      }
+    });
+  },
 
   listarArquivosNotas: async () => {
     try {
@@ -194,7 +215,6 @@ contextBridge.exposeInMainWorld("api", {
       console.error("❌ Erro ao listar arquivos de notas:", erro);
       return [];
     }
-  },
-});
-
+  }
+}),
 console.log("🧪 preload pronto. APIs carregadas.");

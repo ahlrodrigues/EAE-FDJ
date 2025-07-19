@@ -571,3 +571,89 @@ form#formAnotacao textarea{
 th:nth-child(2)::after {
   display: none !important;
 }
+
+.aviso-flutuante {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  background-color: white;
+  border-left: 5px solid #28a745;
+  padding: 10px 15px;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 6px;
+  font-weight: bold;
+  z-index: 1000;
+  color: #28a745;
+}
+
+#titulo-tema-dia {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tema-pendente {
+  background-color: #fff0f0; /* vermelho claro como destaque */
+}
+
+.modal-tema {
+  display: none; /* Oculto inicialmente */
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.modal-conteudo {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh; /* Limita a altura máxima */
+  overflow-y: auto; /* Scroll interno */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+#modalTexto {
+  width: 100%;
+  min-height: 150px;
+  max-height: 300px; /* Limita a altura do campo */
+  overflow-y: auto;
+  resize: vertical;
+}
+
+
+.botoes-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-salvar,
+.btn-cancelar {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-salvar {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-cancelar {
+  background-color: #f44336;
+  color: white;
+}
