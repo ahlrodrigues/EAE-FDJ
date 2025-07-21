@@ -1,7 +1,34 @@
+// === menuSuperior.js ===
 import { configurarLinksSubmenu } from "./relatorio.js";
 
-// 🔧 Configura automaticamente os botões de submenu
-function observarBotaoSubmenu(btnId) {
+// 🔧 Ativa comportamento de clique para submenus (Relatório, Escrever, etc.)
+function configurarBotaoSubmenu(btnId) {
+  const btn = document.getElementById(btnId);
+  const submenuItem = btn?.closest(".submenu");
+
+  if (!btn || !submenuItem) {
+    console.warn(`⚠️ Botão ${btnId} ou submenu não encontrado.`);
+    return;
+  }
+
+  // ⬇️ Toggle de abertura/fechamento
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    submenuItem.classList.toggle("open");
+    console.log(`🔁 Toggle submenu ${btnId}`);
+  });
+
+  // ⬅️ Fecha ao clicar fora
+  document.addEventListener("click", (e) => {
+    if (!submenuItem.contains(e.target)) {
+      submenuItem.classList.remove("open");
+      console.log(`❌ Submenu ${btnId} fechado ao clicar fora`);
+    }
+  });
+}
+
+// ✅ Inicializa todos os submenus quando o menuSuperior estiver pronto
+export function configurarMenuCompleto() {
   const menuContainer = document.getElementById("menuSuperior");
 
   if (!menuContainer) {
@@ -9,43 +36,13 @@ function observarBotaoSubmenu(btnId) {
     return;
   }
 
-  const observer = new MutationObserver((mutations, obs) => {
-    const btn = document.getElementById(btnId);
-    const submenuItem = btn?.closest('.submenu');
-
-    if (btn && submenuItem) {
-      console.log(`✅ Botão ${btnId} detectado via observer`);
-
-      // Ativa submenu
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        submenuItem.classList.toggle("open");
-        console.log(`🔁 Toggle submenu ${btnId}`);
-      });
-
-      // Fecha ao clicar fora
-      document.addEventListener("click", (e) => {
-        if (!submenuItem.contains(e.target)) {
-          submenuItem.classList.remove("open");
-          console.log(`❌ Submenu ${btnId} fechado ao clicar fora`);
-        }
-      });
-
-      // Interrompe a observação depois de encontrado
-      obs.disconnect();
+  // Aguarda o carregamento do menuSuperior
+  menuContainer.addEventListener("componenteCarregado", (event) => {
+    if (event.detail.id === "menuSuperior") {
+      console.log("✅ menuSuperior carregado, configurando submenus...");
+      configurarBotaoSubmenu("relatorioBtn");
+      configurarBotaoSubmenu("escreverBtn"); // ID que precisamos adicionar!
+      configurarLinksSubmenu();
     }
   });
-
-  observer.observe(menuContainer, { childList: true, subtree: true });
 }
-
-// ✅ Inicializa todos os menus assim que carregados
-export function configurarMenuCompleto() {
-  setTimeout(() => 
-      'relatorioBtn',
-      'escreverBtn',
-    );
-    configurarLinksSubmenu();
-  } 100 // tempo suficiente para garantir que o submenu foi incluso
-
-
