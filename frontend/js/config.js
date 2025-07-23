@@ -12,79 +12,90 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const fs = window.nativo.fs;
-  const path = window.nativo.path;
-  const os = window.nativo.os;
   const descriptografar = window.nativo.descriptografarComMestra;
   const criptografar = window.nativo.criptografarComMestra;
 
-  const usuarioPath = path.join(
-    os.homedir(),
-    ".config",
-    "escola-aprendizes",
-    "config",
-    "usuario.json"
-  );
-
   let dados;
   try {
-    const raw = fs.readFileSync(usuarioPath, "utf-8");
-    dados = JSON.parse(raw);
-    console.log("📂 Dados do usuário carregados.");
+    dados = await window.api.lerUsuario();
+    console.log("📂 Dados do usuário carregados com sucesso.");
   } catch (erro) {
     console.error("❌ Erro ao ler usuario.json:", erro.message);
     exibirAviso({ tipo: "erro", mensagem: "Erro ao carregar os dados do usuário." });
     return;
   }
 
-  const usuario = dados.usuarios?.[0];
+  const usuario = Object.values(dados.usuarios || {})[0];
   if (!usuario) {
     console.warn("⚠️ Nenhum usuário encontrado.");
     return;
   }
 
-  // 🔓 Descriptografar e preencher os campos
-  const preencherCampo = (id, valorCriptografado) => {
+  // 🗝️ Campos criptografados válidos (sem senha)
+  const camposCriptografados = [
+    "casaEspírita",
+    "numeroTurma",
+    "dirigente",
+    "emailDirigente",
+    "secretarios",
+    "aluno",
+    "emailCriptografado",
+    "telefone",
+    "codigoTemas"
+  ];
+
+  const preencherCampo = async (id, valorCriptografado) => {
     try {
       const campo = document.getElementById(id);
       if (campo && valorCriptografado) {
-        campo.value = descriptografar(valorCriptografado);
-        console.log(`🔓 Campo ${id} preenchido com valor descriptografado.`);
+        campo.value = await descriptografar(valorCriptografado);
+        console.log(`🔓 Campo '${id}' preenchido.`);
       }
     } catch (erro) {
-      console.warn(`⚠️ Erro ao descriptografar ${id}:`, erro.message);
+      console.warn(`⚠️ Erro ao descriptografar campo '${id}':`, erro.message);
     }
   };
 
-  preencherCampo("aluno", usuario.aluno);
-  preencherCampo("email", usuario.emailCriptografado);
-  preencherCampo("telefone", usuario.telefone);
-  preencherCampo("codigoTemas", usuario.codigoTemas); // ✅ incluso
+  // 🔄 Preencher todos os campos
+  for (const campo of camposCriptografados) {
+    const id = campo === "emailCriptografado" ? "email" : campo;
+    await preencherCampo(id, usuario[campo]);
+  }
 
-  // idioma (não criptografado)
+  // 🌐 Campo idioma (não criptografado)
   const idiomaEl = document.getElementById("idioma");
   if (idiomaEl && usuario.idioma) {
     idiomaEl.value = usuario.idioma;
+    console.log("🌐 Campo 'idioma' preenchido.");
   }
 
   // 💾 Evento de salvamento
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     try {
-      usuario.aluno = criptografar(document.getElementById("aluno").value.trim());
-      usuario.emailCriptografado = criptografar(document.getElementById("email").value.trim());
-      usuario.telefone = criptografar(document.getElementById("telefone").value.trim());
-      usuario.codigoTemas = criptografar(document.getElementById("codigoTemas").value.trim()); // 🔁 recriptografado
-      usuario.idioma = document.getElementById("idioma").value;
+      for (const campo of camposCriptografados) {
+        const id = campo === "emailCriptografado" ? "email" : campo;
+        const el = document.getElementById(id);
+        if (el) {
+          usuario[campo] = await criptografar(el.value.trim());
+        }
+      }
 
-      fs.writeFileSync(usuarioPath, JSON.stringify(dados, null, 2));
+      usuario.idioma = idiomaEl?.value || "pt";
+
+      await window.api.salvarUsuario(dados);
       console.log("✅ Configurações salvas com sucesso.");
-      exibirAviso({ tipo: "sucesso", mensagem: "Configurações atualizadas com sucesso!" });
+      exibirAviso({
+        tipo: "sucesso",
+        mensagem: "Configurações atualizadas com sucesso!"
+      });
 
     } catch (erro) {
       console.error("❌ Erro ao salvar as configurações:", erro.message);
-      exibirAviso({ tipo: "erro", mensagem: "Erro ao salvar as configurações." });
+      exibirAviso({
+        tipo: "erro",
+        mensagem: "Erro ao salvar as configurações."
+      });
     }
   });
 });

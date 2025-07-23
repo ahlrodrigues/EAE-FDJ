@@ -23,8 +23,6 @@ contextBridge.exposeInMainWorld("nativo", {
   fs,
   path,
   os,
-  criptografarComMestra,
-  descriptografarComMestra,
   getEnv: (chave) => process.env[chave] || null,
 
   gerarEmailHash: (email) => {
@@ -33,6 +31,10 @@ contextBridge.exposeInMainWorld("nativo", {
       .update(email)
       .digest("hex");
   },
+
+  criptografarComMestra: (texto) => criptografarComMestra(texto, CRYPTO_SECRET),
+  descriptografarComMestra: (texto) => descriptografarComMestra(texto, CRYPTO_SECRET),
+
 
   arquivoExiste: async (caminhoRelativo) => {
     const completo = path.join(
@@ -152,6 +154,8 @@ contextBridge.exposeInMainWorld("api", {
   obterNomeUsuario: () => obterNomeUsuario(),
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
   obterEmailHash: () => obterEmailHash(),
+  salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
+
 
   salvarArquivo: async (caminho, conteudo) => {
     try {
