@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         return;
       }
-  
+
       for (const campo of camposCriptografados) {
         const id = campo === "emailCriptografado" ? "email" : campo;
         const el = document.getElementById(id);
