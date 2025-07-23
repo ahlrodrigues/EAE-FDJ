@@ -157,6 +157,7 @@ contextBridge.exposeInMainWorld("api", {
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
 
 
+
   salvarArquivo: async (caminho, conteudo) => {
     try {
       await fs.writeFile(caminho, conteudo, "utf-8");
