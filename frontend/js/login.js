@@ -43,10 +43,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("📨 Tentando login com:", email);
 
-    if (!email || !senha) {
-      exibirAviso({ tipo: "erro", mensagem: "Preencha todos os campos." });
+    if (!form || !emailEl || !senhaEl) {
+      console.error("❌ Elementos do formulário não encontrados.");
+      exibirAviso({ tipo: "erro", mensagem: "Formulário mal carregado." });
       return;
     }
+
+      emailEl.focus();
+      console.log("🔎 Tentando focar o campo de e-mail...");
+
+      setTimeout(() => {
+        console.log("📌 Elemento ativo após 300ms:", document.activeElement);
+        if (document.activeElement === emailEl) {
+          console.log("✅ Campo de e-mail realmente está com foco.");
+        } else {
+          console.warn("❌ Foco NÃO foi aplicado ao campo de e-mail.");
+        }
+      }, 300);
 
     try {
       const resultado = await window.api.validarLogin(email, senha);
