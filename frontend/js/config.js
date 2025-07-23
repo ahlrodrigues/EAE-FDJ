@@ -73,6 +73,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
+      const emailHash = window.api.obterEmailHash();
+      if (!emailHash) {
+        console.error("❌ emailHash ausente. Abortando salvamento.");
+        exibirAviso({
+          tipo: "erro",
+          mensagem: "Erro ao salvar: usuário não identificado."
+        });
+        return;
+      }
+  
       for (const campo of camposCriptografados) {
         const id = campo === "emailCriptografado" ? "email" : campo;
         const el = document.getElementById(id);
@@ -80,16 +90,22 @@ document.addEventListener("DOMContentLoaded", async () => {
           usuario[campo] = await criptografar(el.value.trim());
         }
       }
-
+  
       usuario.idioma = idiomaEl?.value || "pt";
-
+  
+      // 🔐 Atualiza o objeto com a chave correta
+      dados.usuarios[emailHash] = {
+        ...dados.usuarios[emailHash], // preserva senha
+        ...usuario                    // atualiza campos editados
+      };
+  
       await window.api.salvarUsuario(dados);
       console.log("✅ Configurações salvas com sucesso.");
       exibirAviso({
         tipo: "sucesso",
         mensagem: "Configurações atualizadas com sucesso!"
       });
-
+  
     } catch (erro) {
       console.error("❌ Erro ao salvar as configurações:", erro.message);
       exibirAviso({

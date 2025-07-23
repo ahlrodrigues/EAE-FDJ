@@ -29,6 +29,8 @@ const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHan
 const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
 const { registrarRevistaHandler, verificarAtualizacaoCapaEmSegundoPlano } = require('./backend/handlers/revistaHandler.js');
 const { registrarTemasHandler } = require("./backend/handlers/temasHandler");
+const { registrarSalvarUsuarioHandler } = require("./backend/handlers/salvarUsuarioHandler");
+
 
 
 
@@ -47,6 +49,7 @@ registrarLerArquivoHandler();
 registrarSessionHandler();
 registrarRevistaHandler();
 registrarTemasHandler(ipcMain);
+registrarSalvarUsuarioHandler();
 
 app.whenReady().then(() => {
   verificarAtualizacaoCapaEmSegundoPlano();
