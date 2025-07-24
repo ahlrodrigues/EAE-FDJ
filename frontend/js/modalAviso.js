@@ -23,7 +23,7 @@ export function exibirAviso(input) {
         if (tentativas > 0) {
           setTimeout(() => tentarExibir(tentativas - 1), 100);
         } else {
-          console.warn("⚠️ Elementos do modal não encontrados após múltiplas tentativas.");
+          console.warn("⚠️ Modal de aviso não carregado após 10 tentativas.");
           resolve();
         }
         return;
@@ -33,14 +33,15 @@ export function exibirAviso(input) {
       textoEl.innerHTML = mensagem;
       modal.style.display = "flex";
 
+      // ✅ Substitui o botão por cópia para remover event listeners anteriores
       const novoBtnFechar = btnFechar.cloneNode(true);
-      btnFechar.parentNode.replaceChild(novoBtnFechar, btnFechar);
+      btnFechar.replaceWith(novoBtnFechar);
 
-      novoBtnFechar.onclick = () => {
+      novoBtnFechar.addEventListener("click", () => {
         modal.style.display = "none";
         if (typeof aoFechar === "function") aoFechar();
         resolve();
-      };
+      });
     };
 
     tentarExibir();
