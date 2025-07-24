@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Termo de Uso e Consentimento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem auto;
+      max-width: 800px;
+      padding: 2rem;
+      background-color: #ecfae0;
+      color: #000;
+    }
+
+    h1, h2 {
+      color: #00008B;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    #conteudoTermo p, #conteudoTermo li {
+      line-height: 1.6;
+    }
+
+    button {
+      background-color: #00008B;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .checkbox-container {
+      margin-top: 2rem;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Termo de Uso e Consentimento</h1>
+
+    <div id="conteudoTermo">Carregando termo...</div>
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="checkboxAceite" />
+      <label for="checkboxAceite">
+        ✅ Li e concordo com os Termos de Uso e com a Política de Tratamento de Dados (LGPD)
+      </label>
+      <br />
+      <button id="btnAceitar" disabled>Aceitar e Prosseguir</button>
+
+    </div>
+  </div>
+
+  <!-- Carrega o parser Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script type="module">
+    const checkbox = document.getElementById('checkboxAceite');
+    const botao = document.getElementById('btnAceitar');
+    const conteudoEl = document.getElementById('conteudoTermo');
+
+    const idioma = localStorage.getItem("idioma") || "pt-BR";
+
+async function carregarTermoMarkdown() {
+  try {
+    const markdown = await window.api.lerTermoMarkdown(idioma); // ✅ correto
+    conteudoEl.innerHTML = marked.parse(markdown);
+  } catch (erro) {
+    console.error("Erro ao carregar termo:", erro);
+    conteudoEl.textContent = "Erro ao carregar o termo.";
+  }
+}
+
+
+    checkbox.addEventListener('change', () => {
+      botao.disabled = !checkbox.checked;
+    });
+
+    botao.addEventListener('click', async () => {
+      try {
+        await window.api.salvarAceite();
+        window.location.href = "cadastro.html";
+      } catch (erro) {
+        alert("Erro ao salvar o aceite.");
+      }
+    });
+
+    carregarTermoMarkdown();
+  </script>
+  <script>
+    console.log("🧪 window.api =", window.api);
+  </script>
+</body>
+</html>

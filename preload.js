@@ -155,7 +155,10 @@ contextBridge.exposeInMainWorld("api", {
   obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
   obterEmailHash: () => obterEmailHash(),
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
-
+  lerTermoMarkdown: (idioma) => ipcRenderer.invoke("ler-termo-md", idioma),
+  salvarAceite: () => ipcRenderer.invoke("salvar-aceite"),
+  enviarAceite: () => ipcRenderer.send("termo-aceito"),
+  abrirJanelaTermo: () => ipcRenderer.invoke("abrir-janela-termo"),
 
 
   salvarArquivo: async (caminho, conteudo) => {

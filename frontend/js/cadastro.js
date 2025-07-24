@@ -1,4 +1,3 @@
-
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
 import { inicializarRegrasSenha } from "./senhaRegra.js";
@@ -14,6 +13,9 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   return false;
 }
 
+// Variável global de controle de aceite
+let aceiteTermos = false;
+
 document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
   await esperarElemento("#cadastroForm");
@@ -28,15 +30,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmarsenha");
 
-  // Idioma e bandeiras
+  // 🎌 Idioma e bandeiras
   const idiomaEl = document.getElementById("idioma");
   const bandeiraEl = document.getElementById("bandeiraIdioma");
 
   idiomaEl.addEventListener("change", () => {
-  const flagCode = idiomaEl.selectedOptions[0].dataset.flag;
-  bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
+    const flagCode = idiomaEl.selectedOptions[0].dataset.flag;
+    bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
   });
 
+  // 📜 Botão para abrir o termo
+  const btnAbrirTermo = document.getElementById("btnAbrirTermo");
+  const statusAceite = document.getElementById("statusAceite");
+
+  btnAbrirTermo.addEventListener("click", async () => {
+    try {
+      const resultado = await window.api.abrirJanelaTermo();
+      if (resultado === true) {
+        aceiteTermos = true;
+        statusAceite.style.display = "inline";
+        console.log("✅ Termo aceito na janela externa.");
+      } else {
+        console.log("❌ Termo não aceito.");
+      }
+    } catch (erro) {
+      console.error("Erro ao abrir termo:", erro);
+    }
+  });
+
+  // 📩 Evento de envio do formulário
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -46,6 +68,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("📩 E-mail digitado:", email);
 
+    // 🛑 Verifica aceite
+    if (!aceiteTermos) {
+      exibirAviso({
+        tipo: "⚠️ Aviso",
+        mensagem: "Você deve aceitar o termo de uso antes de se cadastrar."
+      });
+      return;
+    }
+
+    // 🛑 Verifica senhas
     if (senha !== confirmarSenha) {
       console.log("⚠️ Senhas não coincidem.");
       exibirAviso({
@@ -78,10 +110,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       emailDirigente: document.getElementById("emailDirigente").value,
       secretarios: document.getElementById("secretarios").value,
       telefone: document.getElementById("telefone").value,
-      codigoTemas: document.getElementById("codigoTemas").value
+      codigoTemas: document.getElementById("codigoTemas").value,
+      aceiteTermos: true // ✅ Agora garantido pelo botão externo
     };
 
-    // 🔐 Gera o emailHash antes de enviar
     dadosUsuario.emailHash = window.nativo.gerarEmailHash(dadosUsuario.email);
     console.log("📤 Gerando o emailHash:", dadosUsuario.emailHash);
 
