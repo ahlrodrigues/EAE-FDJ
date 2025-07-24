@@ -5,6 +5,8 @@ const fs = require("fs");
 const { isLoginAtivo } = require("./backend/lib/sessionStore");
 const fsPromises = require("fs/promises");
 
+console.log("🧭 Caminho real do preload:", path.join(__dirname, "preload.js"));
+
 // 📁 Caminho do arquivo de usuário
 const usuarioPath = path.join(
   process.env.HOME || process.env.USERPROFILE,
@@ -102,6 +104,55 @@ app.whenReady().then(() => {
     }
   });
 });
+    
+// ✅ Registra UMA VEZ o handler global
+ipcMain.handle("abrir-janela-termo", async () => {
+  return new Promise((resolve) => {
+    const caminhoPreload = path.join(__dirname, "preload-termo.js");
+    console.log("📦 Abrindo termo com preload:", caminhoPreload);
+
+    const termoWin = new BrowserWindow({
+      width: 800,
+      height: 600,
+      modal: true,
+      parent: BrowserWindow.getFocusedWindow(),
+      show: false,
+      sandbox: false,
+      webPreferences: {
+        preload: caminhoPreload,
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    });
+
+    termoWin.once("ready-to-show", () => termoWin.show());
+    termoWin.loadFile(path.join(__dirname, "frontend", "termo.html"));
+
+    ipcMain.once("termo-aceito", () => {
+      resolve(true);
+      termoWin.close();
+    });
+
+    termoWin.on("closed", () => {
+      resolve(false);
+    });
+  });
+});
+
+ipcMain.handle("ler-termo-md", async (event, idioma) => {
+  const idiomaFormatado = idioma.replace("_", "-");
+  const filePath = path.join(__dirname, "frontend", "locales", `termo_${idiomaFormatado}.md`);
+  console.log("📄 Buscando termo em:", filePath);
+
+  try {
+    const conteudo = await fsPromises.readFile(filePath, "utf8");
+    return conteudo;
+  } catch (erro) {
+    console.error("❌ Erro ao ler termo markdown:", erro.message);
+    throw new Error("Termo não encontrado para o idioma: " + idiomaFormatado);
+  }
+});
+
 
 // ⛔ Encerramento do app
 app.on("window-all-closed", () => {

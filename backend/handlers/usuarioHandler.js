@@ -24,4 +24,16 @@ function registrarUsuarioHandler() {
   });
 }
 
+ipcMain.handle("salvar-aceite", async () => {
+  const usuarioPath = path.join(configPath, "usuario.json");
+  const dados = JSON.parse(await fs.readFile(usuarioPath, "utf8"));
+
+  dados.aceiteTermos = true;
+
+  await fs.writeFile(usuarioPath, JSON.stringify(dados, null, 2), "utf8");
+  return true;
+});
+
+
 module.exports = { registrarUsuarioHandler };
+
