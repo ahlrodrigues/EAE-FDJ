@@ -25,13 +25,27 @@ function registrarUsuarioHandler() {
 }
 
 ipcMain.handle("salvar-aceite", async () => {
-  const usuarioPath = path.join(configPath, "usuario.json");
-  const dados = JSON.parse(await fs.readFile(usuarioPath, "utf8"));
+  try {
+    const usuarioPath = path.join(configPath, "usuario.json");
 
-  dados.aceiteTermos = true;
+    let dados = {};
+    try {
+      const conteudo = await fs.readFile(usuarioPath, "utf8");
+      dados = JSON.parse(conteudo);
+    } catch (erroLeitura) {
+      console.warn("📂 usuário.json não encontrado. Criando novo...");
+    }
 
-  await fs.writeFile(usuarioPath, JSON.stringify(dados, null, 2), "utf8");
-  return true;
+    dados.aceiteTermos = true;
+
+    await fs.writeFile(usuarioPath, JSON.stringify(dados, null, 2), "utf8");
+    console.log("✅ Aceite salvo com sucesso em usuario.json");
+    return true;
+
+  } catch (erro) {
+    console.error("❌ Erro ao salvar aceite dos termos:", erro);
+    throw new Error("Falha ao salvar o aceite dos termos.");
+  }
 });
 
 
