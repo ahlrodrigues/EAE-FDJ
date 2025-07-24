@@ -4,6 +4,10 @@ import { inicializarRegrasSenha } from "./senhaRegra.js";
 import { inicializarForcaSenha } from "./forcaSenha.js";
 import { inicializarBotaoVerSenha } from "./verSenha.js";
 
+// 🌐 Variável global de controle de aceite
+let aceiteTermos = false;
+
+// 🕒 Aguarda elemento específico carregar
 async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   for (let i = 0; i < tentativas; i++) {
     if (document.querySelector(seletor)) return true;
@@ -12,9 +16,6 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   console.warn(`⚠️ Elemento ${seletor} não carregado após ${tentativas} tentativas.`);
   return false;
 }
-
-// Variável global de controle de aceite
-let aceiteTermos = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
@@ -29,8 +30,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("cadastroForm");
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmarsenha");
+  const btnTermo = document.getElementById("btnTermo");
+  const btnSalvar = document.getElementById("btnSalvar");
+  const msgAceite = document.getElementById("msgAceite");
 
-  // 🎌 Idioma e bandeiras
+  // 🎌 Idioma e bandeira
   const idiomaEl = document.getElementById("idioma");
   const bandeiraEl = document.getElementById("bandeiraIdioma");
 
@@ -39,22 +43,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
   });
 
-  // 📜 Botão para abrir o termo
-  const btnAbrirTermo = document.getElementById("btnAbrirTermo");
-  const statusAceite = document.getElementById("statusAceite");
+  // 🧠 Verifica se todos os campos obrigatórios estão preenchidos
+  function verificarCamposCadastroPreenchidos() {
+    const camposObrigatorios = [
+      "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
+      "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
+    ];
+    return camposObrigatorios.every((id) => {
+      const el = document.getElementById(id);
+      return el && el.value.trim() !== "";
+    });
+  }
 
-  btnAbrirTermo.addEventListener("click", async () => {
+  // 🔁 Monitora alterações para liberar botão do termo
+  function ativarVerificacaoCamposCadastro() {
+    const campos = document.querySelectorAll("input, textarea, select");
+    campos.forEach((campo) => {
+      campo.addEventListener("input", () => {
+        if (verificarCamposCadastroPreenchidos()) {
+          btnTermo.removeAttribute("disabled");
+        } else {
+          btnTermo.setAttribute("disabled", true);
+        }
+      });
+    });
+  }
+
+  ativarVerificacaoCamposCadastro();
+
+  // 📜 Botão para abrir o termo
+  btnTermo.addEventListener("click", async () => {
     try {
       const resultado = await window.api.abrirJanelaTermo();
-      if (resultado === true) {
-        aceiteTermos = true;
-        statusAceite.style.display = "inline";
-        console.log("✅ Termo aceito na janela externa.");
-      } else {
-        console.log("❌ Termo não aceito.");
-      }
+
+      // 🟢 Ao aceitar o termo na outra janela
+      window.api?.ouvirTermoAceito?.(() => {
+        aceiteTermos = true; // atualiza variável global
+        btnTermo.style.display = "none";
+        msgAceite.style.display = "block";
+        btnSalvar.style.display = "block";
+      });
     } catch (erro) {
-      console.error("Erro ao abrir termo:", erro);
+      console.error("❌ Erro ao abrir termo:", erro);
     }
   });
 
@@ -66,9 +96,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const senha = senhaInput.value.trim();
     const confirmarSenha = confirmarSenhaInput.value.trim();
 
-    console.log("📩 E-mail digitado:", email);
-
-    // 🛑 Verifica aceite
     if (!aceiteTermos) {
       exibirAviso({
         tipo: "⚠️ Aviso",
@@ -77,9 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 🛑 Verifica senhas
     if (senha !== confirmarSenha) {
-      console.log("⚠️ Senhas não coincidem.");
       exibirAviso({
         tipo: "❌ Erro",
         mensagem: "As senhas não coincidem."
@@ -87,12 +112,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    console.log("🔍 Verificando se e-mail já existe...");
     const emailExiste = await window.api.verificarEmailExistente(email);
-    console.log("🔁 Resultado da verificação:", emailExiste);
-
     if (emailExiste) {
-      console.log("⚠️ E-mail já está em uso. Exibindo aviso.");
       exibirAviso({
         tipo: "❌ Erro",
         mensagem: "O e-mail informado já está em uso. Por favor, tente outro."
@@ -111,17 +132,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       secretarios: document.getElementById("secretarios").value,
       telefone: document.getElementById("telefone").value,
       codigoTemas: document.getElementById("codigoTemas").value,
-      aceiteTermos: true // ✅ Agora garantido pelo botão externo
+      idioma: idiomaEl.value,
+      aceiteTermos: true
     };
 
     dadosUsuario.emailHash = window.nativo.gerarEmailHash(dadosUsuario.email);
-    console.log("📤 Gerando o emailHash:", dadosUsuario.emailHash);
-
-    console.log("📤 Enviando dados para salvar cadastro:", dadosUsuario);
+    console.log("📤 Enviando dados:", dadosUsuario);
 
     const resultado = await window.api.salvarCadastro(dadosUsuario);
-    console.log("📬 Resultado do salvamento:", resultado);
-
     if (resultado.sucesso) {
       exibirAviso({
         tipo: "✅ Sucesso",

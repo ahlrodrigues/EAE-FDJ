@@ -5,71 +5,22 @@
   <title>Termo de Uso e Consentimento</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem auto;
-      max-width: 800px;
-      padding: 2rem;
-      background-color: #ecfae0;
-      color: #000;
-    }
-
-    h1, h2 {
-      color: #00008B;
-    }
-
-    section {
-      margin-bottom: 2rem;
-    }
-
-    #conteudoTermo p, #conteudoTermo li {
-      line-height: 1.6;
-    }
-
-    button {
-      background-color: #00008B;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    .checkbox-container {
-      margin-top: 2rem;
-    }
-
-    .container {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Termo de Uso e Consentimento</h1>
-
-    <div id="conteudoTermo">Carregando termo...</div>
-
-    <div class="checkbox-container">
-      <input type="checkbox" id="checkboxAceite" />
-      <label for="checkboxAceite">
+  <div class="card termo-card">
+    <h2>Termo de Uso</h2>
+    <div id="conteudoTermo"></div>
+  
+    <div class="termo-checkbox-container">
+      <label for="checkboxAceite" class="termo-checkbox-label">
+        <input type="checkbox" id="checkboxAceite" />
         ✅ Li e concordo com os Termos de Uso e com a Política de Tratamento de Dados (LGPD)
       </label>
-      <br />
-      <button id="btnAceitar" disabled>Aceitar e Prosseguir</button>
-
+  
+      <button id="btnAceitar" disabled class="btn-principal">Aceitar e Prosseguir</button>
     </div>
   </div>
+  
 
   <!-- Carrega o parser Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -107,8 +58,6 @@ async function carregarTermoMarkdown() {
 
     carregarTermoMarkdown();
   </script>
-  <script>
-    console.log("🧪 window.api =", window.api);
-  </script>
+
 </body>
 </html>
