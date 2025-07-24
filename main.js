@@ -129,9 +129,10 @@ ipcMain.handle("abrir-janela-termo", async () => {
     termoWin.loadFile(path.join(__dirname, "frontend", "termo.html"));
 
     ipcMain.once("termo-aceito", () => {
-      resolve(true);
+      resolve(true); // fecha a janela do termo e retorna controle
       termoWin.close();
     });
+    
 
     termoWin.on("closed", () => {
       resolve(false);

@@ -26,38 +26,65 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <script type="module">
-    const checkbox = document.getElementById('checkboxAceite');
-    const botao = document.getElementById('btnAceitar');
-    const conteudoEl = document.getElementById('conteudoTermo');
-
+    const checkbox = document.getElementById("checkboxAceite");
+    const botao = document.getElementById("btnAceitar");
+    const conteudoEl = document.getElementById("conteudoTermo");
+  
     const idioma = localStorage.getItem("idioma") || "pt-BR";
-
-async function carregarTermoMarkdown() {
-  try {
-    const markdown = await window.api.lerTermoMarkdown(idioma); // ✅ correto
-    conteudoEl.innerHTML = marked.parse(markdown);
-  } catch (erro) {
-    console.error("Erro ao carregar termo:", erro);
-    conteudoEl.textContent = "Erro ao carregar o termo.";
-  }
-}
-
-
-    checkbox.addEventListener('change', () => {
+  
+    // 🔄 Carrega o conteúdo do termo a partir do backend
+    async function carregarTermoMarkdown() {
+      try {
+        const markdown = await window.api.lerTermoMarkdown(idioma);
+        conteudoEl.innerHTML = marked.parse(markdown);
+      } catch (erro) {
+        console.error("Erro ao carregar termo:", erro);
+        conteudoEl.textContent = "Erro ao carregar o termo.";
+      }
+    }
+  
+    // 🟩 Habilita o botão quando o checkbox for marcado
+    checkbox.addEventListener("change", () => {
       botao.disabled = !checkbox.checked;
     });
-
-    botao.addEventListener('click', async () => {
+  
+    // ✅ Ao clicar, salva o aceite e fecha a janela
+    botao.addEventListener("click", async () => {
+      if (!checkbox.checked) {
+        if (window.api?.exibirAviso) {
+          await window.api.exibirAviso({
+            tipo: "Aviso",
+            mensagem: "Você precisa aceitar os termos antes de continuar."
+          });
+        } else {
+          alert("Você precisa aceitar os termos antes de continuar.");
+        }
+        return;
+      }
+  
       try {
-        await window.api.salvarAceite();
-        window.location.href = "cadastro.html";
+        // Salva no usuario.json
+        await window.api.salvarAceite?.();
+        console.log("✅ Aceite salvo");
+  
+        // Envia evento para o main.js (fechar janela + atualizar tela de cadastro)
+        window.api.enviarTermoAceito?.();
       } catch (erro) {
-        alert("Erro ao salvar o aceite.");
+        console.error("❌ Erro ao salvar aceite:", erro);
+        if (window.api?.exibirAviso) {
+          await window.api.exibirAviso({
+            tipo: "Erro",
+            mensagem: "Não foi possível salvar o aceite. Tente novamente."
+          });
+        } else {
+          alert("Erro ao salvar aceite.");
+        }
       }
     });
-
+  
     carregarTermoMarkdown();
   </script>
+  
 
 </body>
 </html>

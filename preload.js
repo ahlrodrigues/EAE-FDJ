@@ -9,12 +9,6 @@ const crypto = require("crypto");
 
 const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
 
-// 🔐 Criptografia
-const {
-  criptografarComMestra,
-  descriptografarComMestra
-} = require("./backend/lib/criptografia");
-
 console.log("🔐 CRYPTO_SECRET usado no preload:", CRYPTO_SECRET);
 console.log("🧠 preload.js carregado");
 
@@ -33,7 +27,7 @@ contextBridge.exposeInMainWorld("nativo", {
   },
 
   criptografarComMestra: (texto) => criptografarComMestra(texto, CRYPTO_SECRET),
-  descriptografarComMestra: (texto) => descriptografarComMestra(texto, CRYPTO_SECRET),
+
 
 
   arquivoExiste: async (caminhoRelativo) => {
@@ -152,13 +146,14 @@ contextBridge.exposeInMainWorld("api", {
   listarTemasSalvos: (emailHash) => ipcRenderer.invoke("listar-temas-salvos", emailHash),
   salvarTema: (emailHash, nomeArquivo, dados) => ipcRenderer.invoke("salvar-tema", emailHash, nomeArquivo, dados),
   obterNomeUsuario: () => obterNomeUsuario(),
-  obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografado(),
+  obterNomeAlunoDescriptografado: () => ipcRenderer.invoke("obter-nome-aluno"),
   obterEmailHash: () => obterEmailHash(),
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
   lerTermoMarkdown: (idioma) => ipcRenderer.invoke("ler-termo-md", idioma),
   salvarAceite: () => ipcRenderer.invoke("salvar-aceite"),
-  enviarAceite: () => ipcRenderer.send("termo-aceito"),
+  enviarTermoAceite: () => ipcRenderer.send("termo-aceito"),
   abrirJanelaTermo: () => ipcRenderer.invoke("abrir-janela-termo"),
+  exibirAviso: (msg) => ipcRenderer.invoke("exibir-aviso", msg),
 
 
   salvarArquivo: async (caminho, conteudo) => {
@@ -224,5 +219,5 @@ contextBridge.exposeInMainWorld("api", {
       return [];
     }
   }
-}),
+});
 console.log("🧪 preload pronto. APIs carregadas.");

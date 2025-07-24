@@ -121,6 +121,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    if (!verificarCamposCadastroPreenchidos()) {
+      await exibirAviso({
+        tipo: "⚠️ Atenção",
+        mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro."
+      });
+      return;
+    }
+
     const dadosUsuario = {
       email,
       senha,

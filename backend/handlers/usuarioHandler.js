@@ -1,9 +1,15 @@
 const { ipcMain } = require("electron");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const { descriptografarComMestra } = require("../lib/criptografia");
+const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
 
 const USUARIO_PATH = path.join(
-  process.env.HOME || process.env.USERPROFILE,
+  os.homedir(),
   ".config",
   "escola-aprendizes",
   "config",
@@ -11,6 +17,7 @@ const USUARIO_PATH = path.join(
 );
 
 function registrarUsuarioHandler() {
+  // 📖 Lê o conteúdo do usuario.json
   ipcMain.handle("ler-usuario", async () => {
     try {
       const conteudo = await fs.promises.readFile(USUARIO_PATH, "utf-8");
@@ -22,32 +29,49 @@ function registrarUsuarioHandler() {
       return null;
     }
   });
+
+  // 💾 Salva o aceite dos termos
+  ipcMain.handle("salvar-aceite", async () => {
+    try {
+      let dados = {};
+      try {
+        const conteudo = await fs.promises.readFile(USUARIO_PATH, "utf8");
+        dados = JSON.parse(conteudo);
+      } catch (erroLeitura) {
+        console.warn("📂 usuario.json não encontrado. Criando novo...");
+      }
+
+      dados.aceiteTermos = true;
+
+      await fs.promises.writeFile(USUARIO_PATH, JSON.stringify(dados, null, 2), "utf8");
+      console.log("✅ Aceite salvo com sucesso em usuario.json");
+      return true;
+
+    } catch (erro) {
+      console.error("❌ Erro ao salvar aceite dos termos:", erro);
+      throw new Error("Falha ao salvar o aceite dos termos.");
+    }
+  });
+
+  // 🔐 Retorna o nome descriptografado do aluno
+  ipcMain.handle("obter-nome-aluno", async () => {
+    try {
+      const raw = fs.readFileSync(USUARIO_PATH, "utf-8");
+      const dados = JSON.parse(raw);
+      const chaves = Object.keys(dados.usuarios || {});
+      const usuario = dados.usuarios?.[chaves[0]];
+
+      if (usuario?.aluno) {
+        const nome = descriptografarComMestra(usuario.aluno, CRYPTO_SECRET);
+        return nome;
+      } else {
+        return null;
+      }
+    } catch (erro) {
+      console.error("❌ Erro ao obter nome do aluno:", erro.message);
+      return null;
+    }
+  });
 }
 
-ipcMain.handle("salvar-aceite", async () => {
-  try {
-    const usuarioPath = path.join(configPath, "usuario.json");
-
-    let dados = {};
-    try {
-      const conteudo = await fs.readFile(usuarioPath, "utf8");
-      dados = JSON.parse(conteudo);
-    } catch (erroLeitura) {
-      console.warn("📂 usuário.json não encontrado. Criando novo...");
-    }
-
-    dados.aceiteTermos = true;
-
-    await fs.writeFile(usuarioPath, JSON.stringify(dados, null, 2), "utf8");
-    console.log("✅ Aceite salvo com sucesso em usuario.json");
-    return true;
-
-  } catch (erro) {
-    console.error("❌ Erro ao salvar aceite dos termos:", erro);
-    throw new Error("Falha ao salvar o aceite dos termos.");
-  }
-});
-
-
 module.exports = { registrarUsuarioHandler };
-
