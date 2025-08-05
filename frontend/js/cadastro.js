@@ -1,19 +1,20 @@
+// === js/cadastro.js ===
+
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
 import { inicializarRegrasSenha } from "./senhaRegra.js";
 import { inicializarForcaSenha } from "./forcaSenha.js";
 import { inicializarBotaoVerSenha } from "./verSenha.js";
 
-// 🌐 Variável global de controle de aceite
+// 🌐 Controle global do aceite
 let aceiteTermos = false;
 
-// 🕒 Aguarda elemento específico carregar
 async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   for (let i = 0; i < tentativas; i++) {
     if (document.querySelector(seletor)) return true;
     await new Promise(resolve => setTimeout(resolve, intervalo));
   }
-  console.warn(`⚠️ Elemento ${seletor} não carregado após ${tentativas} tentativas.`);
+  console.warn(`⚠️ Elemento ${seletor} não encontrado após ${tentativas} tentativas.`);
   return false;
 }
 
@@ -25,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   inicializarForcaSenha();
   inicializarBotaoVerSenha();
 
-  console.log("✅ Componentes de senha e botões carregados.");
+  console.log("✅ Componentes carregados.");
 
   const form = document.getElementById("cadastroForm");
   const senhaInput = document.getElementById("senha");
@@ -33,8 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnTermo = document.getElementById("btnTermo");
   const btnSalvar = document.getElementById("btnSalvar");
   const msgAceite = document.getElementById("msgAceite");
-
-  // 🎌 Idioma e bandeira
   const idiomaEl = document.getElementById("idioma");
   const bandeiraEl = document.getElementById("bandeiraIdioma");
 
@@ -43,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
   });
 
-  // 🧠 Verifica se todos os campos obrigatórios estão preenchidos
   function verificarCamposCadastroPreenchidos() {
     const camposObrigatorios = [
       "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
@@ -55,78 +53,76 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // 🔁 Monitora alterações para liberar botão do termo
   function ativarVerificacaoCamposCadastro() {
     const campos = document.querySelectorAll("input, textarea, select");
     campos.forEach((campo) => {
       campo.addEventListener("input", () => {
-        if (verificarCamposCadastroPreenchidos()) {
-          btnTermo.removeAttribute("disabled");
-        } else {
-          btnTermo.setAttribute("disabled", true);
-        }
+        const tudoPreenchido = verificarCamposCadastroPreenchidos();
+        btnTermo.disabled = !tudoPreenchido;
+        if (!aceiteTermos) btnSalvar.style.display = "none"; // reforça segurança visual
       });
     });
   }
 
   ativarVerificacaoCamposCadastro();
 
-  // 📜 Botão para abrir o termo
+  // 📜 Recebe o aceite do termo
+  window.api?.ouvirTermoAceito?.(() => {
+    console.log("📜 Termo aceito via IPC.");
+    aceiteTermos = true;
+
+    // Atualiza UI
+    btnTermo.style.display = "none";
+    msgAceite.style.display = "block";
+    btnSalvar.style.display = "block";
+
+    console.log("✅ Estado visual atualizado após aceite.");
+  });
+
+  // 📄 Abre a janela do termo
   btnTermo.addEventListener("click", async () => {
     try {
-      const resultado = await window.api.abrirJanelaTermo();
-
-      // 🟢 Ao aceitar o termo na outra janela
-      window.api?.ouvirTermoAceito?.(() => {
-        aceiteTermos = true; // atualiza variável global
-        btnTermo.style.display = "none";
-        msgAceite.style.display = "block";
-        btnSalvar.style.display = "block";
-      });
+      console.log("📄 Abrindo janela do termo...");
+      await window.api.abrirJanelaTermo();
     } catch (erro) {
       console.error("❌ Erro ao abrir termo:", erro);
     }
   });
 
-  // 📩 Evento de envio do formulário
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  btnSalvar.addEventListener("click", async () => {
+    console.log("📨 Clique em Salvar Cadastro detectado.");
 
-    const email = document.getElementById("email").value.trim();
-    const senha = senhaInput.value.trim();
-    const confirmarSenha = confirmarSenhaInput.value.trim();
-
-    if (!aceiteTermos) {
-      exibirAviso({
-        tipo: "⚠️ Aviso",
-        mensagem: "Você deve aceitar o termo de uso antes de se cadastrar."
+    if (!verificarCamposCadastroPreenchidos()) {
+      return exibirAviso({
+        tipo: "⚠️ Atenção",
+        mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro."
       });
-      return;
     }
 
-    if (senha !== confirmarSenha) {
-      exibirAviso({
-        tipo: "❌ Erro",
-        mensagem: "As senhas não coincidem."
+    if (!aceiteTermos) {
+      return exibirAviso({
+        tipo: "⚠️ Atenção",
+        mensagem: "Você precisa aceitar os termos antes de salvar o cadastro."
       });
-      return;
+    }
+
+    const email = document.getElementById("email").value;
+    const senha = senhaInput.value;
+    const confirmarsenha = confirmarSenhaInput.value;
+
+    if (senha !== confirmarsenha) {
+      return exibirAviso({
+        tipo: "⚠️ Atenção",
+        mensagem: "As senhas não coincidem. Verifique e tente novamente."
+      });
     }
 
     const emailExiste = await window.api.verificarEmailExistente(email);
     if (emailExiste) {
-      exibirAviso({
+      return exibirAviso({
         tipo: "❌ Erro",
         mensagem: "O e-mail informado já está em uso. Por favor, tente outro."
       });
-      return;
-    }
-
-    if (!verificarCamposCadastroPreenchidos()) {
-      await exibirAviso({
-        tipo: "⚠️ Atenção",
-        mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro."
-      });
-      return;
     }
 
     const dadosUsuario = {
@@ -141,10 +137,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       telefone: document.getElementById("telefone").value,
       codigoTemas: document.getElementById("codigoTemas").value,
       idioma: idiomaEl.value,
-      aceiteTermos: true
+      aceiteTermos: true,
+      emailHash: window.nativo.gerarEmailHash(email)
     };
 
-    dadosUsuario.emailHash = window.nativo.gerarEmailHash(dadosUsuario.email);
     console.log("📤 Enviando dados:", dadosUsuario);
 
     const resultado = await window.api.salvarCadastro(dadosUsuario);
@@ -156,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           window.location.href = "login.html";
         }
       });
-      form.reset();
+      // form.reset(); // ❌ Removido para não limpar dados em caso de teste
     } else {
       exibirAviso({
         tipo: "❌ Erro",

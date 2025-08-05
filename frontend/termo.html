@@ -1,3 +1,5 @@
+#/frontend/termo.html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,82 +11,101 @@
 <body>
   <div class="card termo-card">
     <h2>Termo de Uso</h2>
-    <div id="conteudoTermo"></div>
-  
+
+    <div id="conteudoTermo" class="termo-markdown">
+      <!-- Conteúdo será inserido aqui via marked -->
+    </div>
+
     <div class="termo-checkbox-container">
       <label for="checkboxAceite" class="termo-checkbox-label">
         <input type="checkbox" id="checkboxAceite" />
         ✅ Li e concordo com os Termos de Uso e com a Política de Tratamento de Dados (LGPD)
       </label>
-  
-      <button id="btnAceitar" disabled class="btn-principal">Aceitar e Prosseguir</button>
+
+      <button id="btnAceitar" class="btn-principal" title="Marque o checkbox para prosseguir">
+        Aceitar e Prosseguir
+      </button>
     </div>
   </div>
-  
 
-  <!-- Carrega o parser Markdown -->
+  <!-- 🔔 Modal padronizado -->
+  <div id="modalAviso" class="modal">
+    <div class="modal-conteudo">
+      <p>⚠️ Você precisa aceitar os termos antes de continuar.</p>
+      <button id="btnFecharModal" class="btn-principal">Fechar</button>
+    </div>
+  </div>
+
+  <!-- 📦 Biblioteca de parsing Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  <!-- 🎯 Lógica de controle da página -->
   <script type="module">
+    console.log("🚀 Iniciando termo.html");
+
     const checkbox = document.getElementById("checkboxAceite");
     const botao = document.getElementById("btnAceitar");
     const conteudoEl = document.getElementById("conteudoTermo");
-  
-    const idioma = localStorage.getItem("idioma") || "pt-BR";
-  
-    // 🔄 Carrega o conteúdo do termo a partir do backend
+    const modal = document.getElementById("modalAviso");
+    const btnFecharModal = document.getElementById("btnFecharModal");
+    const idioma = (localStorage.getItem("idioma") || "pt-BR").replace("_", "-");
+
+    // 📄 Carrega e exibe o conteúdo do termo
     async function carregarTermoMarkdown() {
       try {
+        console.log("🌐 Solicitando termo para idioma:", idioma);
         const markdown = await window.api.lerTermoMarkdown(idioma);
+
+        if (!markdown || typeof markdown !== "string") {
+          console.warn("⚠️ Termo vazio ou inválido.");
+          conteudoEl.textContent = "Erro ao carregar o termo de uso.";
+          return;
+        }
+
+        console.log("🧾 Tamanho do termo carregado:", markdown.length);
         conteudoEl.innerHTML = marked.parse(markdown);
+        console.log("✅ Termo renderizado com sucesso.");
       } catch (erro) {
-        console.error("Erro ao carregar termo:", erro);
-        conteudoEl.textContent = "Erro ao carregar o termo.";
+        console.error("❌ Erro ao carregar termo:", erro);
+        conteudoEl.textContent = "Erro ao carregar o termo de uso.";
       }
     }
-  
-    // 🟩 Habilita o botão quando o checkbox for marcado
-    checkbox.addEventListener("change", () => {
-      botao.disabled = !checkbox.checked;
-    });
-  
-    // ✅ Ao clicar, salva o aceite e fecha a janela
+
+    // 🎯 Clique no botão "Aceitar"
     botao.addEventListener("click", async () => {
+      console.log("🖱️ Clique detectado no botão 'Aceitar e Prosseguir'");
+
       if (!checkbox.checked) {
-        if (window.api?.exibirAviso) {
-          await window.api.exibirAviso({
-            tipo: "Aviso",
-            mensagem: "Você precisa aceitar os termos antes de continuar."
-          });
-        } else {
-          alert("Você precisa aceitar os termos antes de continuar.");
-        }
+        console.warn("⚠️ Tentativa de aceitar sem marcar o checkbox");
+        console.log("🔔 Exibindo modal de aviso...");
+        modal.classList.add("ativo");
         return;
       }
-  
+
       try {
-        // Salva no usuario.json
-        await window.api.salvarAceite?.();
-        console.log("✅ Aceite salvo");
-  
-        // Envia evento para o main.js (fechar janela + atualizar tela de cadastro)
-        window.api.enviarTermoAceito?.();
+        console.log("📤 Enviando evento de aceite via IPC...");
+        await window.api?.enviarTermoAceito?.();
+        console.log("✅ Evento enviado. A janela será fechada.");
+        window.close();
       } catch (erro) {
-        console.error("❌ Erro ao salvar aceite:", erro);
-        if (window.api?.exibirAviso) {
-          await window.api.exibirAviso({
-            tipo: "Erro",
-            mensagem: "Não foi possível salvar o aceite. Tente novamente."
-          });
-        } else {
-          alert("Erro ao salvar aceite.");
-        }
+        console.error("❌ Erro ao enviar evento de aceite:", erro);
+        alert("Erro ao continuar. Tente novamente.");
       }
     });
-  
+
+    // ❌ Fecha o modal de aviso
+    btnFecharModal.addEventListener("click", () => {
+      console.log("🧩 Botão de fechar modal clicado.");
+      modal.classList.remove("ativo");
+      console.log("❎ Modal de aviso fechado.");
+    });
+
+    // 🧼 Log final antes de sair
+    window.addEventListener("beforeunload", () => {
+      console.log("👋 Janela de termo será fechada.");
+    });
+
     carregarTermoMarkdown();
   </script>
-  
-
 </body>
 </html>
