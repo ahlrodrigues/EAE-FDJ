@@ -30,29 +30,6 @@ function registrarUsuarioHandler() {
     }
   });
 
-  // 💾 Salva o aceite dos termos
-  ipcMain.handle("salvar-aceite", async () => {
-    try {
-      let dados = {};
-      try {
-        const conteudo = await fs.promises.readFile(USUARIO_PATH, "utf8");
-        dados = JSON.parse(conteudo);
-      } catch (erroLeitura) {
-        console.warn("📂 usuario.json não encontrado. Criando novo...");
-      }
-
-      dados.aceiteTermos = true;
-
-      await fs.promises.writeFile(USUARIO_PATH, JSON.stringify(dados, null, 2), "utf8");
-      console.log("✅ Aceite salvo com sucesso em usuario.json");
-      return true;
-
-    } catch (erro) {
-      console.error("❌ Erro ao salvar aceite dos termos:", erro);
-      throw new Error("Falha ao salvar o aceite dos termos.");
-    }
-  });
-
   // 🔐 Retorna o nome descriptografado do aluno
   ipcMain.handle("obter-nome-aluno", async () => {
     try {

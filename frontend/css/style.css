@@ -358,6 +358,7 @@ form#formAnotacao textarea{
   align-items: center;
   flex-wrap: wrap;
 }
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -414,6 +415,10 @@ form#formAnotacao textarea{
 
 .modal-rodape {
   text-align: center;
+}
+
+.modal.ativo {
+  display: flex !important;
 }
 
 .btn-padrao {

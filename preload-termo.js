@@ -5,8 +5,14 @@ contextBridge.exposeInMainWorld("api", {
   lerTermoMarkdown: (idioma) => ipcRenderer.invoke("ler-termo-md", idioma),
 
   // ✅ Envia evento ao processo principal indicando que o termo foi aceito
-  enviarTermoAceito: () => ipcRenderer.send("termo-aceito"),
+  enviarTermoAceito: () => {
+    console.log("📤 [PRELOAD] Enviando evento 'termo-aceito' ao processo principal");
+    ipcRenderer.send("termo-aceito")
+  },
 
   // 🧪 Modal reutilizável, se necessário no termo
-  exibirAviso: (mensagem) => ipcRenderer.invoke("exibir-aviso", mensagem)
+  exibirAviso: (mensagem) => ipcRenderer.invoke("exibir-aviso", mensagem),
+
+  // Salva dados no usuario.json
+  salvarAceite: () => ipcRenderer.invoke("salvar-aceite")
 });

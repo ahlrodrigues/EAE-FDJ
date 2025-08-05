@@ -38,7 +38,7 @@ export function exibirAviso(input) {
       btnFechar.replaceWith(novoBtnFechar);
 
       novoBtnFechar.addEventListener("click", () => {
-        modal.style.display = "none";
+        modal.classList.remove("ativo");
         if (typeof aoFechar === "function") aoFechar();
         resolve();
       });
