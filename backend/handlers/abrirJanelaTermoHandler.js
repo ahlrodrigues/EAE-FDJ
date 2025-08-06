@@ -29,9 +29,20 @@ function registrarAbrirJanelaTermoHandler() {
       ipcMain.once("termo-aceito", () => {
         aceiteRegistrado = true;
         console.log("✅ Termo aceito pelo usuário.");
+      
+        const janelaPrincipal = BrowserWindow.getFocusedWindow(); // janela que abriu o termo
+      
+        if (janelaPrincipal && !janelaPrincipal.isDestroyed()) {
+          janelaPrincipal.webContents.send("termo-aceito");
+          console.log("📨 Evento 'termo-aceito' reenviado à janela principal.");
+        } else {
+          console.warn("⚠️ Janela principal não encontrada para receber 'termo-aceito'.");
+        }
+      
         resolve(true);
         termoWin.close();
       });
+      
 
       termoWin.on("closed", () => {
         if (!aceiteRegistrado) {

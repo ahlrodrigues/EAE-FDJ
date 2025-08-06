@@ -1,3 +1,5 @@
+// main.js
+
 // 📦 Módulos do Electron e Node.js
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
@@ -16,6 +18,7 @@ const usuarioPath = path.join(
   "usuario.json"
 );
 
+let janelaCadastro = null;
 
 // 🧩 Handlers de funcionalidades
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
@@ -35,11 +38,7 @@ const { registrarSalvarUsuarioHandler } = require("./backend/handlers/salvarUsua
 const { registrarSalvarAceiteHandler } = require("./backend/handlers/salvarAceiteHandler");
 const { registrarAbrirJanelaTermoHandler } = require("./backend/handlers/abrirJanelaTermoHandler");
 const { registrarLerTermoMarkdownHandler } = require("./backend/handlers/lerTermoMarkdownHandler");
-
-
-
-
-
+const { registrarTermoAceitoHandler } = require("./backend/handlers/registrarTermoAceitoHandler");
 
 
 // ✅ Registra todos os handlers de IPC
@@ -61,8 +60,7 @@ registrarSalvarUsuarioHandler();
 registrarSalvarAceiteHandler(ipcMain);
 registrarAbrirJanelaTermoHandler();
 registrarLerTermoMarkdownHandler(ipcMain);
-
-
+registrarTermoAceitoHandler(() => janelaCadastro);
 
 
 
@@ -81,7 +79,7 @@ console.log("📄 Preload existe?", fs.existsSync(preloadPath));
 function createWindow() {
   console.log("🪟 Criando janela principal...");
 
-  const mainWindow = new BrowserWindow({
+  janelaCadastro = new BrowserWindow({
     width: 1000,
     height: 800,
     icon: path.join(__dirname, "assets", "icon.png"),
@@ -95,15 +93,16 @@ function createWindow() {
 
   if (!fs.existsSync(usuarioPath)) {
     console.warn("📂 usuario.json não encontrado. Redirecionando para cadastro.");
-    mainWindow.loadFile("frontend/cadastro.html");
+    janelaCadastro.loadFile("frontend/cadastro.html");
   } else if (!isLoginAtivo()) {
     console.log("🔐 Sessão inativa. Abrindo login.");
-    mainWindow.loadFile("frontend/login.html");
+    janelaCadastro.loadFile("frontend/login.html");
   } else {
     console.log("✅ Sessão ativa. Abrindo app.");
-    mainWindow.loadFile("frontend/index.html");
+    janelaCadastro.loadFile("frontend/index.html");
   }
 }
+
 
 // 🚀 Inicialização do app
 app.whenReady().then(() => {
@@ -125,6 +124,4 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
-
 
