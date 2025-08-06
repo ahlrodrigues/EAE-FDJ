@@ -1,3 +1,6 @@
+/*====> frontend/css/style.css */
+
+
 /* Aplicar box-sizing global */
 * {
   box-sizing: border-box;
@@ -122,6 +125,13 @@ input {
   align-items: center;
   justify-content: center;
   height: auto;
+}
+
+#btnContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: center; /* ou 'flex-end' ou 'start' */
+  align-items: center;
 }
 
 .campo-senha {
@@ -648,16 +658,13 @@ th:nth-child(2)::after {
   border: none;
   border-radius: 6px;
   font-size: 1rem;
-  cursor: pointer;
+  cursor: pointer;  
+  background-color: #f44336;
+  color: white;
 }
 
 .btn-salvar {
   background-color: #4CAF50;
-  color: white;
-}
-
-.btn-cancelar {
-  background-color: #f44336;
   color: white;
 }
 
@@ -812,4 +819,11 @@ th:nth-child(2)::after {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#msgAceite {
+  color: green;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
 }

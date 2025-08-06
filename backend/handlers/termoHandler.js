@@ -1,4 +1,5 @@
-// ✅ BACKEND — continua no termoHandlers.js
+// ✅ /backend/handlers/termoHandler.js
+
 const path = require("path");
 const fs = require("fs/promises");
 

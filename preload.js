@@ -1,3 +1,5 @@
+//preload.js
+
 const { contextBridge, ipcRenderer } = require("electron");
 const fs = require("fs").promises;
 const fsSync = require("fs"); // síncrono para leitura rápida
@@ -128,6 +130,20 @@ function obterNomeAlunoDescriptografado() {
   return null;
 }
 
+ 
+let callbackTermoAceito = null;
+
+ipcRenderer.removeAllListeners("termo-aceito"); // Limpa se já existir
+ipcRenderer.on("termo-aceito", (_evento, _dados) => {
+  console.log("📥 [PRELOAD] Evento 'termo-aceito' recebido via ipcRenderer");
+  if (typeof callbackTermoAceito === "function") {
+    console.log("🧩 [PRELOAD] Executando callback registrado para termo-aceito");
+    callbackTermoAceito();
+  } else {
+    console.warn("⚠️ [PRELOAD] Nenhum callback registrado para termo-aceito.");
+  }
+});
+
 // ✅ API principal exposta para o renderer
 contextBridge.exposeInMainWorld("api", {
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
@@ -149,10 +165,20 @@ contextBridge.exposeInMainWorld("api", {
   obterNomeAlunoDescriptografado: () => ipcRenderer.invoke("obter-nome-aluno"),
   obterEmailHash: () => obterEmailHash(),
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
-  lerTermoMarkdown: (idioma) => ipcRenderer.invoke("ler-termo-md", idioma),
-  abrirJanelaTermo: () => ipcRenderer.invoke("abrir-janela-termo"),
   exibirAviso: (msg) => ipcRenderer.invoke("exibir-aviso", msg),
+  abrirJanelaTermo: () => ipcRenderer.invoke("abrir-janela-termo"),
 
+  
+
+    ouvirTermoAceito: (callback) => {
+      if (typeof callback === "function") {
+        callbackTermoAceito = callback;
+        console.log("👂 [PRELOAD] Callback termo-aceito registrado com sucesso.");
+      } else {
+        console.warn("⚠️ [PRELOAD] Callback fornecido para termo-aceito não é uma função.");
+      }
+    },
+ 
 
   salvarArquivo: async (caminho, conteudo) => {
     try {
