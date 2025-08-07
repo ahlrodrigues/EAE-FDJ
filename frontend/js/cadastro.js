@@ -20,6 +20,116 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   return false;
 }
 
+function validarCampoIndividual(campo) {
+  const valor = campo.value.trim();
+  const id = campo.id;
+  let mensagemErro = "";
+
+  // Evita múltiplas mensagens para o mesmo campo
+  const erroExistente = document.getElementById(`erro-${id}`);
+  if (erroExistente) {
+    erroExistente.remove();
+  }
+
+  // Regras de validação específicas
+  switch (id) {
+    case "email":
+      if (!/\S+@\S+\.\S+/.test(valor)) {
+        mensagemErro = "E-mail inválido.";
+      }
+      break;
+
+    case "telefone":
+      if (valor.length < 8) {
+        mensagemErro = "Telefone muito curto.";
+      }
+      break;
+
+    case "senha":
+    case "confirmarsenha":
+      const senha = document.getElementById("senha")?.value.trim();
+      const confirmar = document.getElementById("confirmarsenha")?.value.trim();
+      if (senha && confirmar && senha !== confirmar) {
+        mensagemErro = "Senhas não coincidem.";
+        // Aplica a mensagem nos dois campos
+        aplicarErro(document.getElementById("senha"), mensagemErro);
+        aplicarErro(document.getElementById("confirmarsenha"), mensagemErro);
+        atualizarEstadoBotaoSalvar();
+        return;
+      } else {
+        removerErro(document.getElementById("senha"));
+        removerErro(document.getElementById("confirmarsenha"));
+      }
+      break;
+
+    default:
+      if (!valor) {
+        mensagemErro = "Campo obrigatório.";
+      }
+  }
+
+  if (mensagemErro) {
+    aplicarErro(campo, mensagemErro);
+  } else {
+    removerErro(campo);
+  }
+
+  atualizarEstadoBotaoSalvar();
+}
+
+
+function verificarCamposCadastroPreenchidos() {
+  const camposObrigatorios = [
+    "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
+    "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
+  ];
+  return camposObrigatorios.every((id) => {
+    const el = document.getElementById(id);
+    return el && el.value.trim() !== "";
+  });
+}
+
+function camposPossuemErro() {
+  return document.querySelectorAll(".invalido").length > 0;
+}
+
+function ativarValidacaoAoDigitar() {
+  const campos = document.querySelectorAll("input, textarea, select");
+
+  campos.forEach((campo) => {
+    campo.addEventListener("input", () => {
+      validarCampoIndividual(campo);
+      atualizarEstadoBotaoTermo();
+    });
+    campo.addEventListener("blur", () => validarCampoIndividual(campo));
+  });
+}
+
+function atualizarEstadoBotaoTermo() {
+  const tudoPreenchido = verificarCamposCadastroPreenchidos();
+  const senha = document.getElementById("senha")?.value.trim();
+  const codigoTemas = document.getElementById("codigoTemas")?.value.trim();
+  const btnTermo = document.getElementById("btnTermo");
+
+  if (tudoPreenchido && senha && codigoTemas) {
+    btnTermo.style.display = "inline-block";
+    btnTermo.disabled = false;
+    console.log("✅ Campos obrigatórios preenchidos + senha + codigoTemas → Botão termo exibido.");
+  } else {
+    btnTermo.style.display = "none";
+    btnTermo.disabled = true;
+    console.log("⛔ Campos incompletos → Botão termo oculto.");
+  }
+}
+
+function atualizarEstadoBotaoSalvar() {
+  const btnSalvar = document.getElementById("btnSalvar");
+  if (!btnSalvar) return;
+  const temErro = camposPossuemErro();
+  btnSalvar.disabled = temErro;
+  console.log(`🔄 Botão Salvar ${temErro ? "desativado" : "ativado"} devido a erros.`);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("⚙️ DOM totalmente carregado.");
   await componentesCarregados;
@@ -31,110 +141,63 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("✅ Componentes carregados.");
 
-  const form = document.getElementById("cadastroForm");
-  const senhaInput = document.getElementById("senha");
-  const confirmarSenhaInput = document.getElementById("confirmarsenha");
   const idiomaEl = document.getElementById("idioma");
   const bandeiraEl = document.getElementById("bandeiraIdioma");
-
   const btnTermo = document.getElementById("btnTermo");
   const btnSalvar = document.getElementById("btnSalvar");
   const msgAceite = document.getElementById("msgAceite");
 
-  // Garante estado inicial oculto
   btnTermo.style.display = "none";
   btnSalvar.style.display = "none";
   msgAceite.style.display = "none";
 
-  // Atualiza bandeira
   idiomaEl.addEventListener("change", () => {
     const flagCode = idiomaEl.selectedOptions[0].dataset.flag;
     bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
   });
 
-  function verificarCamposCadastroPreenchidos() {
-    const camposObrigatorios = [
-      "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
-      "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
-    ];
-    return camposObrigatorios.every((id) => {
-      const el = document.getElementById(id);
-      return el && el.value.trim() !== "";
-    });
-  }
-
-  function ativarVerificacaoCamposCadastro() {
-    const campos = document.querySelectorAll("input, textarea, select");
-
-    campos.forEach((campo) => {
-      campo.addEventListener("input", () => {
-        const tudoPreenchido = verificarCamposCadastroPreenchidos();
-        const senha = document.getElementById("senha")?.value.trim();
-        const codigoTemas = document.getElementById("codigoTemas")?.value.trim();
-
-        if (tudoPreenchido && senha && codigoTemas) {
-          btnTermo.style.display = "inline-block";
-          btnTermo.disabled = false;
-          console.log("✅ Campos obrigatórios preenchidos + senha + codigoTemas → Botão termo exibido.");
-        } else {
-          btnTermo.style.display = "none";
-          btnTermo.disabled = true;
-          console.log("⛔ Campos incompletos → Botão termo oculto.");
-        }
-      });
-    });
-  }
-
-  ativarVerificacaoCamposCadastro();
-
-  const tudoPreenchido = verificarCamposCadastroPreenchidos();
-  const senha = document.getElementById("senha")?.value.trim();
-  const codigoTemas = document.getElementById("codigoTemas")?.value.trim();
-
-  btnTermo.style.display = (tudoPreenchido && senha && codigoTemas) ? "inline-block" : "none";
-  btnTermo.disabled = !(tudoPreenchido && senha && codigoTemas);
+  ativarValidacaoAoDigitar();
+  atualizarEstadoBotaoTermo();
 
   if (typeof window.api?.ouvirTermoAceito === "function") {
-    console.log("👂 [CADASTRO] Registrando ouvinte 'termo-aceito' via window.api");
-  
+    console.log("👂 Registrando ouvinte 'termo-aceito' via window.api");
     window.api.ouvirTermoAceito(async () => {
-      console.log("📥 [CADASTRO] Callback de 'termo-aceito' acionado!");
-      await aplicarEstadoTermoAceito(); // garante exibição do botão e mensagem
+      console.log("📥 Evento 'termo-aceito' recebido no cadastro.js");
+      await aplicarEstadoTermoAceito();
     });
-  
   } else {
-    console.warn("❌ [CADASTRO] window.api.ouvirTermoAceito não disponível.");
+    console.warn("❌ window.api.ouvirTermoAceito não é uma função válida.");
   }
 
   async function aplicarEstadoTermoAceito() {
     aceiteTermos = true;
-  
+
     await esperarElemento("#btnSalvar");
     await esperarElemento("#msgAceite");
     await esperarElemento("#btnTermo");
-  
+
     const btnTermo = document.getElementById("btnTermo");
     const btnSalvar = document.getElementById("btnSalvar");
     const msgAceite = document.getElementById("msgAceite");
-  
+
     if (btnTermo) {
       btnTermo.style.display = "none";
       btnTermo.disabled = true;
       console.log("⛔ Botão 'Abrir Termo' ocultado.");
     }
-  
+
     if (btnSalvar) {
       btnSalvar.style.display = "inline-block";
-      btnSalvar.disabled = false;
+      btnSalvar.disabled = camposPossuemErro();
       console.log("✅ Botão 'Salvar Cadastro' exibido.");
     }
-  
+
     if (msgAceite) {
       msgAceite.style.display = "block";
       console.log("✅ Mensagem 'Termo aceito' exibida.");
     }
   }
-  
+
   btnTermo.addEventListener("click", async () => {
     try {
       console.log("📄 Abrindo janela do termo...");
@@ -161,17 +224,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    const email = document.getElementById("email").value;
-    const senha = senhaInput.value;
-    const confirmarsenha = confirmarSenhaInput.value;
-
-    if (senha !== confirmarsenha) {
+    const senha = document.getElementById("senha").value.trim();
+    const confirmar = document.getElementById("confirmarsenha").value.trim();
+    if (senha !== confirmar) {
       return exibirAviso({
         tipo: "⚠️ Atenção",
         mensagem: "As senhas não coincidem. Verifique e tente novamente."
       });
     }
 
+    const email = document.getElementById("email").value.trim();
     const emailExiste = await window.api.verificarEmailExistente(email);
     if (emailExiste) {
       return exibirAviso({
@@ -215,3 +277,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+
+function aplicarErro(campo, mensagem) {
+  if (!campo) return;
+
+  campo.classList.add("invalido");
+
+  const divErro = document.createElement("div");
+  divErro.className = "erro-campo";
+  divErro.id = `erro-${campo.id}`;
+  divErro.textContent = mensagem;
+
+  // Insere a mensagem antes do campo
+  const parent = campo.parentElement;
+  if (parent) {
+    parent.insertBefore(divErro, campo);
+  }
+}
+
+function removerErro(campo) {
+  if (!campo) return;
+
+  campo.classList.remove("invalido");
+
+  const erroEl = document.getElementById(`erro-${campo.id}`);
+  if (erroEl) {
+    erroEl.remove();
+  }
+}
