@@ -827,3 +827,25 @@ th:nth-child(2)::after {
   font-size: 1rem;
   font-weight: bold;
 }
+
+.erro-campo {
+  color: red;
+  font-size: 0.8rem;
+  display: none;
+}
+
+input.invalido {
+  border: 1px solid red;
+}
+
+.invalido {
+  border: 2px solid red !important;
+}
+
+.aviso-obrigatorio {
+  font-size: 1rem;
+  color: red;
+  margin-bottom: 4px;
+  font-style: italic;
+
+}

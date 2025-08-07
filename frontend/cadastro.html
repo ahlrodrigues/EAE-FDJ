@@ -17,32 +17,52 @@
 
   <h2>Cadastro de Usuário</h2>
   <div class="card">
+    <div class="aviso-obrigatorio">⚠️ Todos os campos são obrigatórios.</div></br>
     <form id="cadastroForm">
-      <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
-      <input type="number" id="numeroTurma" placeholder="Número da turma" required />
-      <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
-      <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
-      <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
-      <input type="text" id="aluno" placeholder="Nome do aluno" required />
-      <input type="email" id="email" placeholder="E-mail do aluno" required />
-      <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
 
-      <div class="campo-senha">
-        <input type="password" id="senha" placeholder="Senha" required />
-        <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
-      </div>
-
-      <div id="forcaSenha" class="mensagem-sucesso"></div>
-      <div id="senhaRegrasContainer"></div>
-
-      <div class="campo-senha">
-        <input type="password" id="confirmarsenha" placeholder="Confirmar senha" required />
-        <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
-      </div>
-
-      <!-- Campo codigoTemas com label -->
-      <label for="codigoTemas">Código da planilha</label>
-      <input type="text" id="codigoTemas" placeholder="Código da planilha" required />
+  <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
+  <span id="erro-casaEspírita" class="erro-campo"></span>
+  
+  <input type="number" id="numeroTurma" placeholder="Número da turma" required />
+  <span id="erro-numeroTurma" class="erro-campo"></span>
+  
+  <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
+  <span id="erro-dirigente" class="erro-campo"></span>
+  
+  <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
+  <span id="erro-emailDirigente" class="erro-campo"></span>
+  
+  <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
+  <span id="erro-secretarios" class="erro-campo"></span>
+  
+  <input type="text" id="aluno" placeholder="Nome do aluno" required />
+  <span id="erro-aluno" class="erro-campo"></span>
+  
+  <input type="email" id="email" placeholder="E-mail do aluno" required />
+  <span id="erro-email" class="erro-campo"></span>
+  
+  <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
+  <span id="erro-telefone" class="erro-campo"></span>
+  
+  <div class="campo-senha">
+    <input type="password" id="senha" placeholder="Senha" required />
+    <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
+  </div>
+  <span id="erro-senha" class="erro-campo"></span>
+  
+  <div id="forcaSenha" class="mensagem-sucesso"></div>
+  <div id="senhaRegrasContainer"></div>
+  
+  <div class="campo-senha">
+    <input type="password" id="confirmarsenha" placeholder="Confirmar senha" required />
+    <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
+  </div>
+  <span id="erro-confirmarsenha" class="erro-campo"></span>
+  
+  <label for="codigoTemas">Código da planilha</label>
+  <input type="text" id="codigoTemas" placeholder="Código da planilha" required />
+  <span id="erro-codigoTemas" class="erro-campo"></span>
+  
 
       <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
         <label for="idioma">Idioma:</label>
