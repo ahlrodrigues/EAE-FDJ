@@ -1,12 +1,11 @@
 // === js/cadastro.js ===
 
-console.log("🔍 window.api:", window.api);
-console.log("🔍 window.api.ouvirTermoAceito:", window.api?.ouvirTermoAceito);
+console.log("\u{1F50D} window.api:", window.api);
+console.log("\u{1F50D} window.api.ouvirTermoAceito:", window.api?.ouvirTermoAceito);
 
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
-import { inicializarRegrasSenha } from "./senhaRegra.js";
-import { inicializarForcaSenha } from "./forcaSenha.js";
+import { inicializarValidacaoSenha } from "./senhaRegra.js";
 import { inicializarBotaoVerSenha } from "./verSenha.js";
 
 let aceiteTermos = false;
@@ -16,7 +15,7 @@ async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
     if (document.querySelector(seletor)) return true;
     await new Promise(resolve => setTimeout(resolve, intervalo));
   }
-  console.warn(`⚠️ Elemento ${seletor} não encontrado após ${tentativas} tentativas.`);
+  console.warn(`\u26A0\uFE0F Elemento ${seletor} n\u00E3o encontrado ap\u00F3s ${tentativas} tentativas.`);
   return false;
 }
 
@@ -25,33 +24,22 @@ function validarCampoIndividual(campo) {
   const id = campo.id;
   let mensagemErro = "";
 
-  // Evita múltiplas mensagens para o mesmo campo
   const erroExistente = document.getElementById(`erro-${id}`);
-  if (erroExistente) {
-    erroExistente.remove();
-  }
+  if (erroExistente) erroExistente.remove();
 
-  // Regras de validação específicas
   switch (id) {
     case "email":
-      if (!/\S+@\S+\.\S+/.test(valor)) {
-        mensagemErro = "E-mail inválido.";
-      }
+      if (!/\S+@\S+\.\S+/.test(valor)) mensagemErro = "E-mail inv\u00E1lido.";
       break;
-
     case "telefone":
-      if (valor.length < 8) {
-        mensagemErro = "Telefone muito curto.";
-      }
+      if (valor.length < 8) mensagemErro = "Telefone muito curto.";
       break;
-
     case "senha":
     case "confirmarsenha":
       const senha = document.getElementById("senha")?.value.trim();
       const confirmar = document.getElementById("confirmarsenha")?.value.trim();
       if (senha && confirmar && senha !== confirmar) {
-        mensagemErro = "Senhas não coincidem.";
-        // Aplica a mensagem nos dois campos
+        mensagemErro = "Senhas n\u00E3o coincidem.";
         aplicarErro(document.getElementById("senha"), mensagemErro);
         aplicarErro(document.getElementById("confirmarsenha"), mensagemErro);
         atualizarEstadoBotaoSalvar();
@@ -61,29 +49,40 @@ function validarCampoIndividual(campo) {
         removerErro(document.getElementById("confirmarsenha"));
       }
       break;
-
     default:
-      if (!valor) {
-        mensagemErro = "Campo obrigatório.";
-      }
+      if (!valor) mensagemErro = "Campo obrigat\u00F3rio.";
   }
 
-  if (mensagemErro) {
-    aplicarErro(campo, mensagemErro);
-  } else {
-    removerErro(campo);
-  }
+  if (mensagemErro) aplicarErro(campo, mensagemErro);
+  else removerErro(campo);
 
   atualizarEstadoBotaoSalvar();
 }
 
+function aplicarErro(campo, mensagem) {
+  if (!campo) return;
+  campo.classList.add("invalido");
+  const divErro = document.createElement("div");
+  divErro.className = "erro-campo";
+  divErro.id = `erro-${campo.id}`;
+  divErro.textContent = mensagem;
+  const parent = campo.parentElement;
+  if (parent) parent.insertBefore(divErro, campo);
+}
+
+function removerErro(campo) {
+  if (!campo) return;
+  campo.classList.remove("invalido");
+  const erroEl = document.getElementById(`erro-${campo.id}`);
+  if (erroEl) erroEl.remove();
+}
 
 function verificarCamposCadastroPreenchidos() {
   const camposObrigatorios = [
-    "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
+    "casaEsp\u00EDrita", "numeroTurma", "dirigente", "emailDirigente",
     "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
   ];
-  return camposObrigatorios.every((id) => {
+  return camposObrigatorios.every(id => {
     const el = document.getElementById(id);
     return el && el.value.trim() !== "";
   });
@@ -95,8 +94,7 @@ function camposPossuemErro() {
 
 function ativarValidacaoAoDigitar() {
   const campos = document.querySelectorAll("input, textarea, select");
-
-  campos.forEach((campo) => {
+  campos.forEach(campo => {
     campo.addEventListener("input", () => {
       validarCampoIndividual(campo);
       atualizarEstadoBotaoTermo();
@@ -114,11 +112,11 @@ function atualizarEstadoBotaoTermo() {
   if (tudoPreenchido && senha && codigoTemas) {
     btnTermo.style.display = "inline-block";
     btnTermo.disabled = false;
-    console.log("✅ Campos obrigatórios preenchidos + senha + codigoTemas → Botão termo exibido.");
+    console.log("\u2705 Campos obrigat\u00F3rios preenchidos + senha + codigoTemas → Bot\u00E3o termo exibido.");
   } else {
     btnTermo.style.display = "none";
     btnTermo.disabled = true;
-    console.log("⛔ Campos incompletos → Botão termo oculto.");
+    console.log("⛔ Campos incompletos → Bot\u00E3o termo oculto.");
   }
 }
 
@@ -127,7 +125,7 @@ function atualizarEstadoBotaoSalvar() {
   if (!btnSalvar) return;
   const temErro = camposPossuemErro();
   btnSalvar.disabled = temErro;
-  console.log(`🔄 Botão Salvar ${temErro ? "desativado" : "ativado"} devido a erros.`);
+  console.log(`\u{1F504} Bot\u00E3o Salvar ${temErro ? "desativado" : "ativado"} devido a erros.`);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -135,11 +133,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
   await esperarElemento("#cadastroForm");
 
-  inicializarRegrasSenha();
-  inicializarForcaSenha();
+  inicializarValidacaoSenha();
   inicializarBotaoVerSenha();
 
-  console.log("✅ Componentes carregados.");
+  console.log("✅ Componentes carregados e senha pronta para valida\u00E7\u00E3o.");
 
   const idiomaEl = document.getElementById("idioma");
   const bandeiraEl = document.getElementById("bandeiraIdioma");
@@ -160,42 +157,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   atualizarEstadoBotaoTermo();
 
   if (typeof window.api?.ouvirTermoAceito === "function") {
-    console.log("👂 Registrando ouvinte 'termo-aceito' via window.api");
+    console.log("\u{1F442} Registrando ouvinte 'termo-aceito'");
     window.api.ouvirTermoAceito(async () => {
-      console.log("📥 Evento 'termo-aceito' recebido no cadastro.js");
+      console.log("\u{1F4E5} Evento 'termo-aceito' recebido");
       await aplicarEstadoTermoAceito();
     });
-  } else {
-    console.warn("❌ window.api.ouvirTermoAceito não é uma função válida.");
   }
 
   async function aplicarEstadoTermoAceito() {
     aceiteTermos = true;
-
     await esperarElemento("#btnSalvar");
     await esperarElemento("#msgAceite");
     await esperarElemento("#btnTermo");
 
-    const btnTermo = document.getElementById("btnTermo");
-    const btnSalvar = document.getElementById("btnSalvar");
-    const msgAceite = document.getElementById("msgAceite");
-
-    if (btnTermo) {
-      btnTermo.style.display = "none";
-      btnTermo.disabled = true;
-      console.log("⛔ Botão 'Abrir Termo' ocultado.");
-    }
-
-    if (btnSalvar) {
-      btnSalvar.style.display = "inline-block";
-      btnSalvar.disabled = camposPossuemErro();
-      console.log("✅ Botão 'Salvar Cadastro' exibido.");
-    }
-
-    if (msgAceite) {
-      msgAceite.style.display = "block";
-      console.log("✅ Mensagem 'Termo aceito' exibida.");
-    }
+    btnTermo.style.display = "none";
+    btnTermo.disabled = true;
+    btnSalvar.style.display = "inline-block";
+    btnSalvar.disabled = camposPossuemErro();
+    msgAceite.style.display = "block";
   }
 
   btnTermo.addEventListener("click", async () => {
@@ -211,36 +190,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("📨 Clique em Salvar Cadastro detectado.");
 
     if (!verificarCamposCadastroPreenchidos()) {
-      return exibirAviso({
-        tipo: "⚠️ Atenção",
-        mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro."
-      });
+      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro." });
     }
 
     if (!aceiteTermos) {
-      return exibirAviso({
-        tipo: "⚠️ Atenção",
-        mensagem: "Você precisa aceitar os termos antes de salvar o cadastro."
-      });
+      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "Você precisa aceitar os termos antes de salvar o cadastro." });
     }
 
     const senha = document.getElementById("senha").value.trim();
     const confirmar = document.getElementById("confirmarsenha").value.trim();
     if (senha !== confirmar) {
-      return exibirAviso({
-        tipo: "⚠️ Atenção",
-        mensagem: "As senhas não coincidem. Verifique e tente novamente."
-      });
+      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "As senhas não coincidem. Verifique e tente novamente." });
     }
 
     const email = document.getElementById("email").value.trim();
     const emailExiste = await window.api.verificarEmailExistente(email);
     if (emailExiste) {
-      return exibirAviso({
-        tipo: "❌ Erro",
-        mensagem: "O e-mail informado já está em uso. Por favor, tente outro."
-      });
+      return exibirAviso({ tipo: "❌ Erro", mensagem: "O e-mail informado já está em uso. Por favor, tente outro." });
     }
+
+    const idiomaEl = document.getElementById("idioma");
 
     const dadosUsuario = {
       email,
@@ -270,38 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
     } else {
-      exibirAviso({
-        tipo: "❌ Erro",
-        mensagem: resultado.erro || "Erro desconhecido ao salvar."
-      });
+      exibirAviso({ tipo: "❌ Erro", mensagem: resultado.erro || "Erro desconhecido ao salvar." });
     }
   });
 });
-
-function aplicarErro(campo, mensagem) {
-  if (!campo) return;
-
-  campo.classList.add("invalido");
-
-  const divErro = document.createElement("div");
-  divErro.className = "erro-campo";
-  divErro.id = `erro-${campo.id}`;
-  divErro.textContent = mensagem;
-
-  // Insere a mensagem antes do campo
-  const parent = campo.parentElement;
-  if (parent) {
-    parent.insertBefore(divErro, campo);
-  }
-}
-
-function removerErro(campo) {
-  if (!campo) return;
-
-  campo.classList.remove("invalido");
-
-  const erroEl = document.getElementById(`erro-${campo.id}`);
-  if (erroEl) {
-    erroEl.remove();
-  }
-}
