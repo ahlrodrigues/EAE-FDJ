@@ -282,6 +282,10 @@ contextBridge.exposeInMainWorld("api", {
 
   // ---- Caminho do usuário (mantido para compat)
   getUserConfigPath: () => getUserConfigPath(),
+
+
+  // ---- Bloueio por inatividade
+  bloquearApp: () => ipcRenderer.send("bloquear-app")
 });
 
 console.log("🧪 [PRELOAD] pronto. APIs expostas.");
