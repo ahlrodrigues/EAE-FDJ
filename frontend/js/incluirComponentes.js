@@ -41,5 +41,9 @@ export const componentesCarregados = (async function incluirComponentes() {
 
   // Modal de aviso (usado em todas as telas)
   await incluirHTML("modalAvisoContainer", "componentes/modalAviso.html");
+  
+  // Regras de senha
+  await incluirHTML("senhaRegrasContainer", "componentes/senhaRegras.html");
+
 
 })();
