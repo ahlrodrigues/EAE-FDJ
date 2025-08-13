@@ -621,42 +621,108 @@ th:nth-child(2)::after {
   background-color: #fff0f0; /* vermelho claro como destaque */
 }
 
+/* =========================
+   Modal do Tema (70% tela)
+   ========================= */
+
+/* Overlay de fundo do modal do tema */
 .modal-tema {
-  display: none; /* Oculto inicialmente */
+  /* inicia oculto; será exibido via JS (inline style ou classe .ativo) */
+  display: none;
+
   position: fixed;
+  inset: 0; /* top/left/right/bottom = 0 (100vw x 100vh) */
   z-index: 9999;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro */
-  display: flex;
+  background-color: rgba(0, 0, 0, 0.6);
+
+  /* centralização preparada (ativa quando exibido) */
   justify-content: center;
   align-items: center;
+
   padding: 1rem;
 }
 
+/* Exibir modal ao adicionar a classe .ativo (sem remover nenhuma classe existente) */
+.modal-tema.ativo {
+  display: flex !important;
+}
+
+/* Janela do modal: 70% da viewport + layout flex em coluna */
 .modal-conteudo {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  padding: 2rem;
-  text-align: center;
-  width: 90%;
+  text-align: left;
+
+  /* 🔹 Tamanho desejado (~70% da tela) */
+  width: 70vw;
+  height: 70vh;
+  max-width: 70vw;
+  max-height: 70vh;
+
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;  /* permite que o conteúdo (form/textarea) cresça */
+  overflow: auto;          /* cria rolagem geral quando necessário */
+  gap: .75rem;
 }
 
-.modal-texto {
+/* Cabeçalho “gruda” no topo quando rolar */
+.cabecalho-modal-tema {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  padding-bottom: .25rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 1.5rem; /* mantém seu espaçamento original */
+}
+
+/* Form ocupa o espaço restante da janela */
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;      /* ocupa todo o espaço disponível abaixo do cabeçalho */
+  min-height: 0;/* necessário para o flex-child (#modalTexto) poder encolher/crescer */
+}
+
+/* Label do textarea com respiro */
+.form-modal label[for="modalTexto"] {
+  margin: .25rem 0 .25rem;
+  font-weight: 600;
+}
+
+/* Textarea proporcional à janela: cresce e tem rolagem própria se preciso */
+#modalTexto {
+  width: 100%;
+  flex: 1;               /* ocupa o espaço restante do form */
+  min-height: 0;         /* permite encolher quando a janela diminuir */
+  padding: 1rem;
   font-size: 1rem;
-  margin-bottom: 1.5rem;
+  line-height: 1.45;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;      /* usuário pode ajustar, se quiser */
+  overflow: auto;        /* rolagem interna do texto */
 }
 
+/* Botões sempre visíveis no rodapé do modal (mesmo com rolagem) */
 .botoes-modal {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #fff;
+  padding-top: .5rem;
+  margin-top: .75rem;
+  border-top: 1px solid #eee;
+
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
+/* Botões (mantém seus estilos) */
 .btn-salvar,
 .btn-cancelar {
   padding: 0.5rem 1rem;
@@ -728,10 +794,6 @@ th:nth-child(2)::after {
   white-space: normal !important;
   overflow-wrap: break-word;
   max-width: 100%;
-}
-
-.cabecalho-modal-tema {
-  margin-bottom: 1.5rem;
 }
 
 .tema-numero {
@@ -853,4 +915,15 @@ input.invalido {
   margin-bottom: 4px;
   font-style: italic;
 
+}
+
+/* 🔎 Responsividade específica do modal do tema em telas pequenas */
+@media (max-width: 600px) {
+  .modal-conteudo {
+    width: 95vw;
+    height: 85vh;
+    max-width: 95vw;
+    max-height: 85vh;
+    padding: 1rem; /* um pouco menos de padding para ganhar área útil */
+  }
 }
