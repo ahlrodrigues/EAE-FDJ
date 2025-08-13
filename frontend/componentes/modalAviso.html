@@ -1,9 +1,10 @@
-
-<div id="modalAviso" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 9999;">
-  <div class="modal-conteudo" style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.3); max-width: 400px; width: 100%; text-align: center;">
-    <h3 id="modalAvisoTitulo" style="margin-top: 0; font-size: 1.2rem;">Aviso</h3>
-    <p id="modalAvisoTexto" style="margin: 1rem 0; font-size: 1rem;">Mensagem do aviso.</p>
-    <button id="modalAvisoFechar" class="btn-principal">Fechar</button>
+<!-- ✅ Modal genérico de aviso (reutilizável) -->
+ 
+<div id="modalAviso" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalAvisoTitulo" aria-describedby="modalAvisoTexto">
+  <div class="modal-conteudo">
+    <h3 id="modalAvisoTitulo">Aviso</h3>
+    <p id="modalAvisoTexto">Mensagem do aviso.</p>
+    <button id="modalAvisoFechar" class="btn-principal" type="button">Fechar</button>
   </div>
 </div>
+
