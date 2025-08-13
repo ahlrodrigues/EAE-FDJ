@@ -1,7 +1,13 @@
-/*====> frontend/css/style.css */
+/* ============================================
+   Caminho: frontend/css/style.css
+   Versão: 2025-08-13
+   Notas:
+   - Modal de AVISO abre/fecha por .ativo e se adapta ao conteúdo
+   - CSS do modal de TEMA isolado para não “vazar” para outros modais
+   - Removidas duplicidades (.card aparecia 2x)
+   ============================================ */
 
-
-/* Aplicar box-sizing global */
+/* ===== Base global ===== */
 * {
   box-sizing: border-box;
 }
@@ -34,6 +40,7 @@ h2 {
   max-width: 100px;
 }
 
+/* Cartão padrão */
 .card {
   background: white;
   padding: 2rem;
@@ -44,6 +51,7 @@ h2 {
   margin-top: 2rem;
 }
 
+/* Inputs */
 input {
   width: 100%;
   margin-bottom: 1rem;
@@ -53,6 +61,7 @@ input {
   border: 1px solid #ccc;
 }
 
+/* ===== Blog (cards) ===== */
 .blog-titulo {
   text-align: center;
   margin: 0.5rem 0 1rem;
@@ -63,7 +72,7 @@ input {
 .blog-descricao {
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  line-clamp: 2; /* ✅ Compatibilidade futura e navegadores que suportam sem prefixo */
+  line-clamp: 2; /* compat futura */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,13 +88,13 @@ input {
 .blog-link {
   color: #28a745;
   text-decoration: none;
-  
 }
 
 .blog-link:hover {
   text-decoration: underline;
 }
 
+/* ===== Botões e layouts gerais ===== */
 .botao-container {
   text-align: center;
   margin-top: 2rem;
@@ -109,6 +118,23 @@ input {
   background: #1e7e34;
 }
 
+#btnContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== Campo senha (ícone olho) ===== */
+.campo-senha {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.campo-senha input {
+  padding-right: 2.5rem;
+}
+
 .btn-olho {
   position: absolute;
   top: 0;
@@ -127,23 +153,7 @@ input {
   height: auto;
 }
 
-#btnContainer {
-  display: flex;
-  gap: 1rem;
-  justify-content: center; /* ou 'flex-end' ou 'start' */
-  align-items: center;
-}
-
-.campo-senha {
-  position: relative;
-  margin-bottom: 1rem;
-}
-
-.campo-senha input {
-  padding-right: 2.5rem;
-}
-
-/* Estilo padrão de cartão branco */
+/* ===== Cartões (login e geral) ===== */
 .card-login {
   background: white;
   border-radius: 12px;
@@ -164,18 +174,17 @@ input {
   box-sizing: border-box;
 }
 
-/* Centraliza os títulos */
+/* ===== Títulos e textos ===== */
 .card h3 {
   text-align: center;
 }
 
-/* Justifica os textos */
 #mensagem-dirigente,
 #mensagem-randomica {
   text-align: justify;
 }
 
-/* Vídeo responsivo e centralizado */
+/* ===== Vídeo e imagem responsivos ===== */
 #youtubeContainer iframe {
   width: 100%;
   max-width: 480px;
@@ -185,7 +194,6 @@ input {
   margin: 0 auto;
 }
 
-/* Imagem da revista proporcional e centralizada */
 #revistaTrevoContainer img {
   width: 100%;
   max-width: 480px;
@@ -195,14 +203,14 @@ input {
   margin: 0 auto;
 }
 
-
+/* ===== Links de login ===== */
 .login-links {
   margin-top: 1.5rem;
-  text-align: center; /* Alinha os links ao centro */
+  text-align: center;
 }
 
 .login-links a {
-  display: inline-block; /* Essencial para respeitar o text-align */
+  display: inline-block;
   margin: 0 1rem;
   text-decoration: none;
   font-weight: bold;
@@ -217,7 +225,7 @@ input {
   color: #1a4e4f;
 }
 
-
+/* ===== Regras e mensagens ===== */
 .regras-senha {
   font-size: 0.85rem;
   text-align: left;
@@ -241,7 +249,7 @@ input {
   font-size: 0.9rem;
 }
 
-/* Responsividade */
+/* ===== Responsividade geral ===== */
 @media (max-width: 480px) {
   .card {
     padding: 1rem;
@@ -251,8 +259,10 @@ input {
     font-size: 1rem;
   }
 }
+
+/* ===== Menu superior e submenu ===== */
 .menu-superior {
-  position: relative; /* permite que submenu absoluto funcione */
+  position: relative;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
@@ -262,8 +272,9 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible; /* importante para submenu não ser cortado */
+  overflow: visible;
 }
+
 .menu-superior ul {
   display: flex;
   list-style: none;
@@ -271,11 +282,12 @@ input {
   padding: 0;
   gap: 2rem;
 }
+
 .menu-superior li a {
   color: #333;
   text-decoration: none;
   text-align: center;
-  font-size: 1rem; /* ⬆️ texto maior */
+  font-size: 1rem;
   font-weight: 600;
   display: flex;
   flex-direction: column;
@@ -283,18 +295,21 @@ input {
   padding: 0.75rem;
   transition: color 0.2s, transform 0.2s;
 }
+
 .menu-superior li a span {
-  font-size: 1.3rem; /* ⬆️ ícone maior */
+  font-size: 1.3rem;
   margin-bottom: 0.2rem;
 }
+
 .menu-superior li a:hover {
   color: #1e7e34;
   transform: scale(1.10);
 }
+
 .menu-superior li a.ativo {
   color: #28a745;
   font-weight: bold;
-  background-color: #f0f8ff; /* azul clarinho */
+  background-color: #f0f8ff;
   border-radius: 8px;
 }
 
@@ -313,6 +328,35 @@ input {
   color: #1e7e34;
 }
 
+/* Submenu */
+.submenu-itens {
+  display: none !important;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 0;
+  z-index: 100;
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.submenu.open .submenu-itens {
+  display: block !important;
+}
+
+.menu-superior li.submenu {
+  position: relative;
+}
+
+.menu-superior li.submenu:hover .submenu-itens {
+  display: block !important;
+}
+
+/* ===== Form Anotação ===== */
 form#formAnotacao {
   display: flex;
   flex-direction: column;
@@ -335,6 +379,7 @@ form#formAnotacao textarea{
   box-sizing: border-box;
 }
 
+/* ===== Tabs ===== */
 .tabs {
   display: flex;
   gap: 10px;
@@ -361,93 +406,13 @@ form#formAnotacao textarea{
   display: block;
 }
 
+/* ===== Barras e DataTables ===== */
 .botoes-topo {
   margin-bottom: 1rem;
   display: flex;
   gap: 0.5rem;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal {
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: none;
-  height: 100vh;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  z-index: 1000;
-}
-
-.modal-container {
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 600px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
-
-.modal-cabecalho {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.modal-icone {
-  max-height: 60px;
-  margin-bottom: 0.5rem;
-}
-
-.modal-titulo {
-  font-size: 1.5rem;
-  margin: 0;
-  color: #333;
-}
-
-.modal-corpo {
-  text-align: left;
-  margin-bottom: 2rem;
-}
-
-.modal-rodape {
-  text-align: center;
-}
-
-.modal.ativo {
-  display: flex !important;
-}
-
-.btn-padrao {
-  background-color: #198754;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-padrao:hover {
-  background-color: #146c43;
 }
 
 .filtros-topo {
@@ -464,6 +429,7 @@ form#formAnotacao textarea{
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 .botoes-centro {
   display: flex;
   justify-content: center;
@@ -471,6 +437,7 @@ form#formAnotacao textarea{
   gap: 10px;
   margin-bottom: 20px;
 }
+
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_filter {
   display: flex;
@@ -482,6 +449,7 @@ form#formAnotacao textarea{
 .dataTables_wrapper .dataTables_filter {
   justify-content: flex-end;
 }
+
 .barra-controles {
   display: flex;
   justify-content: space-between;
@@ -499,6 +467,7 @@ form#formAnotacao textarea{
   align-items: center;
   gap: 1rem;
 }
+
 .barra-direita label {
   display: flex;
   align-items: center;
@@ -511,86 +480,11 @@ form#formAnotacao textarea{
   font-size: 14px;
 }
 
-.submenu-itens {
-  display: none !important;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 0.5rem 0;
-  z-index: 100;
-  min-width: 160px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-
-.submenu.open .submenu-itens {
-  display: block !important;
-}
-
-.menu-superior li.submenu {
-  position: relative; /* Necessário para alinhar o submenu corretamente */
-}
-.menu-superior li.submenu:hover .submenu-itens {
-  display: block !important;
-}
-.switch-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 28px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* Estilo do botão deslizante */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0;
-  right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 28px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 22px; width: 22px;
-  left: 3px; bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-/* Quando estiver ON */
-.switch input:checked + .slider {
-  background-color: #2196F3;
-}
-
-.switch input:checked + .slider:before {
-  transform: translateX(22px);
-}
-
 th:nth-child(2)::after {
   display: none !important;
 }
 
+/* ===== Avisos e estados ===== */
 .aviso-flutuante {
   position: fixed;
   top: 90px;
@@ -610,6 +504,7 @@ th:nth-child(2)::after {
   margin-bottom: 0.3rem;
 }
 
+/* ===== Títulos de tema ===== */
 #titulo-tema-dia {
   text-align: center;
   font-weight: bold;
@@ -618,127 +513,32 @@ th:nth-child(2)::after {
 }
 
 .tema-pendente {
-  background-color: #fff0f0; /* vermelho claro como destaque */
+  background-color: #fff0f0;
 }
 
-/* =========================
-   Modal do Tema (70% tela)
-   ========================= */
-
-/* Overlay de fundo do modal do tema */
-.modal-tema {
-  /* inicia oculto; será exibido via JS (inline style ou classe .ativo) */
+/* ===== Estados de validação ===== */
+.erro-campo {
+  color: red;
+  font-size: 0.8rem;
   display: none;
-
-  position: fixed;
-  inset: 0; /* top/left/right/bottom = 0 (100vw x 100vh) */
-  z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.6);
-
-  /* centralização preparada (ativa quando exibido) */
-  justify-content: center;
-  align-items: center;
-
-  padding: 1rem;
 }
 
-/* Exibir modal ao adicionar a classe .ativo (sem remover nenhuma classe existente) */
-.modal-tema.ativo {
-  display: flex !important;
+input.invalido {
+  border: 1px solid red;
 }
 
-/* Janela do modal: 70% da viewport + layout flex em coluna */
-.modal-conteudo {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  text-align: left;
-
-  /* 🔹 Tamanho desejado (~70% da tela) */
-  width: 70vw;
-  height: 70vh;
-  max-width: 70vw;
-  max-height: 70vh;
-
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;  /* permite que o conteúdo (form/textarea) cresça */
-  overflow: auto;          /* cria rolagem geral quando necessário */
-  gap: .75rem;
+.invalido {
+  border: 2px solid red !important;
 }
 
-/* Cabeçalho “gruda” no topo quando rolar */
-.cabecalho-modal-tema {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: #fff;
-  padding-bottom: .25rem;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 1.5rem; /* mantém seu espaçamento original */
-}
-
-/* Form ocupa o espaço restante da janela */
-.form-modal {
-  display: flex;
-  flex-direction: column;
-  flex: 1;      /* ocupa todo o espaço disponível abaixo do cabeçalho */
-  min-height: 0;/* necessário para o flex-child (#modalTexto) poder encolher/crescer */
-}
-
-/* Label do textarea com respiro */
-.form-modal label[for="modalTexto"] {
-  margin: .25rem 0 .25rem;
-  font-weight: 600;
-}
-
-/* Textarea proporcional à janela: cresce e tem rolagem própria se preciso */
-#modalTexto {
-  width: 100%;
-  flex: 1;               /* ocupa o espaço restante do form */
-  min-height: 0;         /* permite encolher quando a janela diminuir */
-  padding: 1rem;
+.aviso-obrigatorio {
   font-size: 1rem;
-  line-height: 1.45;
-  box-sizing: border-box;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  resize: vertical;      /* usuário pode ajustar, se quiser */
-  overflow: auto;        /* rolagem interna do texto */
+  color: red;
+  margin-bottom: 4px;
+  font-style: italic;
 }
 
-/* Botões sempre visíveis no rodapé do modal (mesmo com rolagem) */
-.botoes-modal {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  background: #fff;
-  padding-top: .5rem;
-  margin-top: .75rem;
-  border-top: 1px solid #eee;
-
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-/* Botões (mantém seus estilos) */
-.btn-salvar,
-.btn-cancelar {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;  
-  background-color: #f44336;
-  color: white;
-}
-
-.btn-salvar {
-  background-color: #4CAF50;
-  color: white;
-}
-
+/* ===== Grid de cartões de tema ===== */
 .grid-cartoes {
   display: flex;
   flex-direction: column;
@@ -754,7 +554,7 @@ th:nth-child(2)::after {
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 120px; /* ajustável conforme seu conteúdo */
+  min-height: 120px;
   position: relative;
 }
 
@@ -811,37 +611,11 @@ th:nth-child(2)::after {
 }
 
 .tema-preenchido {
-  background-color: #f0fff4; /* verde muito claro */
-  border-left: 6px solid #28a745; /* verde escuro */
+  background-color: #f0fff4;
+  border-left: 6px solid #28a745;
 }
 
-/* ✅ Estilos exclusivos para o termo de uso */
-.termo-checkbox-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.5rem;
-  margin-top: 2rem;
-  max-width: 600px;
-  width: 100%;
-  margin-inline: auto;
-}
-
-.termo-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-.termo-checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-/* ✅ Estilos exclusivos para o termo de uso */
+/* ===== Termo de uso ===== */
 .termo-checkbox-container {
   display: flex;
   flex-direction: column;
@@ -895,35 +669,153 @@ th:nth-child(2)::after {
   font-weight: bold;
 }
 
-.erro-campo {
-  color: red;
-  font-size: 0.8rem;
+/* ===== MODAIS (GENÉRICO + AVISO + TEMA) ===== */
+
+/* Genérico: overlay + container base */
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: none;               /* controlado por .ativo */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal.ativo {
+  display: flex !important;
+}
+
+/* Conteúdo base do modal (adaptável) */
+.modal .modal-conteudo {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  text-align: center;
+  width: auto;                 /* encolhe conforme conteúdo */
+  max-width: min(90vw, 520px); /* limite sensato p/ aviso */
+  max-height: 70vh;            /* rola internamente se crescer */
+  overflow-y: auto;
+}
+
+/* Modal de AVISO: personalizações extras (se quiser) */
+/*#modalAviso .modal-conteudo {
+  /* (opcional) estilos específicos do aviso */
+/*}
+
+/* Modal de TEMA (grande) */
+.modal-tema {
   display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
 }
 
-input.invalido {
-  border: 1px solid red;
+.modal-tema.ativo {
+  display: flex !important;
 }
 
-.invalido {
-  border: 2px solid red !important;
+/* Isolado para não afetar outros modais */
+.modal-tema .modal-conteudo {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: left;
+
+  /* 70% da viewport */
+  width: 70vw;
+  height: 70vh;
+  max-width: 70vw;
+  max-height: 70vh;
+
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  gap: .75rem;
 }
 
-.aviso-obrigatorio {
+/* Cabeçalho do modal de tema (grudado no topo) */
+.cabecalho-modal-tema {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  padding-bottom: .25rem;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 1.5rem;
+}
+
+/* Form ocupa o espaço restante no modal de tema */
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.form-modal label[for="modalTexto"] {
+  margin: .25rem 0 .25rem;
+  font-weight: 600;
+}
+
+/* Textarea proporcional no modal de tema */
+#modalTexto {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
   font-size: 1rem;
-  color: red;
-  margin-bottom: 4px;
-  font-style: italic;
-
+  line-height: 1.45;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  overflow: auto;
 }
 
-/* 🔎 Responsividade específica do modal do tema em telas pequenas */
+/* Botões fixos no rodapé do modal de tema */
+.botoes-modal {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: #fff;
+  padding-top: .5rem;
+  margin-top: .75rem;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-salvar,
+.btn-cancelar {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;  
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-salvar {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Responsividade específica do modal de tema */
 @media (max-width: 600px) {
-  .modal-conteudo {
+  .modal-tema .modal-conteudo {
     width: 95vw;
     height: 85vh;
     max-width: 95vw;
     max-height: 85vh;
-    padding: 1rem; /* um pouco menos de padding para ganhar área útil */
+    padding: 1rem;
   }
 }
