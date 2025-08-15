@@ -14,8 +14,10 @@
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.0",
     "electron": "^36.2.1",
+    "googleapis": "^156.0.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
+    "open": "^10.2.0",
     "zxcvbn": "^4.4.2"
   },
   "repository": {
