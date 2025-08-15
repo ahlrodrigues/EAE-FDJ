@@ -108,6 +108,7 @@ contextBridge.exposeInMainWorld("nativo", {
       throw e;
     }
   },
+  
 
   arquivoExiste: async (caminhoRelativo) => {
     const completo = path.join(os.homedir(), ".config", "escola-aprendizes", "config", caminhoRelativo);
@@ -182,7 +183,15 @@ contextBridge.exposeInMainWorld("api", {
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
 
   // ---- Criptografia (sempre via MAIN)
-  descriptografarComMestra: (texto) => ipcRenderer.invoke("descriptografar-com-mestra", texto),
+  descriptografarComMestra: async (texto) => {
+    try {
+      return await ipcRenderer.invoke("descriptografar-com-mestra", texto);
+    } catch (e) {
+      console.error("❌ [PRELOAD] Falha ao descriptografar via IPC:", e);
+      throw e;
+    }
+  },
+
 
   // ---- Anotações
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
@@ -285,7 +294,16 @@ contextBridge.exposeInMainWorld("api", {
 
 
   // ---- Bloueio por inatividade
-  bloquearApp: () => ipcRenderer.send("bloquear-app")
+  bloquearApp: () => ipcRenderer.send("bloquear-app"),
+
+  // ---- backup
+  backup: {
+    carregarConfiguracao: () => ipcRenderer.invoke("backup:carregar-config"),
+    salvarConfiguracao: (cfg) => ipcRenderer.invoke("backup:salvar-config", cfg),
+    iniciarOAuth: (servico) => ipcRenderer.invoke("backup:iniciar-oauth", servico),
+    testarConexao: (alvo) => ipcRenderer.invoke("backup:testar-conexao", alvo),
+    executarAgora: () => ipcRenderer.invoke("backup:executar-agora"),
+  },
 });
 
 console.log("🧪 [PRELOAD] pronto. APIs expostas.");

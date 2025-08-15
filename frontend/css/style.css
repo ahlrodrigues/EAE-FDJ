@@ -819,3 +819,242 @@ input.invalido {
     padding: 1rem;
   }
 }
+
+/* ===== Validação visual (config) ===== */
+.erro-campo {
+  margin-top: 0.25rem;
+  margin-bottom: 0.35rem; /* dá respiro ANTES do input */
+  font-size: 0.9rem;
+  line-height: 1.2;
+  color: #b00020;          /* vermelho de erro */
+  background: #ffe9ec;     /* leve destaque */
+  border-left: 3px solid #b00020;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+}
+
+input.invalido,
+select.invalido,
+textarea.invalido {
+  border: 2px solid #b00020 !important;
+  outline: none;
+  background-color: #fff7f8;
+}
+
+input.invalido:focus,
+select.invalido:focus,
+textarea.invalido:focus {
+  box-shadow: 0 0 0 3px rgba(176, 0, 32, 0.15);
+}
+
+/* Desativa visualmente o botão salvar quando inválido */
+#btn-acao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Backup Card: radios alinhados e botões alinhados ===== */
+.radio-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.radio-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.6rem;
+}
+
+.radio-item input[type="radio"] {
+  margin-top: 0.25rem; /* alinha com o título da opção */
+}
+
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.radio-label .hint {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
+.assistive {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Ações do card: alinhadas à direita */
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.form-actions--end {
+  justify-content: flex-end;
+}
+
+/* Botões com tamanho consistente */
+.form-actions .btn-principal,
+.form-actions .btn-secundario {
+  min-width: 160px;
+}
+
+/* Status OAuth discreto e alinhado */
+.oauth-status {
+  margin-left: .5rem;
+  opacity: .85;
+}
+
+/* Última execução com leve respiro */
+.ultima-info {
+  display: block;
+  margin-top: .5rem;
+  opacity: .8;
+}
+
+/* ===== Responsividade: radios em colunas no desktop ===== */
+@media (min-width: 720px) {
+  .radio-row {
+    grid-template-columns: 1fr 1fr 1fr; /* 3 colunas lado a lado */
+  }
+}
+
+/* === Card Backup ajustes visuais === */
+
+/* Modo de backup: linha de título em negrito */
+.radio-label strong {
+  font-weight: 700;
+}
+
+/* Alinhar rádio e texto */
+.radio-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.radio-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.6rem;
+}
+
+.radio-item input[type="radio"] {
+  margin-top: 0.25rem;
+}
+
+.radio-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.radio-label .hint {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
+/* Botões empilhados verticalmente */
+.form-actions--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Garantir que todos tenham o mesmo layout do salvar */
+.form-actions--stacked .btn-principal {
+  min-width: 100%;
+}
+
+/* Última execução */
+.ultima-info {
+  display: block;
+  margin-top: .5rem;
+  opacity: .8;
+}
+
+/* Radios em colunas no desktop */
+@media (min-width: 720px) {
+  .radio-row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* === Botões do card Backup: layout igual === */
+.form-actions--grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colunas iguais */
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Linha do botão salvar ocupa as 2 colunas */
+.form-actions--grid .btn-full {
+  grid-column: span 2;
+}
+
+/* Garante altura e aparência uniforme */
+.form-actions--grid .btn-principal {
+  min-height: 38px;
+}
+
+/* === Backup: layout do horário centralizado === */
+.agendamento-container {
+  display: flex;
+  justify-content: center;
+  margin-top: .25rem;
+}
+
+.agendamento-container .time-field {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 10px;
+  background: #f6f6f6; /* use sua var de tema se tiver */
+  box-shadow: 0 0 0 1px rgba(0,0,0,.04) inset;
+}
+
+#backup-horario {
+  width: 130px;
+  text-align: center;
+}
+
+/* Radios em coluna com espaçamento */
+#backup-modos {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+/* Alinhamento dos botões: testar/executar lado a lado e salvar abaixo */
+.form-actions .backup-actions-top {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .5rem;
+  justify-content: center;
+}
+
+.btn-backup-compacto {
+  min-width: 180px;  /* igualar largura */
+}
+
+/* Em telas muito pequenas, quebra os botões de cima */
+@media (max-width: 420px) {
+  .form-actions .backup-actions-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

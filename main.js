@@ -1,16 +1,21 @@
 // === ./main.js ===============================================================
-// 📦 Módulos do Electron e Node.js
+// === ./main.js ===============================================================
+// ⚙️ Ambiente
+require("dotenv").config();
+
+// 📦 Electron / Node
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
-const fsPromises = require("fs/promises");
 
+// 🧬 Sessão
 const { isLoginAtivo } = require("./backend/lib/sessionStore");
 
-// 🧭 Logs de diagnóstico de preload
-console.log("🧭 Caminho real do preload:", path.join(__dirname, "preload.js"));
+// 🧭 Preload
+const preloadPath = path.join(__dirname, "preload.js");
+console.log("🧭 Caminho real do preload:", preloadPath);
 
-// 📁 Caminho do arquivo de usuário
+// 🗂️ usuario.json (config principal)
 const usuarioPath = path.join(
   process.env.HOME || process.env.USERPROFILE,
   ".config",
@@ -19,9 +24,10 @@ const usuarioPath = path.join(
   "usuario.json"
 );
 
-let janelaCadastro = null; // 🔑 Janela principal do app (mantido nome usado em outros módulos)
+// 🪟 janela principal
+let janelaCadastro = null;
 
-// 🧩 Handlers de funcionalidades (caminhos explícitos)
+// 🧩 Handlers (IMPORTAR NO TOPO, antes do registro!)
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
 const registrarLoginHandler = require("./backend/handlers/loginHandler");
 const registrarBlogHandler = require("./backend/handlers/blogHandler");
@@ -30,6 +36,7 @@ const { registrarSolicitarTokenHandler } = require("./backend/handlers/solicitar
 const { registrarVerificacaoEmailHandler } = require("./backend/handlers/verificacaoEmailHandler");
 const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler");
 const { registrarDescriptografarHandler } = require("./backend/handlers/descriptografarHandler");
+const { registrarCriptografarHandler } = require("./backend/handlers/criptografarHandler");
 const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
 const { registrarLerArquivoHandler } = require("./backend/handlers/lerArquivoHandler");
 const { registrarSessionHandler } = require("./backend/handlers/sessionHandler");
@@ -40,8 +47,75 @@ const { registrarSalvarAceiteHandler } = require("./backend/handlers/salvarAceit
 const { registrarAbrirJanelaTermoHandler } = require("./backend/handlers/abrirJanelaTermoHandler");
 const { registrarLerTermoMarkdownHandler } = require("./backend/handlers/lerTermoMarkdownHandler");
 const { registrarTermoAceitoHandler } = require("./backend/handlers/registrarTermoAceitoHandler");
+const { registrarBackupHandler } = require("./backend/handlers/backupHandler");
+const { startSchedule, stopSchedule } = require("./backend/handlers/backupSchedule");
 
-// ✅ Registro de todos os handlers de IPC
+
+// ▶️ Executor do backup (reutilizado pelo cron)
+// - Se existir backend/lib/backupRun.js com `execute()`, usamos.
+// - Senão, tentamos uma rotina mínima inline (pode ser substituída depois).
+async function executarBackupAgendado() {
+  try {
+    console.log("▶️ [backupSchedule] Execução agendada iniciada…");
+
+    // Tenta usar executor dedicado, se houver
+    try {
+      const { execute } = require("./backend/lib/backupRun");
+      if (typeof execute === "function") {
+        await execute(); // ideal: centraliza regras e serviços
+        console.log("✅ [backupSchedule] Concluído (via backupRun.execute).");
+        return;
+      }
+      console.warn("⚠️ [backupSchedule] backupRun.execute não é função — usando caminho alternativo.");
+    } catch {
+      // segue para caminho alternativo
+    }
+
+    // Caminho alternativo (simples): enviar diretorios padrão para Google Drive
+    const { carregarUsuarioJsonSeguro, descriptografarCampo, salvarUsuarioJsonSeguro } =
+      require("./backend/lib/usuarioStore");
+    const { GoogleDriveClient } = require("./backend/lib/googleDriveClient");
+
+    const cfgAll = await carregarUsuarioJsonSeguro();
+    const bkp = cfgAll?.backup || {};
+    if (bkp.servico !== "google-drive" || !bkp.oauthTokenEnc) {
+      console.log("ℹ️ [backupSchedule] Serviço não configurado para execução.");
+      return;
+    }
+
+    const token = JSON.parse(descriptografarCampo(bkp.oauthTokenEnc));
+    const drive = new GoogleDriveClient(token);
+
+    const home = process.env.HOME || process.env.USERPROFILE;
+    const notasDir = path.join(home, ".config", "escola-aprendizes", "notas");
+    const temasDir = path.join(home, ".config", "escola-aprendizes", "temas");
+
+    const enviarDir = async (dir) => {
+      if (!fs.existsSync(dir)) return 0;
+      let count = 0;
+      for (const entry of fs.readdirSync(dir)) {
+        const p = path.join(dir, entry);
+        if (fs.statSync(p).isFile()) {
+          try {
+            if (await drive.enviarIncremental(bkp.pastaRemota, p)) count++;
+          } catch (e) {
+            console.warn("⚠️ [backupSchedule] Falha ao enviar arquivo:", p, e?.message || e);
+          }
+        }
+      }
+      return count;
+    };
+
+    const enviados = (await enviarDir(notasDir)) + (await enviarDir(temasDir));
+    cfgAll.backup.ultimoBackupISO = new Date().toISOString();
+    await salvarUsuarioJsonSeguro(cfgAll);
+    console.log("✅ [backupSchedule] Concluído. Arquivos enviados:", enviados);
+  } catch (e) {
+    console.error("❌ [backupSchedule] Erro na execução agendada:", e?.message || e);
+  }
+}
+
+// ✅ Registro de handlers
 console.log("🔧 Registrando handlers de backend...");
 try {
   registrarCadastroHandler(ipcMain);
@@ -52,6 +126,7 @@ try {
   registrarVerificacaoEmailHandler(ipcMain);
   registrarUsuarioHandler();
   registrarDescriptografarHandler();
+  registrarCriptografarHandler(); // ✅ agora garantido antes do uso
   registrarNotasHandler(ipcMain);
   registrarLerArquivoHandler();
   registrarSessionHandler();
@@ -61,20 +136,18 @@ try {
   registrarSalvarAceiteHandler(ipcMain);
   registrarAbrirJanelaTermoHandler();
   registrarLerTermoMarkdownHandler(ipcMain);
-  // Mantém a dependência de janela: passa um getter que retorna a janela atual
   registrarTermoAceitoHandler(() => janelaCadastro);
-
+  registrarBackupHandler();
   console.log("✅ Todos os handlers registrados com sucesso.");
 } catch (e) {
   console.error("❌ Falha ao registrar handlers:", e);
 }
 
-// 🛠️ Caminho do preload
-const preloadPath = path.join(__dirname, "preload.js");
+// 🛠️ Conferência do preload
 console.log("📦 Caminho absoluto do preload:", preloadPath);
 console.log("📄 Preload existe?", fs.existsSync(preloadPath));
 
-// 🔐 Função utilitária para bloquear o app (voltar ao login)
+// 🔐 Bloquear app → volta para login
 function bloquearApp(motivo = "desconhecido") {
   if (!janelaCadastro) {
     console.warn("⚠️ bloquearApp chamado sem janela ativa.");
@@ -82,7 +155,6 @@ function bloquearApp(motivo = "desconhecido") {
   }
   console.log(`🔒 Bloqueando app (motivo: ${motivo}). Redirecionando para login...`);
   try {
-    // Caminho explícito para o arquivo de login no frontend
     janelaCadastro.loadFile(path.join(__dirname, "frontend", "login.html"));
   } catch (err) {
     console.error("❌ Erro ao carregar tela de login:", err);
@@ -105,18 +177,13 @@ function createWindow() {
     },
   });
 
-  // 🔔 Listeners dependentes da janela DEVEM ser registrados após a criação
-  // ⛔ Bloqueio se minimizado
+  // Eventos de janela
   janelaCadastro.on("minimize", () => {
     console.log("🛑 Janela minimizada — acionando bloqueio.");
     bloquearApp("minimize");
   });
 
-  // (Opcional) Bloquear quando a janela perde foco/é ocultada
-  // janelaCadastro.on("blur", () => bloquearApp("blur"));
-  // janelaCadastro.on("hide", () => bloquearApp("hide"));
-
-  // 🚦 Roteamento inicial: cadastro, login ou index
+  // 🚦 Roteamento inicial
   try {
     if (!fs.existsSync(usuarioPath)) {
       console.warn("📂 usuario.json não encontrado. Redirecionando para cadastro.");
@@ -134,16 +201,34 @@ function createWindow() {
   }
 }
 
-// 🚀 Inicialização do app
-app.whenReady().then(() => {
+// 🚀 Inicialização
+app.whenReady().then(async () => {
   console.log("⚙️ App pronto. Inicializando...");
   createWindow();
 
-  // 📕 Checagem em segundo plano da capa da revista
+  // 📕 Capa da revista em segundo plano
   try {
     verificarAtualizacaoCapaEmSegundoPlano();
   } catch (err) {
     console.error("❌ Erro na verificação da capa em segundo plano:", err);
+  }
+
+  // ⏰ Agendar backup no startup, se configurado
+  if (startSchedule) {
+    try {
+      const raw = fs.existsSync(usuarioPath) ? fs.readFileSync(usuarioPath, "utf-8") : null;
+      const cfg = raw ? JSON.parse(raw) : {};
+      const b = cfg?.backup || {};
+      if (b.modo === "agendado") {
+        const hhmm = b.horario || "22:30";
+        console.log("⏰ Config detectada: agendado diário às", hhmm);
+        startSchedule(hhmm, executarBackupAgendado);
+      } else {
+        console.log("⏹️ Backup não-agendado no startup (modo:", b.modo || "manual", ").");
+      }
+    } catch (e) {
+      console.warn("⚠️ Falha ao configurar agendamento inicial:", e?.message || e);
+    }
   }
 
   app.on("activate", () => {
@@ -154,7 +239,7 @@ app.whenReady().then(() => {
   });
 });
 
-// ⛔ Encerramento do app
+// ⛔ Encerramento
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     console.log("🛑 Todas as janelas fechadas. Encerrando app...");
@@ -162,8 +247,23 @@ app.on("window-all-closed", () => {
   }
 });
 
-// 🔗 IPC para bloqueio solicitado pelo renderer (inatividade etc.)
+// 🔗 IPC utilitário: bloquear por pedido do renderer
 ipcMain.on("bloquear-app", (_evt, motivo = "ipc-renderer") => {
   console.log("📨 IPC: bloquear-app recebido. Motivo:", motivo);
   bloquearApp(motivo);
+});
+
+// 🔁 (Opcional) Reagendar sob demanda — ex.: seu handler de salvar backup pode emitir este evento
+ipcMain.on("backup:schedule:update", (_evt, hhmm = "22:30") => {
+  if (!startSchedule || !stopSchedule) {
+    console.warn("⚠️ backup:schedule:update recebido mas scheduler indisponível.");
+    return;
+  }
+  try {
+    console.log("🔁 Reagendando backup diário para:", hhmm);
+    stopSchedule();
+    startSchedule(hhmm, executarBackupAgendado);
+  } catch (e) {
+    console.error("❌ Falha ao reagendar backup:", e?.message || e);
+  }
 });
