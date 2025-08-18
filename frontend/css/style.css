@@ -1010,21 +1010,27 @@ textarea.invalido:focus {
   min-height: 38px;
 }
 
-/* === Backup: layout do horário centralizado === */
-.agendamento-container {
+/* Contêiner do rótulo + campo de horário */
+/* Contêiner do rótulo + campo de horário (backup) */
+.agendamento-linha {
   display: flex;
-  justify-content: center;
-  margin-top: .25rem;
+  align-items: baseline;  /* alinha pela linha de base do texto */
+  gap: 0.75rem;           /* espaço entre texto e input */
+  margin: 0.5rem 0;
 }
 
-.agendamento-container .time-field {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .5rem .75rem;
-  border-radius: 10px;
-  background: #f6f6f6; /* use sua var de tema se tiver */
-  box-shadow: 0 0 0 1px rgba(0,0,0,.04) inset;
+.agendamento-linha label {
+  font-size: 1rem;
+  line-height: 1.2;
+  margin: 0;              /* evita empurrar o baseline */
+}
+
+.agendamento-linha input[type="time"] {
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  line-height: 1.2;
+  margin: 0;
+  width: 120px;
 }
 
 #backup-horario {

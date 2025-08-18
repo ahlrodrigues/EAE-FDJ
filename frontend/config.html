@@ -64,7 +64,7 @@
         autocomplete="email" inputmode="email"
       />
 
-      <label for="telefone">Telefone com DDI e DDD</label>
+      <label for="telefone">Telefone com +DDI e DDD</label>
       <input
         type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +55 11 91234-5678)" required
         autocomplete="tel" inputmode="tel"
@@ -72,7 +72,7 @@
         title="Use o formato +55 11 91234-5678"
       />
 
-      <label for="codigoTemas">Código da planilha</label>
+      <label for="codigoTemas">Código das atividades</label>
       <input
         type="text" id="codigoTemas" placeholder="Código da planilha" required
         autocomplete="off" autocapitalize="off" spellcheck="false"
@@ -113,10 +113,9 @@
   <div style="height: 0.8rem;"></div>
 
   <div class="form-group">
-    <label for="backup-pasta-remota">Pasta remota</label>
-    <input id="backup-pasta-remota" type="text" placeholder="EscolaAprendizes/Backups" />
-    <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
-  </div>
+    <label for="backup-pasta-remota">Nome da pasta</label>
+<input id="backup-pasta-remota" type="text" placeholder="ex.: EAE" />
+<div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
 
   <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
     <legend>Modo</legend>
@@ -147,10 +146,10 @@
     </div>
   </fieldset>
 </br>
-  <div class="form-group" id="agendamento-row" style="display:none;">
-    <label for="backup-horario">Horário (agendado diário)</label>
-    <input id="backup-horario" type="time" value="22:30" />
-  </div>
+<div class="agendamento-linha">
+  <label for="horaAgendada">Horário (agendado diário):</label>
+  <input type="time" id="horaAgendada" name="horaAgendada">
+</div>
 
   <!-- Botões com Testar + Executar lado a lado e Salvar abaixo -->
   <div class="form-actions form-actions--grid">

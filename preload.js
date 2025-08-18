@@ -1,24 +1,20 @@
 // === preload.js ===
 // Exposição controlada de APIs para o renderer.
-// Correções implementadas:
-// - Removido uso direto de descriptografar/criptografar no preload (agora via IPC).
-// - Nova API window.api.lerTema com suporte a (caminho absoluto) OU (emailHash, nomeArquivo).
-// - Helper central para diretório de temas (compatível com decisão do projeto).
-// - Logs detalhados e padronizados.
-// - Resiliência quando handlers não existirem (mensagens claras).
 
 const { contextBridge, ipcRenderer } = require("electron");
 const fs = require("fs").promises;
 const fsSync = require("fs"); // síncrono (uso pontual)
 const path = require("path");
 const os = require("os");
-const dotenv = require("dotenv");
 const crypto = require("crypto");
+const dotenv = require("dotenv");
+
+// Carrega .env (pode herdar do main; manter por compat)
 dotenv.config();
 
-const CRYPTO_SECRET = process.env.CRYPTO_SECRET;
+const APP_MASTER_KEY = process.env.APP_MASTER_KEY;
 
-console.log("🔐 [PRELOAD] CRYPTO_SECRET definido?", Boolean(CRYPTO_SECRET));
+console.log("🔐 [PRELOAD] APP_MASTER_KEY definido?", Boolean(APP_MASTER_KEY));
 console.log("🧠 [PRELOAD] preload.js carregado");
 
 // ============================================================================
@@ -57,10 +53,10 @@ function getTemasDir(emailHash) {
   return path.join(os.homedir(), ".config", "escola-aprendizes", "temas", hash);
 }
 
-/** Gera HMAC-SHA256 a partir do email com a CRYPTO_SECRET. */
+/** Gera HMAC-SHA256 a partir do email com a APP_MASTER_KEY. */
 function gerarEmailHashInterno(email) {
   try {
-    return crypto.createHmac("sha256", CRYPTO_SECRET || "").update(email || "").digest("hex");
+    return crypto.createHmac("sha256", APP_MASTER_KEY || "").update(email || "").digest("hex");
   } catch (e) {
     console.error("❌ [PRELOAD] Falha ao gerar emailHash:", e.message);
     return null;
@@ -87,8 +83,7 @@ ipcRenderer.on("termo-aceito", (_evento, _dados) => {
 });
 
 // ============================================================================
-// 🧭 Expor alguns módulos nativos de forma limitada (como você já fazia)
-//  ⚠️ Atenção: expor fs/path/os amplia superfície — mantenha apenas o necessário.
+// 🧭 Expor alguns módulos nativos de forma limitada
 // ============================================================================
 contextBridge.exposeInMainWorld("nativo", {
   fs, // assíncrono (promises)
@@ -108,7 +103,6 @@ contextBridge.exposeInMainWorld("nativo", {
       throw e;
     }
   },
-  
 
   arquivoExiste: async (caminhoRelativo) => {
     const completo = path.join(os.homedir(), ".config", "escola-aprendizes", "config", caminhoRelativo);
@@ -126,7 +120,6 @@ contextBridge.exposeInMainWorld("nativo", {
 // ============================================================================
 // 🧾 Utilidades de usuário exibidas via API
 // ============================================================================
-/** Nome do usuário sem descriptografar (somente para casos não sensíveis). */
 function obterNomeUsuarioPlano() {
   try {
     const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
@@ -140,7 +133,6 @@ function obterNomeUsuarioPlano() {
   }
 }
 
-/** Nome descriptografado do aluno (via IPC seguro). */
 async function obterNomeAlunoDescriptografadoInterno() {
   try {
     const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
@@ -192,7 +184,6 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
 
-
   // ---- Anotações
   salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
   lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
@@ -218,27 +209,9 @@ contextBridge.exposeInMainWorld("api", {
   obterCaminhoCapaRevista: () => ipcRenderer.invoke("revista:obter-caminho-capa"),
 
   // ---- Temas (NOVO fluxo robusto)
-  /**
-   * Lista temas salvos para um emailHash.
-   * Retorno esperado do MAIN:
-   * { ok, dir, itens: [{nome, caminho, tamanho, mtime, ctime}] }
-   * (Mas aceitamos array simples de nomes para compat.)
-   */
   listarTemasSalvos: (emailHash) => ipcRenderer.invoke("listar-temas-salvos", emailHash),
-
-  /**
-   * Salvar tema criptografado via MAIN.
-   * @param {string} emailHash
-   * @param {string} nomeArquivo
-   * @param {{data,numero,titulo,texto}} dados
-   */
   salvarTema: (emailHash, nomeArquivo, dados) => ipcRenderer.invoke("salvar-tema", emailHash, nomeArquivo, dados),
 
-  /**
-   * Ler tema (descriptografado).
-   * Uso preferencial: lerTema(caminhoAbsoluto)
-   * Compat legado:   lerTema(emailHash, nomeArquivo)
-   */
   lerTema: async (...args) => {
     try {
       if (args.length === 1) {
@@ -292,8 +265,7 @@ contextBridge.exposeInMainWorld("api", {
   // ---- Caminho do usuário (mantido para compat)
   getUserConfigPath: () => getUserConfigPath(),
 
-
-  // ---- Bloueio por inatividade
+  // ---- Bloqueio por inatividade
   bloquearApp: () => ipcRenderer.send("bloquear-app"),
 
   // ---- backup
