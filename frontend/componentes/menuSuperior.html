@@ -1,22 +1,38 @@
+<!-- /frontend/components/menuSuperior.html -->
+
+<!-- 🔊 Rádio acima do card -->
+<div id="radio-widget" class="radio-widget">
+  <img
+    id="webRadioImg"
+    src="../../assets/playradio.png" 
+    alt="Web Rádio"
+    title="Clique para tocar/pausar"
+    aria-label="Tocar Web Rádio"
+    role="button"
+  />
+  <div class="radio-label">Rádio Estrellar</div>
+  <audio id="webRadioPlayer" preload="none"></audio>
+</div>
+
 <nav class="menu-superior">
   <ul>
     <li><a href="index.html"><span>🏠</span><br>Início</a></li>
 
     <li class="submenu">
-          <a href="#"><span>✍️</span><br>Escrever ▾</a>
-          <ul class="submenu-itens">
-            <li>
-              <a href="anotacoes.html#anotacoes" class="link-submenu" data-tab="anotacoes">
-                <span>🗒️</span> Anotação
-              </a>
-            </li>
-            <li>
-              <a href="tema.html#tema" class="link-submenu" data-tab="tema">
-                <span>🧠</span> Tema
-              </a>
-            </li>
-          </ul>
+      <a href="#"><span>✍️</span><br>Escrever ▾</a>
+      <ul class="submenu-itens">
+        <li>
+          <a href="anotacoes.html#anotacoes" class="link-submenu" data-tab="anotacoes">
+            <span>🗒️</span> Anotação
+          </a>
         </li>
+        <li>
+          <a href="tema.html#tema" class="link-submenu" data-tab="tema">
+            <span>🧠</span> Tema
+          </a>
+        </li>
+      </ul>
+    </li>
 
     <li class="submenu">
       <a href="#" id="relatorioBtn"><span>📊</span><br>Relatório ▾</a>
@@ -33,7 +49,48 @@
         </li>
       </ul>
     </li>
+
     <li><a href="config.html"><span>⚙️</span><br>Configurações</a></li>
-    <li><a href="config.html"><span>⚙️</span><br>Configurações</a></li>
+
+<!-- Botão de rádio -->
+<div id="radio-container" style="text-align:center;">
+  <button id="btn-radio" style="background:none;border:none;cursor:pointer;">
+    <!-- Imagem da rádio -->
+    <img id="webRadioImg" src="../../assets/playradio.png" 
+         alt="Web Rádio" 
+         title="Clique para tocar/pausar" 
+         aria-label="Tocar Web Rádio" 
+         role="button"
+         style="width:48px;height:48px;" />
+  </button>
+  
+  <!-- Texto da rádio -->
+  <div id="radio-label" style="margin-top:4px; font-size:0.9rem; font-weight:bold; color:#00008B;">
+    Rádio Estrellar
+  </div>
+
+  <!-- Player oculto -->
+  <audio id="webRadioPlayer" preload="none"></audio>
+</div>
+
+<!-- Linha com rádio (fora) + card (dentro) -->
+<div class="submenu-row">
+  <!-- 🔊 Rádio (fora do card) -->
+  <div id="radio-widget" class="radio-widget">
+    <img
+      id="webRadioImg"
+    <img id="webRadioImg" src="../../assets/playradio.png" 
+      alt="Web Rádio"
+      title="Clique para tocar/pausar"
+      aria-label="Tocar Web Rádio"
+      role="button"
+    />
+    <div class="radio-label">Rádio Estrellar</div>
+    <audio id="webRadioPlayer" preload="none"></audio>
+  </div>
+
   </ul>
+
+
 </nav>
+

@@ -14,9 +14,9 @@ function getLocalBackupDir(emailHash, pastaNome) {
 }
 
 function getRemoteBackupPath(pastaNome) {
-  // padrão fixo
-  return path.posix.join("EscolaAprendizes", "Backups", pastaNome);
+  return String(pastaNome || "").trim();
 }
+
 
 async function ensureLocalDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -98,17 +98,17 @@ function registrarBackupHandler() {
       stopSchedule();
     }
 
-    return { ok: true, localDir, remotePath };
+    return { ok: true, localDir, remotePath: `/${pastaNome}` };
   });
 
   // Iniciar OAuth
-  ipcMain.handle("backup:iniciar-oauth", async (_evt, servico) => {
-    if (servico !== "google-drive") throw new Error("Serviço ainda não suportado.");
+ipcMain.handle("backup:iniciar-oauth", async (_evt, servico) => {
+  if (servico !== "google-drive") return { ok: false, erro: "Serviço ainda não suportado." };
+  try {
     const { startDeviceFlow } = require("../lib/googleOAuth");
-    const token = await startDeviceFlow(); // retorna token JSON (obj)
-    if (!token) throw new Error("Não foi possível obter token OAuth.");
+    const token = await startDeviceFlow();
+    if (!token) return { ok: false, erro: "Token vazio recebido." };
 
-    // salva token criptografado em backup.oauthTokenEnc
     const cfgAll = await carregarUsuarioJsonSeguro();
     const { criptografarCampo } = require("../lib/usuarioStore");
     const enc = criptografarCampo(JSON.stringify(token));
@@ -116,7 +116,12 @@ function registrarBackupHandler() {
     await salvarUsuarioJsonSeguro(cfgAll);
 
     return { ok: true };
-  });
+  } catch (e) {
+    console.error("❌ [backup] iniciar-oauth:", e?.message || e);
+    return { ok: false, erro: e?.message || "Falha ao iniciar OAuth" };
+  }
+});
+
 
   // Testar conexão
   ipcMain.handle("backup:testar-conexao", async () => {

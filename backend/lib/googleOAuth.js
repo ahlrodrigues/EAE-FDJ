@@ -1,98 +1,96 @@
 // === backend/lib/googleOAuth.js ===
-const http = require("http");
-const url = require("url");
-const { google } = require("googleapis");
+const axios = require("axios");
 const open = require("open");
 const { SCOPES } = require("./googleDriveClient");
-const { carregarUsuarioJsonSeguro, salvarUsuarioJsonSeguro, criptografarCampo } = require("./usuarioStore");
 
-function getOAuth2Client() {
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectPort = String(process.env.GOOGLE_REDIRECT_PORT || "53427");
-  if (!clientId || !clientSecret) throw new Error("GOOGLE_CLIENT_ID/SECRET não configurados.");
+const GOOGLE_OAUTH_DEVICE_CODE_ENDPOINT = "https://oauth2.googleapis.com/device/code";
+const GOOGLE_OAUTH_TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token";
 
-  return new google.auth.OAuth2(
-    clientId,
-    clientSecret,
-    `http://127.0.0.1:${redirectPort}/oauth2callback`
-  );
+function requireEnv(name) {
+  const v = process.env[name];
+  if (!v) throw new Error(`Variável de ambiente ausente: ${name}`);
+  return v;
 }
 
-/**
- * Executa fluxo OAuth Installed App usando loopback (localhost).
- * 1) Abre navegador no consent
- * 2) Escuta callback local
- * 3) Troca code por tokens
- * 4) Persiste tokens (criptografados) em usuario.json (campo backup.oauthTokenEnc)
- */
-async function runInstalledAppOAuth() {
-  const oauth2Client = getOAuth2Client();
-  const redirectPort = Number(process.env.GOOGLE_REDIRECT_PORT || "53427");
+async function startDeviceFlow() {
+  const client_id = requireEnv("GOOGLE_CLIENT_ID");
+  const client_secret = requireEnv("GOOGLE_CLIENT_SECRET");
 
-  const authorizeUrl = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: SCOPES,
-    prompt: "consent" // força refresh_token na 1ª vez
-  });
+  const scope = SCOPES.join(" ");
+  let deviceResp;
+  try {
+    deviceResp = await axios.post(
+      GOOGLE_OAUTH_DEVICE_CODE_ENDPOINT,
+      new URLSearchParams({ client_id, scope }).toString(),
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    );
+  } catch (err) {
+    const details = err?.response?.data || err.message;
+    console.error("❌ [OAuth] Erro ao pedir device_code:", details);
+    throw new Error(
+      `Falha ao iniciar OAuth (device code). Detalhes: ${typeof details === "string" ? details : JSON.stringify(details)}`
+    );
+  }
 
-  // Servidor de callback
-  const server = http.createServer(async (req, res) => {
+  const { device_code, user_code, verification_url, expires_in, interval } = deviceResp.data || {};
+  if (!device_code || !verification_url) {
+    throw new Error("Resposta inválida do endpoint de device_code.");
+  }
+
+  console.log("🔐 [OAuth] Autorize no navegador:", verification_url, " | Código:", user_code);
+  try { await open(verification_url); } catch (_) {}
+
+  const pollInterval = Math.max(5, Number(interval || 5));
+  const deadline = Date.now() + Number(expires_in || 1800) * 1000;
+
+  while (Date.now() < deadline) {
+    await sleep(pollInterval * 1000);
     try {
-      if (!req.url) return;
-      const qs = new url.URL(req.url, `http://127.0.0.1:${redirectPort}`).searchParams;
-      const code = qs.get("code");
-      const error = qs.get("error");
+      const tokenResp = await axios.post(
+        GOOGLE_OAUTH_TOKEN_ENDPOINT,
+        new URLSearchParams({
+          client_id,
+          client_secret,
+          device_code,
+          grant_type: "urn:ietf:params:oauth:grant-type:device_code",
+        }).toString(),
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
 
-      if (error) {
-        res.writeHead(400, { "Content-Type": "text/plain" });
-        res.end("Erro de autorização: " + error);
-        server.close();
-        return;
+      const t = tokenResp.data || {};
+      const now = Date.now();
+      const expiry_date = t.expires_in ? now + Number(t.expires_in) * 1000 : undefined;
+
+      if (!t.access_token) throw new Error("Token não trouxe access_token.");
+
+      console.log("✅ [OAuth] Autorizado com sucesso.");
+      return {
+        access_token: t.access_token,
+        refresh_token: t.refresh_token,
+        scope: t.scope,
+        token_type: t.token_type,
+        expiry_date,
+      };
+    } catch (err) {
+      const e = err?.response?.data || {};
+      if (e.error === "authorization_pending") continue;
+      if (e.error === "slow_down") { await sleep(pollInterval * 1000); continue; }
+      // erros comuns explicados:
+      if (e.error === "unauthorized_client") {
+        throw new Error(
+          "Cliente OAuth não autorizado para Device Code. No Cloud Console, crie Client do tipo 'Desktop' ou 'TVs and Limited Input devices' e use suas credenciais."
+        );
       }
-
-      if (!code) {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end("Recurso não encontrado.");
-        return;
-      }
-
-      const { tokens } = await oauth2Client.getToken(code);
-      oauth2Client.setCredentials(tokens);
-
-      // Persiste criptografado no usuario.json
-      const all = await carregarUsuarioJsonSeguro();
-      all.backup = all.backup || {};
-      const tokenJson = JSON.stringify(tokens);
-      all.backup.oauthTokenEnc = criptografarCampo(tokenJson);
-      await salvarUsuarioJsonSeguro(all);
-
-      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-      res.end("<h1>Autorização concluída!</h1><p>Você já pode fechar esta janela.</p>");
-      server.close();
-    } catch (e) {
-      res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("Falha no OAuth: " + (e?.message || e));
-      server.close();
+      if (e.error === "access_denied") throw new Error("Acesso negado pelo usuário.");
+      if (e.error === "expired_token") throw new Error("Tempo de autorização expirou. Tente novamente.");
+      console.error("❌ [OAuth] Falha no polling:", e || err.message);
+      throw new Error(`Falha no polling do token: ${e.error_description || e.error || err.message}`);
     }
-  });
+  }
 
-  return new Promise((resolve, reject) => {
-    server.listen(redirectPort, "127.0.0.1", () => {
-      open(authorizeUrl).catch(() => {}); // abrir navegador padrão
-    });
-    server.on("close", async () => {
-      // Verifica se salvamos token
-      try {
-        const all = await carregarUsuarioJsonSeguro();
-        if (all?.backup?.oauthTokenEnc) resolve(true);
-        else reject(new Error("Token não foi salvo."));
-      } catch (e) {
-        reject(e);
-      }
-    });
-    server.on("error", (err) => reject(err));
-  });
+  throw new Error("Tempo para autorização expirou. Tente novamente.");
 }
 
-module.exports = { runInstalledAppOAuth };
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+module.exports = { startDeviceFlow };

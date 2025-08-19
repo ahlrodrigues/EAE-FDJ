@@ -1064,3 +1064,99 @@ textarea.invalido:focus {
     align-items: stretch;
   }
 }
+
+/* /frontend/css/radio.css  */
+/* === Estilos do ícone da Web Rádio dentro do menu === */
+
+.menu-superior .menu-radio {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-left: auto; /* empurra para a direita no menu */
+}
+
+#webRadioImg {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: inline-block;
+  border-radius: 8px;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+  position: relative; /* para o selo ::after */
+}
+
+/* Feedback */
+#webRadioImg:hover { transform: translateY(-1px); }
+#webRadioImg:active { transform: scale(0.97); }
+
+/* Estado: tocando */
+#webRadioImg.playing {
+  box-shadow: 0 0 0 3px rgba(0, 180, 0, 0.25);
+}
+
+/* Quando tocando, exibe o badge */
+#webRadioImg.playing::after {
+  content: "LIVE";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 9px;
+  font-weight: bold;
+  color: #fff;
+  background: #0a0;
+  padding: 2px 6px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  font-family: Arial, sans-serif;
+}
+/* PB (tons de cinza) */
+#iconRadio.pb {
+  filter: grayscale(100%) contrast(1.1);
+}
+
+/* Se quiser preto 100% (monocromático forte) */
+#iconRadio.pb-solid {
+  filter: brightness(0); /* tudo fica preto */
+}
+
+/* Ex.: alternar no hover só pra ver o efeito */
+#iconRadio:hover { filter: none; }
+
+/* Estado: pausado */
+#webRadioImg.paused {
+  filter: grayscale(25%);
+}
+
+/* Widget da rádio fora do card */
+.radio-widget {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0 12px; /* separação do card */
+  text-align: center;
+}
+
+/* Tamanho 50% do que você usava (ex.: 48px → 24px) */
+.radio-widget #webRadioImg {
+  width: 24px;   /* antes 48px */
+  height: 24px;  /* antes 48px */
+  cursor: pointer;
+  -webkit-user-drag: none;
+  user-select: none;
+  transition: transform 120ms ease;
+}
+
+.radio-widget #webRadioImg:active {
+  transform: scale(0.96);
+}
+
+/* Texto 50% menor: se antes era ~1rem, use 0.75rem */
+.radio-widget .radio-label {
+  font-size: 0.75rem;
+  line-height: 1;
+  color: #000;     /* ajuste se quiser outra cor */
+  font-weight: 600;
+}
