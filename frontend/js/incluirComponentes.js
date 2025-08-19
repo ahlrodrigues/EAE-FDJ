@@ -47,3 +47,11 @@ export const componentesCarregados = (async function incluirComponentes() {
 
 
 })();
+
+const menuEl = document.getElementById("menuSuperior");
+if (menuEl && menuEl.querySelector("#webRadioImg") && menuEl.querySelector("#webRadioPlayer")) {
+  console.log("[Componentes] menuSuperior injetado com sucesso (contém rádio).");
+  window.dispatchEvent(new CustomEvent("menu:ready", { detail: { source: "menuSuperior" } }));
+} else {
+  console.warn("[Componentes] menuSuperior injetado, mas rádio não encontrado (verifique IDs).");
+}

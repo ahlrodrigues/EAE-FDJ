@@ -100,6 +100,48 @@ class GoogleDriveClient {
     return parentId;
   }
 
+    /**
+   * Garante UMA pasta na RAIZ do Drive do usuário e retorna o ID.
+   * Não aceita barras; se vier "foo/bar", lança erro.
+   */
+    async ensureRootFolder(folderName) {
+      const name = sanitizeName(folderName);
+      if (!name || name.includes("/")) {
+        throw new Error("Nome de pasta inválido: use apenas um nome (sem barras) para criação na raiz.");
+      }
+  
+      // procurar diretamente na raiz
+      const { data } = await this.drive.files.list({
+        q: [
+          "mimeType = 'application/vnd.google-apps.folder'",
+          "trashed = false",
+          "'root' in parents",
+          `name = '${escapeQuotes(name)}'`,
+        ].join(" and "),
+        fields: "files(id, name)",
+        pageSize: 10,
+        supportsAllDrives: this.supportsAllDrives,
+        corpora: this.corpora,
+        includeItemsFromAllDrives: this.supportsAllDrives,
+        spaces: "drive",
+      });
+  
+      const found = data?.files?.[0];
+      if (found) return found.id;
+  
+      // criar na raiz
+      const { data: created } = await this.drive.files.create({
+        requestBody: {
+          name,
+          mimeType: "application/vnd.google-apps.folder",
+          parents: ["root"],
+        },
+        fields: "id,name",
+        supportsAllDrives: this.supportsAllDrives,
+      });
+      return created.id;
+    }
+  
   /**
    * Faz upload (create ou update) apenas se necessário, comparando md5 do conteúdo.
    * @param {string} pastaRemota - caminho posix (ex.: "EscolaAprendizes/Backups/Turma_2025_A")
@@ -107,13 +149,13 @@ class GoogleDriveClient {
    * @returns {Promise<boolean>} true se enviou (create/update), false se já estava idêntico.
    */
   async enviarIncremental(pastaRemota, filePath) {
-    const exists = fs.existsSync(filePath);
-    if (!exists) {
-      console.warn("[gdrive] Arquivo não existe, ignorando:", filePath);
-      return false;
+    if (String(pastaRemota).includes("/")) {
+      throw new Error("pastaRemota inválida: informe apenas o NOME de pasta (sem barras).");
     }
 
-    const folderId = await this.ensureFolderPath(pastaRemota);
+  
+
+    const folderId = await this.ensureRootFolder(pastaRemota);
     const fileName = path.basename(filePath);
 
     const md5Local = await md5File(filePath);

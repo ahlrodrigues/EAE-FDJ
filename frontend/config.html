@@ -110,12 +110,23 @@
     <div class="erro-campo" id="erro-backup-servico" style="display:none;"></div>
   </div>
 
+  <!-- Linha de OAuth (JS mostra apenas quando Google Drive for selecionado) -->
+  <div class="form-group" id="oauth-row" style="display:none;">
+    <button id="btn-backup-oauth" class="btn-principal" type="button">Conectar Google</button>
+    <span id="oauth-status" class="oauth-status">Desconectado</span>
+  </div>
+
   <div style="height: 0.8rem;"></div>
 
   <div class="form-group">
-    <label for="backup-pasta-remota">Nome da pasta</label>
-<input id="backup-pasta-remota" type="text" placeholder="ex.: EAE" />
-<div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
+    <label for="backup-pasta-remota">Pasta no Google Drive</label>
+    <input id="backup-pasta-remota" type="text" value="EAEbackup" readonly disabled
+           aria-describedby="hint-pasta" />
+    <small id="hint-pasta" class="assistive">
+      Será criada na raiz do seu Google Drive.
+    </small>
+    <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
+  </div>
 
   <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
     <legend>Modo</legend>
@@ -145,11 +156,12 @@
       </label>
     </div>
   </fieldset>
-</br>
-<div class="agendamento-linha">
-  <label for="horaAgendada">Horário (agendado diário):</label>
-  <input type="time" id="horaAgendada" name="horaAgendada">
-</div>
+
+  <!-- Linha do horário (começa oculta; JS mostra quando modo = agendado) -->
+  <div id="agendamento-row" class="agendamento-linha" style="display:none">
+    <label for="backup-horario">Horário (agendado diário):</label>
+    <input id="backup-horario" type="time" step="60" value="22:30" />
+  </div>
 
   <!-- Botões com Testar + Executar lado a lado e Salvar abaixo -->
   <div class="form-actions form-actions--grid">
@@ -162,6 +174,7 @@
     Último backup: —
   </small>
 </div>
+
 
   <div id="rodape"></div>
 
