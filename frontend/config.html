@@ -8,11 +8,7 @@
 </head>
 <body>
   <div id="cabecalho"></div>
-
-  <!-- Menus -->
   <div id="menuSuperior"></div>
-
-  <!-- Modal padronizado -->
   <div id="modalAvisoContainer"></div>
 
   <h2 id="titulo-formulario">Cadastro de Usuário</h2>
@@ -20,68 +16,41 @@
   <!-- === Card: Dados do Usuário === -->
   <div class="card">
     <form id="configForm" novalidate>
-      <!-- LOG: início do form de configuração -->
-
       <label for="casaEspírita">Nome da casa espírita</label>
-      <input
-        type="text" id="casaEspírita" placeholder="Nome da casa espírita" required
-        autocomplete="organization" autocapitalize="words" spellcheck="false"
-      />
+      <input type="text" id="casaEspírita" required />
 
       <label for="numeroTurma">Número da turma</label>
-      <input
-        type="number" id="numeroTurma" placeholder="Número da turma" required
-        min="1" inputmode="numeric"
-      />
+      <input type="number" id="numeroTurma" required min="1" />
 
       <label for="dirigente">Nome do dirigente</label>
-      <input
-        type="text" id="dirigente" placeholder="Nome do dirigente" required
-        autocomplete="name" autocapitalize="words" spellcheck="false"
-      />
+      <input type="text" id="dirigente" required />
 
       <label for="emailDirigente">E-mail do dirigente</label>
-      <input
-        type="email" id="emailDirigente" placeholder="E-mail do dirigente" required
-        autocomplete="email" inputmode="email"
-      />
+      <input type="email" id="emailDirigente" required />
 
       <label for="secretarios">Nomes dos secretários</label>
-      <input
-        type="text" id="secretarios" placeholder="Nomes dos secretários" required
-        autocomplete="off" autocapitalize="words" spellcheck="false"
-      />
+      <input type="text" id="secretarios" required />
 
       <label for="aluno">Nome do aluno</label>
-      <input
-        type="text" id="aluno" placeholder="Nome do aluno" required
-        autocomplete="name" autocapitalize="words" spellcheck="false"
-      />
+      <input type="text" id="aluno" required />
 
       <label for="email">E-mail do aluno</label>
-      <input
-        type="email" id="email" placeholder="E-mail do aluno" required
-        autocomplete="email" inputmode="email"
-      />
+      <input type="email" id="email" required />
 
       <label for="telefone">Telefone com +DDI e DDD</label>
       <input
-        type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +55 11 91234-5678)" required
-        autocomplete="tel" inputmode="tel"
+        type="tel" id="telefone" required
+        placeholder="+55 11 91234-5678"
         pattern="^\+\d{2}\s?\d{2}\s?\d{4,5}-?\d{4}$"
-        title="Use o formato +55 11 91234-5678"
       />
 
       <label for="codigoTemas">Código das atividades</label>
-      <input
-        type="text" id="codigoTemas" placeholder="Código da planilha" required
-        autocomplete="off" autocapitalize="off" spellcheck="false"
-      />
+      <input type="text" id="codigoTemas" required />
 
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
         <label for="idioma">Idioma:</label>
-        <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira do idioma atual" />
-        <select id="idioma" name="idioma" autocomplete="language">
+        <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira atual" />
+        <select id="idioma" name="idioma">
           <option value="pt" data-flag="br" selected>Português</option>
           <option value="en" data-flag="us">English</option>
           <option value="fr" data-flag="fr">Français</option>
@@ -91,95 +60,125 @@
       </div>
 
       <button type="submit" class="btn-principal" id="btn-acao">Salvar Alterações</button>
-      <!-- LOG: submit do form acionado -->
     </form>
   </div>
 
-<!-- === Card: Backup (fora do form) === -->
-<div class="card" id="card-backup">
-  <h2>Backup</h2>
+  <!-- === Card: Backup === -->
+  <div class="card" id="card-backup">
+    <h2>Backup</h2>
 
-  <div class="form-group">
-    <label for="backup-servico">Serviço</label>
-    <select id="backup-servico">
-      <option value="">Selecione…</option>
-      <option value="google-drive">Google Drive</option>
-      <option value="dropbox" disabled>Dropbox (em breve)</option>
-      <option value="onedrive" disabled>OneDrive (em breve)</option>
-    </select>
-    <div class="erro-campo" id="erro-backup-servico" style="display:none;"></div>
-  </div>
-
-  <!-- Linha de OAuth (JS mostra apenas quando Google Drive for selecionado) -->
-  <div class="form-group" id="oauth-row" style="display:none;">
-    <button id="btn-backup-oauth" class="btn-principal" type="button">Conectar Google</button>
-    <span id="oauth-status" class="oauth-status">Desconectado</span>
-  </div>
-
-  <div style="height: 0.8rem;"></div>
-
-  <div class="form-group">
-    <label for="backup-pasta-remota">Pasta no Google Drive</label>
-    <input id="backup-pasta-remota" type="text" value="EAEbackup" readonly disabled
-           aria-describedby="hint-pasta" />
-    <small id="hint-pasta" class="assistive">
-      Será criada na raiz do seu Google Drive.
-    </small>
-    <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
-  </div>
-
-  <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
-    <legend>Modo</legend>
-    <div class="radio-row">
-      <label class="radio-item">
-        <input type="radio" name="backup-modo" value="manual" checked />
-        <span class="radio-label">
-          <strong>Sob demanda</strong>
-          <small class="hint">Você decide quando executar (botão “Executar agora”).</small>
-        </span>
-      </label>
-
-      <label class="radio-item">
-        <input type="radio" name="backup-modo" value="agendado" />
-        <span class="radio-label">
-          <strong>Agendado diário</strong>
-          <small class="hint">Roda automaticamente no horário definido abaixo.</small>
-        </span>
-      </label>
-
-      <label class="radio-item">
-        <input type="radio" name="backup-modo" value="continuo" />
-        <span class="radio-label">
-          <strong>Contínuo</strong>
-          <small class="hint">Monitora alterações e envia incrementos (maior uso de recursos).</small>
-        </span>
-      </label>
+    <div class="form-group">
+      <label for="backup-servico">Serviço</label>
+      <select id="backup-servico">
+        <option value="">Selecione…</option>
+        <option value="google-drive">Google Drive</option>
+        <option value="dropbox" disabled>Dropbox (em breve)</option>
+        <option value="onedrive" disabled>OneDrive (em breve)</option>
+      </select>
     </div>
-  </fieldset>
 
-  <!-- Linha do horário (começa oculta; JS mostra quando modo = agendado) -->
-  <div id="agendamento-row" class="agendamento-linha" style="display:none">
-    <label for="backup-horario">Horário (agendado diário):</label>
-    <input id="backup-horario" type="time" step="60" value="22:30" />
+    <!-- Linha de OAuth (visível quando Google Drive for selecionado) -->
+    <div class="form-group" id="oauth-row" style="display:none;">
+      <button id="btnConectarGoogle" class="btn-principal" type="button">Conectar Google</button>
+      <span id="oauth-status" class="oauth-status">Desconectado</span>
+    </div>
+
+    <!-- Card de instruções: sem abrir o navegador automaticamente -->
+    <div id="authCodeCard" style="display:none; margin-top:12px; border:1px solid #ddd; padding:12px; border-radius:10px;">
+      <ol style="margin:0; padding-left:18px; line-height:1.5;">
+        <li>
+          Clique em <a id="authUrl" href="#" target="_blank" rel="noopener">https://www.google.com/device</a>
+          para abrir no seu navegador.
+          <small style="color:#666; display:block; margin-top:4px;">
+            Dica: não fecharemos esta tela. Volte aqui após autorizar.
+          </small>
+        </li>
+        <li>
+          Quando a página carregar, cole o código abaixo no campo indicado:
+          <div style="margin:10px 0;">
+            <code id="authCode"
+                  title="Clique para copiar"
+                  style="display:inline-block; font-size:18px; font-weight:700; color:#16a34a; background:#f0fdf4; border:1px dashed #16a34a; padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none;">
+              —
+            </code>
+            <span id="copiedHint" style="margin-left:8px; font-size:12px; color:#16a34a; display:none;">Copiado!</span>
+          </div>
+          <small style="color:#666; display:block; margin-top:4px;">
+            Toque no código para copiá-lo rapidamente.
+          </small>
+        </li>
+        <li>
+          Autorize o acesso e retorne ao app. Detectaremos a conexão automaticamente.
+          <small style="color:#666; display:block; margin-top:4px;">
+            Você verá a confirmação “Conectado ao Google Drive” quando tudo estiver pronto.
+          </small>
+        </li>
+      </ol>
+
+      <div id="authStatus" style="margin-top:12px; font-size:0.9em; color:#555;"></div>
+    </div>
+
+    <!-- Mantido: JS do fluxo de UI -->
+    <script src="./js/backupUI.js"></script>
+
+    <!-- Pasta remota -->
+    <div class="form-group">
+      <label for="backup-pasta-remota">Pasta no Google Drive</label>
+      <input id="backup-pasta-remota" type="text" value="EAEbackup" readonly disabled />
+      <small id="hint-pasta" class="assistive">Será criada na raiz do seu Google Drive.</small>
+      <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
+    </div>
+
+    <!-- ⚙️ Modo (restaurado com as classes originais para manter o layout) -->
+    <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
+      <legend>Modo</legend>
+      <div class="radio-row">
+        <label class="radio-item">
+          <input type="radio" name="backup-modo" value="manual" checked />
+          <span class="radio-label">
+            <strong>Sob demanda</strong>
+            <small class="hint">Você decide quando executar (botão “Executar agora”).</small>
+          </span>
+        </label>
+
+        <label class="radio-item">
+          <input type="radio" name="backup-modo" value="agendado" />
+          <span class="radio-label">
+            <strong>Agendado diário</strong>
+            <small class="hint">Roda automaticamente no horário definido abaixo.</small>
+          </span>
+        </label>
+
+        <label class="radio-item">
+          <input type="radio" name="backup-modo" value="continuo" />
+          <span class="radio-label">
+            <strong>Contínuo</strong>
+            <small class="hint">Monitora alterações e envia incrementos (maior uso de recursos).</small>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <!-- Horário (aparece quando modo = agendado) -->
+    <div id="agendamento-row" class="agendamento-linha" style="display:none">
+      <label for="backup-horario">Horário (agendado diário):</label>
+      <input id="backup-horario" type="time" step="60" value="22:30" />
+    </div>
+
+    <!-- Ações -->
+    <div class="form-actions form-actions--grid">
+      <button id="btn-backup-testar" class="btn-principal" type="button">Testar conexão</button>
+      <button id="btn-backup-executar" class="btn-principal" type="button">Executar agora</button>
+      <button id="btn-backup-salvar" class="btn-principal btn-full" type="button">Salvar configurações</button>
+    </div>
+
+    <small id="backup-ultima-info" class="ultima-info">Último backup: —</small>
   </div>
-
-  <!-- Botões com Testar + Executar lado a lado e Salvar abaixo -->
-  <div class="form-actions form-actions--grid">
-    <button id="btn-backup-testar" class="btn-principal" type="button">Testar conexão</button>
-    <button id="btn-backup-executar" class="btn-principal" type="button">Executar agora</button>
-    <button id="btn-backup-salvar" class="btn-principal btn-full" type="button">Salvar configurações</button>
-  </div>
-
-  <small id="backup-ultima-info" class="ultima-info">
-    Último backup: —
-  </small>
-</div>
-
 
   <div id="rodape"></div>
 
-  <!-- Scripts (sempre no final para carregar após o DOM) -->
+  <!-- Scripts (sempre no final) -->
   <script type="module" src="js/config.js"></script>
-  <script type="module" src="./js/backupConfig.js"></script>
+  <script type="module" src="js/backupConfig.js"></script>
 </body>
 </html>

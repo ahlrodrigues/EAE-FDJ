@@ -159,3 +159,9 @@ btnSalvar?.addEventListener("click", async (e) => {
 });
 });
 
+const resp = await window.api.backup.carregarConfiguracao();
+if (!resp?.ok) {
+  console.error("❌ [backupUI] Falha ao carregar cfg:", resp?.error);
+} else {
+  console.log("✅ [backupUI] Config carregada:", resp.config);
+}
