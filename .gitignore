@@ -26,4 +26,7 @@ Thumbs.db
 .vscode/
 
 # .git
-.git/
+.git/backend/config/*.json
+*.pem
+*.p12
+*.pfx
