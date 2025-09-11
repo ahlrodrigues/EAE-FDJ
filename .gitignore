@@ -30,3 +30,6 @@ Thumbs.db
 *.pem
 *.p12
 *.pfx
+backend/config/
+!backend/config/.gitkeep
+!backend/config/*.example.json
