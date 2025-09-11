@@ -1160,3 +1160,33 @@ textarea.invalido:focus {
   color: #000;     /* ajuste se quiser outra cor */
   font-weight: 600;
 }
+
+/* Caminho: frontend/css/style.css (trecho a acrescentar / consolidar) */
+.auth-code-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.auth-code-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: .25rem 0;
+}
+
+.auth-code {
+  font-weight: 700;
+  padding: .2rem .4rem;
+  border-radius: 6px;
+  background: #f3f4f6;
+}
+
+.auth-status {
+  margin-top: .75rem;
+  font-size: .95rem;
+}
+.auth-status.ok { color: #0a7f2e; }
+.auth-status.err { color: #b00020; }

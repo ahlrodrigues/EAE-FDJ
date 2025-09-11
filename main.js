@@ -1,5 +1,4 @@
 // === ./main.js ===============================================================
-// === ./main.js ===============================================================
 // ⚙️ Ambiente
 require("dotenv").config();
 
@@ -27,7 +26,7 @@ const usuarioPath = path.join(
 // 🪟 janela principal
 let janelaCadastro = null;
 
-// 🧩 Handlers (IMPORTAR NO TOPO, antes do registro!)
+// 🧩 Handlers (IMPORTAR NO TOPO; não redefinir aqui)
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
 const registrarLoginHandler = require("./backend/handlers/loginHandler");
 const registrarBlogHandler = require("./backend/handlers/blogHandler");
@@ -49,11 +48,11 @@ const { registrarLerTermoMarkdownHandler } = require("./backend/handlers/lerTerm
 const { registrarTermoAceitoHandler } = require("./backend/handlers/registrarTermoAceitoHandler");
 const { registrarBackupHandler } = require("./backend/handlers/backupHandler");
 const { startSchedule, stopSchedule } = require("./backend/handlers/backupSchedule");
-
+const { registrarBackupScheduleIeHandler } = require("./backend/handlers/backupScheduleIeHandler");
+const { registrarShellHandler } = require("./backend/handlers/shellHandler");
+const { registrarBackupEmailHandler } = require("./backend/handlers/backupEmailHandler");
 
 // ▶️ Executor do backup (reutilizado pelo cron)
-// - Se existir backend/lib/backupRun.js com `execute()`, usamos.
-// - Senão, tentamos uma rotina mínima inline (pode ser substituída depois).
 async function executarBackupAgendado() {
   try {
     console.log("▶️ [backupSchedule] Execução agendada iniciada…");
@@ -62,7 +61,7 @@ async function executarBackupAgendado() {
     try {
       const { execute } = require("./backend/lib/backupRun");
       if (typeof execute === "function") {
-        await execute(); // ideal: centraliza regras e serviços
+        await execute();
         console.log("✅ [backupSchedule] Concluído (via backupRun.execute).");
         return;
       }
@@ -71,7 +70,7 @@ async function executarBackupAgendado() {
       // segue para caminho alternativo
     }
 
-    // Caminho alternativo (simples): enviar diretorios padrão para Google Drive
+    // Caminho alternativo (simples): enviar diretórios padrão para Google Drive
     const { carregarUsuarioJsonSeguro, descriptografarCampo, salvarUsuarioJsonSeguro } =
       require("./backend/lib/usuarioStore");
     const { GoogleDriveClient } = require("./backend/lib/googleDriveClient");
@@ -114,38 +113,6 @@ async function executarBackupAgendado() {
     console.error("❌ [backupSchedule] Erro na execução agendada:", e?.message || e);
   }
 }
-
-// ✅ Registro de handlers
-console.log("🔧 Registrando handlers de backend...");
-try {
-  registrarCadastroHandler(ipcMain);
-  registrarLoginHandler(ipcMain);
-  registrarBlogHandler(ipcMain);
-  registrarRedefinirSenhaHandler(ipcMain);
-  registrarSolicitarTokenHandler(ipcMain);
-  registrarVerificacaoEmailHandler(ipcMain);
-  registrarUsuarioHandler();
-  registrarDescriptografarHandler();
-  registrarCriptografarHandler(); // ✅ agora garantido antes do uso
-  registrarNotasHandler(ipcMain);
-  registrarLerArquivoHandler();
-  registrarSessionHandler();
-  registrarRevistaHandler();
-  registrarTemasHandler(ipcMain);
-  registrarSalvarUsuarioHandler();
-  registrarSalvarAceiteHandler(ipcMain);
-  registrarAbrirJanelaTermoHandler();
-  registrarLerTermoMarkdownHandler(ipcMain);
-  registrarTermoAceitoHandler(() => janelaCadastro);
-  registrarBackupHandler();
-  console.log("✅ Todos os handlers registrados com sucesso.");
-} catch (e) {
-  console.error("❌ Falha ao registrar handlers:", e);
-}
-
-// 🛠️ Conferência do preload
-console.log("📦 Caminho absoluto do preload:", preloadPath);
-console.log("📄 Preload existe?", fs.existsSync(preloadPath));
 
 // 🔐 Bloquear app → volta para login
 function bloquearApp(motivo = "desconhecido") {
@@ -201,6 +168,69 @@ function createWindow() {
   }
 }
 
+// 🔧 Helper para não deixar um erro travar todos os registros
+function safeRegister(nome, fn, ...args) {
+  try {
+    if (typeof fn !== "function") {
+      console.warn(`⚠️ [REG] ${nome} não é função, pulando.`);
+      return;
+    }
+    fn(...args);
+    console.log(`✅ [REG] ${nome} registrado.`);
+  } catch (e) {
+    console.error(`❌ [REG] Falha ao registrar ${nome}:`, e?.message || e);
+  }
+}
+
+// ✅ Registro de handlers
+console.log("🔧 Registrando handlers de backend (tolerante a falhas)...");
+try {
+  
+  // Demais handlers (cada um isolado, não param o fluxo)
+  safeRegister("cadastroHandler", registrarCadastroHandler, ipcMain);
+  safeRegister("loginHandler", registrarLoginHandler, ipcMain);
+  safeRegister("blogHandler", registrarBlogHandler, ipcMain);
+  safeRegister("redefinirSenhaHandler", registrarRedefinirSenhaHandler, ipcMain);
+  safeRegister("solicitarTokenHandler", registrarSolicitarTokenHandler, ipcMain);
+  safeRegister("verificacaoEmailHandler", registrarVerificacaoEmailHandler, ipcMain);
+  safeRegister("usuarioHandler", registrarUsuarioHandler);
+  safeRegister("descriptografarHandler", registrarDescriptografarHandler);
+  safeRegister("criptografarHandler", registrarCriptografarHandler);
+  safeRegister("notasHandler", registrarNotasHandler, ipcMain);
+  safeRegister("lerArquivoHandler", registrarLerArquivoHandler);
+  safeRegister("sessionHandler", registrarSessionHandler);
+  safeRegister("revistaHandler", registrarRevistaHandler);
+  safeRegister("temasHandler", registrarTemasHandler, ipcMain);
+  safeRegister("salvarUsuarioHandler", registrarSalvarUsuarioHandler);
+  safeRegister("salvarAceiteHandler", registrarSalvarAceiteHandler, ipcMain);
+  safeRegister("abrirJanelaTermoHandler", registrarAbrirJanelaTermoHandler);
+  safeRegister("lerTermoMarkdownHandler", registrarLerTermoMarkdownHandler, ipcMain);
+  safeRegister("termoAceitoHandler", registrarTermoAceitoHandler, () => janelaCadastro);
+
+
+  safeRegister("backupEmailHandler", registrarBackupEmailHandler);
+
+
+  // ⚠️ shellHandler estava quebrando o boot — registre só se exporta função
+  if (typeof registrarShellHandler === "function") {
+    safeRegister("shellHandler", registrarShellHandler);
+  } else {
+    console.warn("⚠️ [REG] registrarShellHandler não é função (verifique export em ./backend/handlers/shellHandler).");
+  }
+
+  // Agendadores e backup geral
+  safeRegister("backupScheduleIeHandler", registrarBackupScheduleIeHandler, { startSchedule, stopSchedule, executarBackupAgendado });
+  safeRegister("backupHandler", registrarBackupHandler);
+
+  console.log("✅ Todos os handlers registrados (veja logs ✅/❌ por item).");
+} catch (e) {
+  console.error("❌ Falha inesperada ao registrar handlers:", e);
+}
+
+// 🛠️ Conferência do preload
+console.log("📦 Caminho absoluto do preload:", preloadPath);
+console.log("📄 Preload existe?", fs.existsSync(preloadPath));
+
 // 🚀 Inicialização
 app.whenReady().then(async () => {
   console.log("⚙️ App pronto. Inicializando...");
@@ -251,19 +281,4 @@ app.on("window-all-closed", () => {
 ipcMain.on("bloquear-app", (_evt, motivo = "ipc-renderer") => {
   console.log("📨 IPC: bloquear-app recebido. Motivo:", motivo);
   bloquearApp(motivo);
-});
-
-// 🔁 (Opcional) Reagendar sob demanda — ex.: seu handler de salvar backup pode emitir este evento
-ipcMain.on("backup:schedule:update", (_evt, hhmm = "22:30") => {
-  if (!startSchedule || !stopSchedule) {
-    console.warn("⚠️ backup:schedule:update recebido mas scheduler indisponível.");
-    return;
-  }
-  try {
-    console.log("🔁 Reagendando backup diário para:", hhmm);
-    stopSchedule();
-    startSchedule(hhmm, executarBackupAgendado);
-  } catch (e) {
-    console.error("❌ Falha ao reagendar backup:", e?.message || e);
-  }
 });
