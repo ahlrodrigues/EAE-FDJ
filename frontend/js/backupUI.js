@@ -1,10 +1,11 @@
 // ============================================================================
 // Caminho: frontend/js/backupUI.js
 // Objetivo: UI do fluxo de conexão Google Drive via Device Code
-// Mudanças:
+// Ajustes nesta versão:
+//  - Modal de sucesso padronizado: usa SEMPRE window.modalAviso.abrir (layout padrão do app)
 //  - Copiar código (#authCode) em TODOS os cliques (não só no primeiro)
-//  - Vínculo de ouvintes idempotente (evita handlers duplicados)
-//  - Link de verificação sempre abre no navegador externo
+//  - Vínculo idempotente de handlers (evita duplicidades)
+//  - Link de verificação sempre abre no navegador externo (via window.api.abrirLink)
 // Logs padronizados: 🧭/📡/✅/⚠️/❌
 // ============================================================================
 
@@ -45,25 +46,40 @@ function setStatus(tipo, texto) {
 }
 
 // ----------------------------
-// Modal sucesso (usa modalAviso quando disponível)
+// Modal sucesso (usa o MODAL PADRÃO do app)
 // ----------------------------
 function abrirModalSucessoOAuth() {
   const titulo = "Conectado ao Google Drive";
-  const mensagem = "Tudo certo! Você já pode configurar e executar os backups.";
+  const mensagem = "O acesso ao Google Drive foi autorizado e está pronto para uso.";
 
-  console.log("✅ [backupUI] Exibindo modal de sucesso…");
+  console.log("✅ [backupUI] Exibindo modal de sucesso (padrão)…");
   try {
-    if (typeof window.abrirModalAviso === "function") {
-      window.abrirModalAviso({ titulo, mensagem, tipo: "sucesso", icone: "✅", autoFecharMs: 3500 });
+    // ✅ PRIORIDADE: modal padrão do app
+    if (window.modalAviso?.abrir) {
+      window.modalAviso.abrir({
+        titulo,
+        mensagem,
+        tipo: "sucesso",     // garante layout/cores padrão de sucesso
+        icone: "✅",
+        autoFecharMs: 3500,  // fecha sozinho após 3.5s (mantém consistência visual)
+      });
       return;
     }
-    if (window.modalAviso?.abrir) {
-      window.modalAviso.abrir({ titulo, mensagem, tipo: "sucesso", icone: "✅", autoFecharMs: 3500 });
+    // 🔁 Fallback legado
+    if (typeof window.abrirModalAviso === "function") {
+      window.abrirModalAviso({
+        titulo,
+        mensagem,
+        tipo: "sucesso",
+        icone: "✅",
+        autoFecharMs: 3500,
+      });
       return;
     }
   } catch (e) {
-    console.warn("⚠️ [backupUI] Falha ao abrir modal customizado:", e?.message || e);
+    console.warn("⚠️ [backupUI] Falha ao abrir modal padrão:", e?.message || e);
   }
+  // 🪙 Último recurso (apenas se nenhum modal existir)
   alert("✅ " + titulo + "\n\n" + mensagem);
 }
 
