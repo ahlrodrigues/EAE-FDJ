@@ -3,7 +3,7 @@
 require("dotenv").config();
 
 // 📦 Electron / Node
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron"); // ⬅️ inclui shell
 const path = require("path");
 const fs = require("fs");
 
@@ -128,6 +128,42 @@ function bloquearApp(motivo = "desconhecido") {
   }
 }
 
+// 🌐 Forçar abertura EXTERNA de links (nunca em janela interna)
+const NAV = "🌐 [external-nav]";
+function forceExternalBrowserHandlers(win) {
+  if (!win || win.isDestroyed?.()) return;
+  const wc = win.webContents;
+
+  // Abre qualquer window.open/target=_blank em navegador externo
+  wc.setWindowOpenHandler(({ url }) => {
+    console.log(`${NAV} target=_blank → externo:`, url);
+    shell.openExternal(url).catch((err) =>
+      console.error(`${NAV} Falha ao abrir (target=_blank):`, err?.message || err)
+    );
+    return { action: "deny" };
+  });
+
+  // Impede navegação para http/https dentro da janela: abre externamente
+  wc.on("will-navigate", (event, url) => {
+    if (/^https?:\/\//i.test(url)) {
+      event.preventDefault();
+      console.log(`${NAV} will-navigate bloqueado → externo:`, url);
+      shell.openExternal(url).catch((err) =>
+        console.error(`${NAV} Falha ao abrir (will-navigate):`, err?.message || err)
+      );
+    }
+  });
+
+  // Compat (Electron < 14) — se disparar, também envia para fora
+  wc.on("new-window", (event, url) => {
+    event.preventDefault();
+    console.log(`${NAV} new-window → externo:`, url);
+    shell.openExternal(url).catch((err) =>
+      console.error(`${NAV} Falha ao abrir (new-window):`, err?.message || err)
+    );
+  });
+}
+
 // 🪟 Criação da janela principal
 function createWindow() {
   console.log("🪟 Criando janela principal...");
@@ -143,6 +179,9 @@ function createWindow() {
       sandbox: false,
     },
   });
+
+  // ⛔ Sempre forçar links externos no navegador padrão
+  forceExternalBrowserHandlers(janelaCadastro);
 
   // Eventos de janela
   janelaCadastro.on("minimize", () => {
@@ -185,7 +224,6 @@ function safeRegister(nome, fn, ...args) {
 // ✅ Registro de handlers
 console.log("🔧 Registrando handlers de backend (tolerante a falhas)...");
 try {
-  
   // Demais handlers (cada um isolado, não param o fluxo)
   safeRegister("cadastroHandler", registrarCadastroHandler, ipcMain);
   safeRegister("loginHandler", registrarLoginHandler, ipcMain);
@@ -207,9 +245,7 @@ try {
   safeRegister("lerTermoMarkdownHandler", registrarLerTermoMarkdownHandler, ipcMain);
   safeRegister("termoAceitoHandler", registrarTermoAceitoHandler, () => janelaCadastro);
 
-
   safeRegister("backupEmailHandler", registrarBackupEmailHandler);
-
 
   // ⚠️ shellHandler estava quebrando o boot — registre só se exporta função
   if (typeof registrarShellHandler === "function") {
@@ -281,4 +317,13 @@ app.on("window-all-closed", () => {
 ipcMain.on("bloquear-app", (_evt, motivo = "ipc-renderer") => {
   console.log("📨 IPC: bloquear-app recebido. Motivo:", motivo);
   bloquearApp(motivo);
+});
+
+// 🌐 IPC utilitário: abrir link no navegador padrão (usado por preload/renderer)
+ipcMain.on("abrirLink", (_evt, url) => {
+  if (!url) return;
+  console.log(`${NAV} IPC abrirLink →`, url);
+  shell.openExternal(url).catch((err) =>
+    console.error(`${NAV} Falha ao abrir (IPC abrirLink):`, err?.message || err)
+  );
 });

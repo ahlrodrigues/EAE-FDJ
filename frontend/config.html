@@ -1,3 +1,13 @@
+<!--
+  Caminho: frontend/config.html
+  Objetivo: Cadastro/Edição + Backup (Google Device Flow sem abrir navegador automaticamente)
+  Notas:
+  - Mantido o quadro de modos de backup (fieldset + radio-row) intacto.
+  - Instruções exibidas somente após clique em "Conectar Google".
+  - Status "Desconectado" posicionado logo abaixo do botão.
+  - Elementos com IDs estáveis para integração com backupUI.js / preload / handlers.
+-->
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -79,18 +89,25 @@
 
     <!-- Linha de OAuth (visível quando Google Drive for selecionado) -->
     <div class="form-group" id="oauth-row" style="display:none;">
-      <button id="btnConectarGoogle" class="btn-principal" type="button">Conectar Google</button>
-      <span id="oauth-status" class="oauth-status">Desconectado</span>
+      <button id="btnConectarGoogle" class="btn-principal" type="button" aria-describedby="oauth-status">
+        Conectar Google
+      </button>
+
+      <!-- Status: abaixo do botão (mantém layout do quadro de modos intacto) -->
+      <div id="oauth-status" class="oauth-status" style="margin-top:6px;" aria-live="polite">
+        <span class="bolinha bolinha-desconectado" aria-hidden="true"></span>
+        <strong>Status:</strong> Desconectado
+      </div>
     </div>
 
     <!-- Card de instruções: sem abrir o navegador automaticamente -->
     <div id="authCodeCard" style="display:none; margin-top:12px; border:1px solid #ddd; padding:12px; border-radius:10px;">
       <ol style="margin:0; padding-left:18px; line-height:1.5;">
         <li>
-          Clique em <a id="authUrl" href="#" target="_blank" rel="noopener">https://www.google.com/device</a>
+          Clique em <a id="authUrl" href="https://www.google.com/device" target="_blank" rel="noopener">https://www.google.com/device</a>
           para abrir no seu navegador.
           <small style="color:#666; display:block; margin-top:4px;">
-            Dica: não fecharemos esta tela. Volte aqui após autorizar.
+            Dica: esta tela continuará aberta. Volte aqui após autorizar.
           </small>
         </li>
         <li>
@@ -115,10 +132,10 @@
         </li>
       </ol>
 
-      <div id="authStatus" style="margin-top:12px; font-size:0.9em; color:#555;"></div>
+      <div id="authStatus" style="margin-top:12px; font-size:0.9em; color:#555;" aria-live="polite"></div>
     </div>
 
-    <!-- Mantido: JS do fluxo de UI -->
+    <!-- Mantido: JS do fluxo de UI (responsável por não abrir o navegador automaticamente) -->
     <script src="./js/backupUI.js"></script>
 
     <!-- Pasta remota -->
@@ -129,7 +146,7 @@
       <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
     </div>
 
-    <!-- ⚙️ Modo (restaurado com as classes originais para manter o layout) -->
+    <!-- ⚙️ Modo (mantido para não desconfigurar o quadro) -->
     <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
       <legend>Modo</legend>
       <div class="radio-row">
