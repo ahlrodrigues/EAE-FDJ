@@ -1,8 +1,11 @@
 // ============================================================================
 // Caminho: frontend/js/backupUI.js
 // Objetivo: UI do fluxo de conexão Google Drive via Device Code
-// Mudança: garantir que o link de verificação SEMPRE abra no navegador externo
-//          (via window.api.abrirLink) somente quando o usuário clicar.
+// Mudanças:
+//  - Copiar código (#authCode) em TODOS os cliques (não só no primeiro)
+//  - Vínculo de ouvintes idempotente (evita handlers duplicados)
+//  - Link de verificação sempre abre no navegador externo
+// Logs padronizados: 🧭/📡/✅/⚠️/❌
 // ============================================================================
 
 console.log("🧭 [backupUI] carregado");
@@ -20,16 +23,21 @@ const copiedHint = document.getElementById("copiedHint");
 const authStatus = document.getElementById("authStatus");
 
 // ----------------------------
+// Estado interno
+// ----------------------------
+let statusListenerBound = false;
+
+// ----------------------------
 // Util: Atualizar status visual
 // ----------------------------
 function setStatus(tipo, texto) {
+  if (!oauthStatus) return;
   const classe =
     tipo === "conectado" ? "bolinha-conectado"
     : tipo === "pendente" ? "bolinha-pendente"
     : tipo === "erro" ? "bolinha-erro"
     : "bolinha-desconectado";
 
-  if (!oauthStatus) return;
   oauthStatus.innerHTML = `
     <span class="bolinha ${classe}" aria-hidden="true"></span>
     <strong>Status:</strong> ${texto}
@@ -51,10 +59,6 @@ function abrirModalSucessoOAuth() {
     }
     if (window.modalAviso?.abrir) {
       window.modalAviso.abrir({ titulo, mensagem, tipo: "sucesso", icone: "✅", autoFecharMs: 3500 });
-      return;
-    }
-    if (window.api?.modalAviso) {
-      window.api.modalAviso(titulo, mensagem);
       return;
     }
   } catch (e) {
@@ -82,7 +86,7 @@ const iniciarConexaoGoogle = async () => {
     };
   } else if (typeof window.api?.conectarGoogle === "function") {
     console.log("🧩 [backupUI] Usando API antiga window.api.conectarGoogle()");
-    const resp = await window.api.conectarGoogle(); // { ok, url, code }
+    const resp = await window.api.conectarGoogle(); // { ok, url, code, ... }
     if (!resp?.ok) throw new Error(resp?.error || "Falha ao iniciar conexão.");
     return {
       verification_uri: resp.url || "https://www.google.com/device",
@@ -105,6 +109,9 @@ const iniciarPolling = async (device_code, interval) => {
 };
 
 const registrarListenerStatus = () => {
+  if (statusListenerBound) return; // evita múltiplos binds
+  statusListenerBound = true;
+
   if (hasNewAPI && typeof window.api.backup.onAtualizacaoStatus === "function") {
     console.log("🧩 [backupUI] Registrando listener de status (API nova) …");
     window.api.backup.onAtualizacaoStatus(onStatusPayload);
@@ -166,12 +173,12 @@ function onStatusPayloadCompat(payload) {
 }
 
 // ----------------------------
-// Vincular abertura EXTERNA do link
+// Vínculo: abrir EXTERNO no link de verificação (sempre)
 // ----------------------------
 function bindExternalOpenOnLink(anchorEl) {
   if (!anchorEl) return;
-  // Remove handlers anteriores e força abertura externa
-  anchorEl.addEventListener("click", (ev) => {
+  if (anchorEl._externalOpenBound) return; // evita binds duplicados
+  const handler = (ev) => {
     try {
       ev.preventDefault();
       const href = anchorEl.getAttribute("href");
@@ -181,7 +188,33 @@ function bindExternalOpenOnLink(anchorEl) {
     } catch (e) {
       console.error("❌ [backupUI] Falha ao abrir link externamente:", e);
     }
-  }, { once: true });
+  };
+  anchorEl.addEventListener("click", handler); // funciona em todos os cliques
+  anchorEl._externalOpenBound = true;
+}
+
+// ----------------------------
+// Vínculo: copiar código em TODOS os cliques (idempotente)
+// ----------------------------
+function ensureCopyOnEveryClick(codeEl, hintEl) {
+  if (!codeEl) return;
+  if (codeEl._copyHandlerBound) return; // evita binds duplicados
+  const handler = async () => {
+    const text = (codeEl.textContent || "").trim();
+    if (!text || text === "—") return;
+    try {
+      await navigator.clipboard.writeText(text);
+      if (hintEl) {
+        hintEl.style.display = "inline";
+        setTimeout(() => (hintEl.style.display = "none"), 1200);
+      }
+      console.log("✅ [backupUI] Código copiado:", text);
+    } catch (e) {
+      console.error("❌ [backupUI] Falha ao copiar:", e);
+    }
+  };
+  codeEl.addEventListener("click", handler); // <- sem { once: true }
+  codeEl._copyHandlerBound = true;
 }
 
 // ----------------------------
@@ -200,29 +233,15 @@ btnConectar?.addEventListener("click", async () => {
     // 2) Exibir instruções e dados
     if (authUrl) {
       authUrl.href = resp.verification_uri || "https://www.google.com/device";
-      // 🔒 Sempre abrir via navegador externo quando o usuário clicar
-      bindExternalOpenOnLink(authUrl);
+      bindExternalOpenOnLink(authUrl); // abre no navegador externo (todos os cliques)
     }
-    if (authCode) authCode.textContent = resp.user_code || "—";
+    if (authCode) {
+      authCode.textContent = resp.user_code || "—";
+      ensureCopyOnEveryClick(authCode, copiedHint); // <- cópia a cada clique
+    }
     if (authCard) authCard.style.display = "block";
 
-    // Copiar código ao clicar
-    authCode?.addEventListener("click", async () => {
-      const text = (authCode.textContent || "").trim();
-      if (!text || text === "—") return;
-      try {
-        await navigator.clipboard.writeText(text);
-        if (copiedHint) {
-          copiedHint.style.display = "inline";
-          setTimeout(() => (copiedHint.style.display = "none"), 1200);
-        }
-        console.log("✅ [backupUI] Código copiado:", text);
-      } catch (e) {
-        console.error("❌ [backupUI] Falha ao copiar:", e);
-      }
-    }, { once: true });
-
-    // 3) Registrar listener de status
+    // 3) Registrar listener de status (uma única vez)
     registrarListenerStatus();
 
     // 4) Iniciar polling (quando disponível)
@@ -250,9 +269,3 @@ btnConectar?.addEventListener("click", async () => {
 if (oauthRow && oauthRow.style.display !== "none") {
   setStatus("desconectado", "Desconectado");
 }
-
-// ----------------------------
-// (Opcional) classes utilitárias para status
-// .bolinha-pendente { background:#bb6f00; }
-// .bolinha-erro     { background:#c62828; }
-// ----------------------------
