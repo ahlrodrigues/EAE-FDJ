@@ -9,6 +9,8 @@ const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 /**
  * Google Drive client com utilitários para:
  *  - Garantir árvore de pastas (ensureFolderPath)
+ *  - Garantir uma pasta na raiz (ensureRootFolder)
+ *  - Compat: garantir uma pasta com parent informado (ensureFolder)
  *  - Upload incremental por md5 (enviarIncremental)
  *  - Leitura de "about" (getAbout) para teste de conexão
  *
@@ -17,7 +19,12 @@ const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
  *  - GOOGLE_CLIENT_SECRET
  *  - GOOGLE_REDIRECT_PORT (não é usada diretamente aqui, mas mantida por consistência)
  *  - GOOGLE_SUPPORTS_DRIVES=true (se quiser permitir Shared Drives)
- *  - GOOGLE_CORPORA=(user|drive|allDrives) — padrão: user
+ *  - GOOGLE_CORPORA=(user|drive|allDrives) — padrão: user (ou allDrives quando supports=true)
+ *
+ * Observação importante:
+ *  - O fluxo atual do app usa uma pasta *na raiz* do Drive (ex.: "EAEbackup").
+ *    Por isso, `enviarIncremental()` espera um **NOME de pasta** (sem "/").
+ *    Se precisar hierarquia, use `ensureFolderPath()` manualmente e adapte o upload.
  */
 class GoogleDriveClient {
   /**
@@ -70,7 +77,7 @@ class GoogleDriveClient {
   }
 
   /**
-   * Garante a existência de uma hierarquia de pastas (ex.: "EscolaAprendizes/Backups/Turma_2025_A")
+   * Garante a existência de uma hierarquia de pastas (ex.: "Escola/Backups/Turma_2025_A")
    * e retorna o ID da pasta final.
    */
   async ensureFolderPath(pathStr) {
@@ -100,64 +107,78 @@ class GoogleDriveClient {
     return parentId;
   }
 
-    /**
+  /**
    * Garante UMA pasta na RAIZ do Drive do usuário e retorna o ID.
    * Não aceita barras; se vier "foo/bar", lança erro.
    */
-    async ensureRootFolder(folderName) {
-      const name = sanitizeName(folderName);
-      if (!name || name.includes("/")) {
-        throw new Error("Nome de pasta inválido: use apenas um nome (sem barras) para criação na raiz.");
-      }
-  
-      // procurar diretamente na raiz
-      const { data } = await this.drive.files.list({
-        q: [
-          "mimeType = 'application/vnd.google-apps.folder'",
-          "trashed = false",
-          "'root' in parents",
-          `name = '${escapeQuotes(name)}'`,
-        ].join(" and "),
-        fields: "files(id, name)",
-        pageSize: 10,
-        supportsAllDrives: this.supportsAllDrives,
-        corpora: this.corpora,
-        includeItemsFromAllDrives: this.supportsAllDrives,
-        spaces: "drive",
-      });
-  
-      const found = data?.files?.[0];
-      if (found) return found.id;
-  
-      // criar na raiz
-      const { data: created } = await this.drive.files.create({
-        requestBody: {
-          name,
-          mimeType: "application/vnd.google-apps.folder",
-          parents: ["root"],
-        },
-        fields: "id,name",
-        supportsAllDrives: this.supportsAllDrives,
-      });
-      return created.id;
+  async ensureRootFolder(folderName) {
+    const name = sanitizeName(folderName);
+    if (!name || name.includes("/")) {
+      throw new Error("Nome de pasta inválido: use apenas um nome (sem barras) para criação na raiz.");
     }
-  
+
+    const { data } = await this.drive.files.list({
+      q: [
+        "mimeType = 'application/vnd.google-apps.folder'",
+        "trashed = false",
+        "'root' in parents",
+        `name = '${escapeQuotes(name)}'`,
+      ].join(" and "),
+      fields: "files(id, name)",
+      pageSize: 10,
+      supportsAllDrives: this.supportsAllDrives,
+      corpora: this.corpora,
+      includeItemsFromAllDrives: this.supportsAllDrives,
+      spaces: "drive",
+    });
+
+    const found = data?.files?.[0];
+    if (found) return found.id;
+
+    const { data: created } = await this.drive.files.create({
+      requestBody: {
+        name,
+        mimeType: "application/vnd.google-apps.folder",
+        parents: ["root"],
+      },
+      fields: "id,name",
+      supportsAllDrives: this.supportsAllDrives,
+    });
+    console.log("[gdrive] Pasta criada na raiz:", name, "→ id:", created.id);
+    return created.id;
+  }
+
+  /**
+   * Compat: garante uma pasta com nome e parentId (ou raiz se parentId for null/undefined).
+   * Retorna o ID da pasta.
+   */
+  async ensureFolder(name, parentId = null) {
+    const validName = sanitizeName(name);
+    if (!validName || validName.includes("/")) {
+      throw new Error("Nome de pasta inválido em ensureFolder (use um nome simples, sem '/').");
+    }
+    const key = `${parentId || "root"}/${validName}`;
+    const cached = this._folderCache.get(key);
+    if (cached) return cached;
+
+    const id = await this._getOrCreateFolder(validName, parentId);
+    this._folderCache.set(key, id);
+    return id;
+  }
+
   /**
    * Faz upload (create ou update) apenas se necessário, comparando md5 do conteúdo.
-   * @param {string} pastaRemota - caminho posix (ex.: "EscolaAprendizes/Backups/Turma_2025_A")
+   * @param {string} pastaRemota - **nome de pasta na raiz** (ex.: "EAEbackup") — sem barras.
    * @param {string} filePath - caminho absoluto local do arquivo
    * @returns {Promise<boolean>} true se enviou (create/update), false se já estava idêntico.
    */
   async enviarIncremental(pastaRemota, filePath) {
-    if (String(pastaRemota).includes("/")) {
+    if (!pastaRemota || String(pastaRemota).includes("/")) {
       throw new Error("pastaRemota inválida: informe apenas o NOME de pasta (sem barras).");
     }
-
-  
-
     const folderId = await this.ensureRootFolder(pastaRemota);
-    const fileName = path.basename(filePath);
 
+    const fileName = path.basename(filePath);
     const md5Local = await md5File(filePath);
 
     // Verifica se já existe com mesmo conteúdo
@@ -198,7 +219,6 @@ class GoogleDriveClient {
   // ---------------------------------------------------------------------------
 
   async _getOrCreateFolder(name, parentId) {
-    // Consulta por nome + parentId
     const q = [
       "mimeType = 'application/vnd.google-apps.folder'",
       "trashed = false",
@@ -209,20 +229,17 @@ class GoogleDriveClient {
     const listParams = {
       q: q.join(" and "),
       fields: "files(id, name)",
-      pageSize: 10, // pequeno buffer para casos raros de duplicidade por nome
+      pageSize: 10,
       supportsAllDrives: this.supportsAllDrives,
-      corpora: this.corpora, // 'user' por padrão; 'allDrives' se habilitar shared drives
+      corpora: this.corpora,
       includeItemsFromAllDrives: this.supportsAllDrives,
       spaces: "drive",
     };
 
     const { data } = await this.drive.files.list(listParams);
     const found = data?.files?.[0];
-    if (found) {
-      return found.id;
-    }
+    if (found) return found.id;
 
-    // Cria se não existir
     console.log("[gdrive] Criando pasta:", name, "parent:", parentId || "(root)");
     const { data: created } = await this.drive.files.create({
       requestBody: {
@@ -255,7 +272,7 @@ class GoogleDriveClient {
 // ---------------------------------------------------------------------------
 
 function sanitizeName(name) {
-  // Remove caracteres de controle e aparas. Pode expandir conforme regras do produto.
+  // Remove caracteres de controle e aparas.
   return String(name || "").replace(/[\u0000-\u001F]/g, "").trim();
 }
 
@@ -272,7 +289,6 @@ function guessMime(filePath) {
   if (ext === ".png") return "image/png";
   if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
   if (ext === ".pdf") return "application/pdf";
-  // genérico
   return "application/octet-stream";
 }
 

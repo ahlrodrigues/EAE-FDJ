@@ -4,7 +4,7 @@
 // Logs com prefixo padronizado: 📦 [backup]
 // ============================================================================
 
-const { ipcMain } = require("electron");
+const { ipcMain, BrowserWindow } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -30,7 +30,7 @@ try {
   console.log("📦 [backup] OAuth lib: ../lib/googleAuth");
 } catch {
   try {
-    // ⚠️ Correção: antes tentava carregar googleAuth de novo — agora tenta googleOAuth
+    // ⚠️ Antes tentava carregar googleAuth de novo — agora tenta googleOAuth
     oauthLib = require("../lib/googleOAuth"); // fallback
     console.warn("📦 [backup] Usando fallback ../lib/googleOAuth (recomenda-se migrar para ../lib/googleAuth).");
   } catch {
@@ -54,15 +54,11 @@ function getRemoteBackupPath(pastaNome) {
 }
 
 async function ensureLocalDir(dir) {
-  // sincrono é OK aqui; mantém a função async por compatibilidade de chamadas
   fs.mkdirSync(dir, { recursive: true });
   console.log(`${LOG} Pasta local garantida: ${dir}`);
 }
 
-/**
- * Garante a existência do caminho remoto no Drive.
- * Prioriza drive.ensureFolderPath(); se não houver, tenta ensureFolder().
- */
+/** Garante a existência do caminho remoto no Drive. */
 async function ensureRemotePath(drive, remotePath) {
   if (!remotePath) return;
   if (typeof drive.ensureFolderPath === "function") {
@@ -135,6 +131,20 @@ async function executarBackupAgoraInner() {
 }
 
 // ----------------------------------------------------------------------------
+// Emissão de status (para o renderer)
+// ----------------------------------------------------------------------------
+function emitStatusToSender(event, payload) {
+  try {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win && !win.isDestroyed()) {
+      win.webContents.send("backup:google:status", payload);
+    }
+  } catch (e) {
+    console.warn(`${LOG} Falha ao emitir status (sender):`, e?.message || e);
+  }
+}
+
+// ----------------------------------------------------------------------------
 // Registro dos IPCs públicos de backup
 // ----------------------------------------------------------------------------
 function registrarBackupHandler() {
@@ -202,7 +212,7 @@ function registrarBackupHandler() {
     await salvarUsuarioJsonSeguro(cfgAll);
     console.log(`${LOG} Configuração salva.`, cfgAll.backup);
 
-    // Reagenda se necessário
+    // Reagenda se necessário (mantém quadro de modos intacto)
     if (modo === "agendado" && startSchedule && stopSchedule) {
       try {
         stopSchedule?.();
@@ -226,14 +236,18 @@ function registrarBackupHandler() {
     return { ok: true, localDir, remotePath: `/${pastaNome}` };
   });
 
-  // Iniciar OAuth (Device Code) — biblioteca faz o fluxo completo e retorna tokens
+  // ==========================================================================
+  // 🔐 OAuth LEGADO (retrocompatibilidade)
+  //   - Pode disparar fluxo interno da lib (device flow ou browser), mas o UI
+  //     já não abre navegador automaticamente.
+  // ==========================================================================
   ipcMain.handle("backup:iniciar-oauth", async (_evt, servico) => {
     console.log(`${LOG} IPC 'backup:iniciar-oauth' acionado. servico=`, servico);
     if (servico && servico !== "google-drive") return { ok: false, erro: "Serviço ainda não suportado." };
     try {
       if (!oauthLib) throw new Error("Biblioteca de OAuth não encontrada (googleAuth/googleOAuth).");
 
-      // Preferência: getAuthorizedClient() — dispara Device Flow se necessário e já salva tokens no lib
+      // Preferência: getAuthorizedClient() — retorna cliente já autorizado
       if (typeof oauthLib.getAuthorizedClient === "function") {
         console.log(`${LOG} Iniciando OAuth via getAuthorizedClient().`);
         const auth = await oauthLib.getAuthorizedClient();
@@ -247,13 +261,13 @@ function registrarBackupHandler() {
         cfgAll.backup = { ...(cfgAll.backup || {}), oauthTokenEnc: enc };
         await salvarUsuarioJsonSeguro(cfgAll);
 
-        console.log(`${LOG} OAuth concluído e tokens salvos.`);
+        console.log(`${LOG} OAuth concluído e tokens salvos (LEGADO).`);
         return { ok: true };
       }
 
-      // Compatibilidade: startDeviceFlow() — retorna token final
+      // Compat: startDeviceFlow() — retorna tokens finais
       if (typeof oauthLib.startDeviceFlow === "function") {
-        console.log(`${LOG} Iniciando OAuth via startDeviceFlow().`);
+        console.log(`${LOG} Iniciando OAuth via startDeviceFlow() (LEGADO).`);
         const token = await oauthLib.startDeviceFlow();
         if (!token) return { ok: false, erro: "Token vazio recebido." };
 
@@ -262,7 +276,7 @@ function registrarBackupHandler() {
         cfgAll.backup = { ...(cfgAll.backup || {}), oauthTokenEnc: enc };
         await salvarUsuarioJsonSeguro(cfgAll);
 
-        console.log(`${LOG} OAuth concluído (startDeviceFlow) e tokens salvos.`);
+        console.log(`${LOG} OAuth concluído (LEGADO) e tokens salvos.`);
         return { ok: true };
       }
 
@@ -273,15 +287,99 @@ function registrarBackupHandler() {
     }
   });
 
-  // 🔁 Aliases para compatibilizar com UI que usa "backup:oauth:*"
+  // Aliases legado
   ipcMain.handle("backup:oauth:start", async (_evt, servico) => {
     console.log(`${LOG} Alias 'backup:oauth:start' → 'backup:iniciar-oauth'`);
     return ipcMain.invoke("backup:iniciar-oauth", servico);
   });
-  // Não há polling separado neste handler porque a lib cuida do device flow internamente.
   ipcMain.handle("backup:oauth:poll", async () => {
     console.log(`${LOG} Chamado 'backup:oauth:poll' (não suportado neste handler).`);
     return { ok: false, erro: "Polling não necessário: o fluxo é conduzido internamente pela lib OAuth." };
+  });
+
+  // ==========================================================================
+  // ✅ NOVO: OAuth Device Code explícito (sem abrir navegador automaticamente)
+  //   - UI usa: backup:google:startDeviceAuth → mostra verification_uri/user_code
+  //   - UI usa: backup:google:startPolling → faz polling e emite backup:google:status
+  // ==========================================================================
+  ipcMain.handle("backup:google:startDeviceAuth", async (_evt) => {
+    try {
+      if (!oauthLib) throw new Error("Biblioteca OAuth não disponível.");
+      if (typeof oauthLib.startDeviceAuth !== "function") {
+        throw new Error("startDeviceAuth() não disponível na biblioteca OAuth.");
+      }
+      console.log(`${LOG} Device Code → startDeviceAuth()`);
+      const resp = await oauthLib.startDeviceAuth();
+      // Esperado: { device_code, user_code, verification_uri, interval, expires_in }
+      if (!resp?.device_code || !resp?.user_code) {
+        throw new Error("Resposta inválida do startDeviceAuth().");
+      }
+      return resp;
+    } catch (e) {
+      console.error(`${LOG} startDeviceAuth falhou:`, e?.message || e);
+      return { error: true, error_description: e?.message || String(e) };
+    }
+  });
+
+  let pollingTimer = null;
+  ipcMain.handle("backup:google:startPolling", async (event, { device_code, interval = 5 }) => {
+    try {
+      if (!oauthLib) throw new Error("Biblioteca OAuth não disponível.");
+      if (typeof oauthLib.pollDeviceToken !== "function") {
+        throw new Error("pollDeviceToken() não disponível na biblioteca OAuth.");
+      }
+      if (!device_code) throw new Error("device_code ausente.");
+
+      // Limpa polling anterior
+      if (pollingTimer) clearInterval(pollingTimer);
+
+      console.log(`${LOG} Device Code → startPolling(interval=${interval}s)`);
+      emitStatusToSender(event, { state: "pending" });
+
+      pollingTimer = setInterval(async () => {
+        try {
+          const res = await oauthLib.pollDeviceToken(device_code);
+          // Esperado da lib:
+          // { state: 'pending'|'authorized'|'expired'|'error', tokens?, message? }
+          console.log(`${LOG} pollDeviceToken →`, res);
+
+          if (res.state === "authorized") {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+
+            // Salvar tokens
+            if (!res.tokens) throw new Error("Tokens não retornados ao autorizar.");
+            const cfgAll = await carregarUsuarioJsonSeguro();
+            const enc = criptografarCampo(JSON.stringify(res.tokens));
+            cfgAll.backup = { ...(cfgAll.backup || {}), oauthTokenEnc: enc };
+            await salvarUsuarioJsonSeguro(cfgAll);
+
+            emitStatusToSender(event, { state: "authorized" });
+          } else if (res.state === "expired") {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+            emitStatusToSender(event, { state: "expired" });
+          } else if (res.state === "error") {
+            clearInterval(pollingTimer);
+            pollingTimer = null;
+            emitStatusToSender(event, { state: "error", message: res.message || "Falha na autorização." });
+          } else {
+            // pending → notificar espaçadamente (UI já indica “aguardando”)
+            // emitStatusToSender(event, { state: "pending" }); // opcional
+          }
+        } catch (e) {
+          console.error(`${LOG} Erro no polling:`, e?.message || e);
+          clearInterval(pollingTimer);
+          pollingTimer = null;
+          emitStatusToSender(event, { state: "error", message: e?.message || String(e) });
+        }
+      }, Math.max(2, Number(interval)) * 1000);
+
+      return { ok: true };
+    } catch (e) {
+      console.error(`${LOG} startPolling falhou:`, e?.message || e);
+      return { error: true, error_description: e?.message || String(e) };
+    }
   });
 
   // Testar conexão
