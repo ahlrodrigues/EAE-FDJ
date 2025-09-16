@@ -1,12 +1,14 @@
 // ============================================================================
 // Caminho: frontend/js/backupUI.js
 // Objetivo: UI do fluxo de conexão Google Drive via Device Code
-// Ajustes nesta versão:
-//  - Modal de sucesso padronizado: usa SEMPRE window.modalAviso.abrir (layout padrão do app)
-//  - Copiar código (#authCode) em TODOS os cliques (não só no primeiro)
-//  - Vínculo idempotente de handlers (evita duplicidades)
-//  - Link de verificação sempre abre no navegador externo (via window.api.abrirLink)
-// Logs padronizados: 🧭/📡/✅/⚠️/❌
+// Alterações principais:
+//  - Usa APENAS o botão #btnConectarGoogle, alternando rótulo e ação:
+//      "Conectar no Google" / "Reconectar" / "Desconectar"
+//  - Remove criação de botão extra; não há "Desconectar" na área de ações
+//  - Modal de sucesso usa o modal padrão (sem alert)
+//  - Cópia do código em todos os cliques; link abre no navegador externo
+//  - Estado persistente ao entrar na página (testa token e ajusta botão)
+// Logs: 🧭/📡/✅/⚠️/❌
 // ============================================================================
 
 console.log("🧭 [backupUI] carregado");
@@ -14,83 +16,87 @@ console.log("🧭 [backupUI] carregado");
 // ----------------------------
 // Referências de elementos
 // ----------------------------
+const oauthRow   = document.getElementById("oauth-row");
 const btnConectar = document.getElementById("btnConectarGoogle");
-const oauthRow = document.getElementById("oauth-row");
 const oauthStatus = document.getElementById("oauth-status");
-const authCard = document.getElementById("authCodeCard");
-const authUrl = document.getElementById("authUrl");
-const authCode = document.getElementById("authCode");
-const copiedHint = document.getElementById("copiedHint");
-const authStatus = document.getElementById("authStatus");
+const authCard    = document.getElementById("authCodeCard");
+const authUrl     = document.getElementById("authUrl");
+const authCode    = document.getElementById("authCode");
+const copiedHint  = document.getElementById("copiedHint");
+const authStatus  = document.getElementById("authStatus");
 
 // ----------------------------
 // Estado interno
 // ----------------------------
+let isConectado = false;
 let statusListenerBound = false;
 
 // ----------------------------
-// Util: Atualizar status visual
+// Helpers visuais
 // ----------------------------
 function setStatus(tipo, texto) {
   if (!oauthStatus) return;
   const classe =
-    tipo === "conectado" ? "bolinha-conectado"
-    : tipo === "pendente" ? "bolinha-pendente"
-    : tipo === "erro" ? "bolinha-erro"
-    : "bolinha-desconectado";
-
+    tipo === "conectado" ? "bolinha-conectado" :
+    tipo === "pendente"  ? "bolinha-pendente"  :
+    tipo === "erro"      ? "bolinha-erro"      :
+                           "bolinha-desconectado";
   oauthStatus.innerHTML = `
     <span class="bolinha ${classe}" aria-hidden="true"></span>
     <strong>Status:</strong> ${texto}
   `;
 }
 
-// ----------------------------
-// Modal sucesso (usa o MODAL PADRÃO do app)
-// ----------------------------
+function mostrarInstrucoes(mostrar) {
+  if (!authCard) return;
+  authCard.style.display = mostrar ? "block" : "none";
+}
+
+// States: connect | reconnect | pending | disconnect
+function setBotaoModo(modo) {
+  if (!btnConectar) return;
+  btnConectar.dataset.modo = modo;
+  if (modo === "disconnect") {
+    btnConectar.textContent = "Desconectar";
+    btnConectar.disabled = false;
+    return;
+  }
+  if (modo === "pending") {
+    btnConectar.textContent = "Aguardando autorização…";
+    btnConectar.disabled = true;
+    return;
+  }
+  if (modo === "reconnect") {
+    btnConectar.textContent = "Reconectar";
+    btnConectar.disabled = false;
+    return;
+  }
+  // default
+  btnConectar.textContent = "Conectar no Google";
+  btnConectar.disabled = false;
+}
+
 function abrirModalSucessoOAuth() {
   const titulo = "Conectado ao Google Drive";
   const mensagem = "O acesso ao Google Drive foi autorizado e está pronto para uso.";
+  tentarAbrirModalPadrao({ titulo, mensagem, tipo: "sucesso", icone: "✅", autoFecharMs: 3500 });
+}
 
-  console.log("✅ [backupUI] Exibindo modal de sucesso (padrão)…");
-  try {
-    // ✅ PRIORIDADE: modal padrão do app
-    if (window.modalAviso?.abrir) {
-      window.modalAviso.abrir({
-        titulo,
-        mensagem,
-        tipo: "sucesso",     // garante layout/cores padrão de sucesso
-        icone: "✅",
-        autoFecharMs: 3500,  // fecha sozinho após 3.5s (mantém consistência visual)
-      });
-      return;
-    }
-    // 🔁 Fallback legado
-    if (typeof window.abrirModalAviso === "function") {
-      window.abrirModalAviso({
-        titulo,
-        mensagem,
-        tipo: "sucesso",
-        icone: "✅",
-        autoFecharMs: 3500,
-      });
-      return;
-    }
-  } catch (e) {
-    console.warn("⚠️ [backupUI] Falha ao abrir modal padrão:", e?.message || e);
-  }
-  // 🪙 Último recurso (apenas se nenhum modal existir)
-  alert("✅ " + titulo + "\n\n" + mensagem);
+function tentarAbrirModalPadrao(opts, tentativas = 20) {
+  if (window.modalAviso?.abrir) { try { window.modalAviso.abrir(opts); return; } catch {}
+  } else if (typeof window.abrirModalAviso === "function") { try { window.abrirModalAviso(opts); return; } catch {} }
+  if (tentativas > 0) setTimeout(() => tentarAbrirModalPadrao(opts, tentativas - 1), 100);
+  else console.warn("⚠️ [backupUI] Modal padrão indisponível; nenhum alert será exibido.");
 }
 
 // ----------------------------
-// Compat: APIs disponíveis no preload
+// Compat: APIs do preload
 // ----------------------------
 const hasNewAPI = !!window.api?.backup;
 
 const iniciarConexaoGoogle = async () => {
   if (hasNewAPI) {
-    console.log("🧩 [backupUI] Usando API nova window.api.backup.iniciarConexaoGoogle()");
+    console.log("🧩 [backupUI] API nova iniciarConexaoGoogle()");
     const resp = await window.api.backup.iniciarConexaoGoogle();
     if (resp?.error) throw new Error(resp.error_description || "Falha ao iniciar Device Code.");
     return {
@@ -101,7 +107,7 @@ const iniciarConexaoGoogle = async () => {
       _raw: resp,
     };
   } else if (typeof window.api?.conectarGoogle === "function") {
-    console.log("🧩 [backupUI] Usando API antiga window.api.conectarGoogle()");
+    console.log("🧩 [backupUI] API antiga conectarGoogle()");
     const resp = await window.api.conectarGoogle(); // { ok, url, code, ... }
     if (!resp?.ok) throw new Error(resp?.error || "Falha ao iniciar conexão.");
     return {
@@ -117,30 +123,24 @@ const iniciarConexaoGoogle = async () => {
 
 const iniciarPolling = async (device_code, interval) => {
   if (hasNewAPI && typeof window.api.backup.iniciarPollingToken === "function") {
-    console.log("🧩 [backupUI] Iniciando polling pela API nova…");
+    console.log("🧩 [backupUI] iniciarPollingToken (no-op no backend)"); 
     await window.api.backup.iniciarPollingToken(device_code, interval);
-  } else {
-    console.log("🧩 [backupUI] API antiga: polling é gerenciado no main/handler.");
   }
 };
 
-const registrarListenerStatus = () => {
-  if (statusListenerBound) return; // evita múltiplos binds
+function registrarListenerStatus() {
+  if (statusListenerBound) return;
   statusListenerBound = true;
 
   if (hasNewAPI && typeof window.api.backup.onAtualizacaoStatus === "function") {
-    console.log("🧩 [backupUI] Registrando listener de status (API nova) …");
+    console.log("🧩 [backupUI] Registrando listener (API nova)");
     window.api.backup.onAtualizacaoStatus(onStatusPayload);
   } else if (typeof window.api?.ouvirDriveStatus === "function") {
-    console.log("🧩 [backupUI] Registrando listener de status (API antiga) …");
+    console.log("🧩 [backupUI] Registrando listener (API antiga)");
     window.api.ouvirDriveStatus(onStatusPayloadCompat);
-    if (typeof window.api?.pedirReplayDriveCodigo === "function") {
-      window.api.pedirReplayDriveCodigo();
-    }
-  } else {
-    console.warn("⚠️ [backupUI] Nenhuma API de status encontrada.");
+    if (typeof window.api?.pedirReplayDriveCodigo === "function") window.api.pedirReplayDriveCodigo();
   }
-};
+}
 
 // ----------------------------
 // Callbacks de status
@@ -150,21 +150,29 @@ function onStatusPayload(payload) {
   if (!payload) return;
 
   if (payload.state === "authorized") {
+    isConectado = true;
     setStatus("conectado", "Conectado ao Google Drive");
     if (authStatus) authStatus.textContent = "Conexão autorizada com sucesso.";
+    mostrarInstrucoes(false);
+    setBotaoModo("disconnect");   // ← vira Desconectar
     abrirModalSucessoOAuth();
-    btnConectar && (btnConectar.disabled = false);
   } else if (payload.state === "pending") {
+    isConectado = false;
     setStatus("pendente", "Aguardando autorização…");
     if (authStatus) authStatus.textContent = "Aguardando autorização no Google…";
+    setBotaoModo("pending");
   } else if (payload.state === "expired") {
-    setStatus("desconectado", "Desconectado (código expirou). Clique em Conectar novamente.");
+    isConectado = false;
+    setStatus("desconectado", "Desconectado (código expirou). Clique em Reconectar.");
     if (authStatus) authStatus.textContent = "Código expirou. Refaça o processo.";
-    btnConectar && (btnConectar.disabled = false);
+    mostrarInstrucoes(false);
+    setBotaoModo("reconnect");    // ← vira Reconectar
   } else if (payload.state === "error") {
+    isConectado = false;
     setStatus("erro", "Erro na conexão");
     if (authStatus) authStatus.textContent = `Erro: ${payload.message || "Falha na autorização."}`;
-    btnConectar && (btnConectar.disabled = false);
+    mostrarInstrucoes(false);
+    setBotaoModo("reconnect");    // ← vira Reconectar
   }
 }
 
@@ -173,27 +181,32 @@ function onStatusPayloadCompat(payload) {
   if (!payload) return;
 
   if (payload.ok) {
+    isConectado = true;
     setStatus("conectado", "Conectado ao Google Drive");
     if (authStatus) authStatus.textContent = "Conexão autorizada com sucesso.";
+    mostrarInstrucoes(false);
+    setBotaoModo("disconnect");   // ← vira Desconectar
     abrirModalSucessoOAuth();
-    btnConectar && (btnConectar.disabled = false);
   } else if (payload.message) {
+    isConectado = false;
     if (/expirad/i.test(payload.message)) {
-      setStatus("desconectado", "Desconectado (código expirou). Clique em Conectar novamente.");
-      btnConectar && (btnConectar.disabled = false);
+      setStatus("desconectado", "Desconectado (código expirou). Clique em Reconectar.");
+      if (authStatus) authStatus.textContent = payload.message;
+      mostrarInstrucoes(false);
+      setBotaoModo("reconnect");  // ← vira Reconectar
     } else {
       setStatus("pendente", "Aguardando autorização…");
+      if (authStatus) authStatus.textContent = `⚠️ ${payload.message}`;
+      setBotaoModo("pending");
     }
-    if (authStatus) authStatus.textContent = `⚠️ ${payload.message}`;
   }
 }
 
 // ----------------------------
-// Vínculo: abrir EXTERNO no link de verificação (sempre)
+// Vínculos auxiliares
 // ----------------------------
 function bindExternalOpenOnLink(anchorEl) {
-  if (!anchorEl) return;
-  if (anchorEl._externalOpenBound) return; // evita binds duplicados
+  if (!anchorEl || anchorEl._externalOpenBound) return;
   const handler = (ev) => {
     try {
       ev.preventDefault();
@@ -205,16 +218,12 @@ function bindExternalOpenOnLink(anchorEl) {
       console.error("❌ [backupUI] Falha ao abrir link externamente:", e);
     }
   };
-  anchorEl.addEventListener("click", handler); // funciona em todos os cliques
+  anchorEl.addEventListener("click", handler);
   anchorEl._externalOpenBound = true;
 }
 
-// ----------------------------
-// Vínculo: copiar código em TODOS os cliques (idempotente)
-// ----------------------------
 function ensureCopyOnEveryClick(codeEl, hintEl) {
-  if (!codeEl) return;
-  if (codeEl._copyHandlerBound) return; // evita binds duplicados
+  if (!codeEl || codeEl._copyHandlerBound) return;
   const handler = async () => {
     const text = (codeEl.textContent || "").trim();
     if (!text || text === "—") return;
@@ -229,59 +238,117 @@ function ensureCopyOnEveryClick(codeEl, hintEl) {
       console.error("❌ [backupUI] Falha ao copiar:", e);
     }
   };
-  codeEl.addEventListener("click", handler); // <- sem { once: true }
+  codeEl.addEventListener("click", handler);
   codeEl._copyHandlerBound = true;
 }
 
 // ----------------------------
-// Clique em "Conectar Google"
+// Clique no botão único (Conectar/Reconectar/Desconectar)
 // ----------------------------
 btnConectar?.addEventListener("click", async () => {
+  const modo = btnConectar?.dataset?.modo || "connect";
+
+  if (modo === "disconnect") {
+    // Desconectar
+    try {
+      console.log("🧭 [backupUI] Clique: Desconectar");
+      const resp = await window.api?.backup?.desconectar?.();
+      if (!resp?.ok) throw new Error(resp?.erro || "Falha ao desconectar.");
+      isConectado = false;
+      setStatus("desconectado", "Desconectado");
+      if (authStatus) authStatus.textContent = "Conta Google desconectada.";
+      setBotaoModo("connect");
+      mostrarInstrucoes(false);
+      tentarAbrirModalPadrao({
+        titulo: "Desconectado do Google Drive",
+        mensagem: resp?.message || "Você pode reconectar quando quiser.",
+        tipo: "info",
+        icone: "ℹ️",
+        autoFecharMs: 2500,
+      });
+    } catch (e) {
+      console.error("❌ [backupUI] Erro ao desconectar:", e);
+      tentarAbrirModalPadrao({ titulo: "Erro ao desconectar", mensagem: e?.message || String(e), tipo: "erro", icone: "❌" });
+    }
+    return;
+  }
+
+  // Conectar/Reconectar
   try {
-    console.log("🧭 [backupUI] Clique em Conectar Google");
-    btnConectar.disabled = true;
+    console.log("🧭 [backupUI] Clique: Conectar/Reconectar");
+    setBotaoModo("pending");
     setStatus("pendente", "Iniciando conexão…");
 
-    // 1) Iniciar device flow (sem abrir navegador automaticamente)
     const resp = await iniciarConexaoGoogle();
     console.log("🔑 [backupUI] Device code response:", resp?._raw || resp);
 
-    // 2) Exibir instruções e dados
     if (authUrl) {
       authUrl.href = resp.verification_uri || "https://www.google.com/device";
-      bindExternalOpenOnLink(authUrl); // abre no navegador externo (todos os cliques)
+      bindExternalOpenOnLink(authUrl);
     }
     if (authCode) {
       authCode.textContent = resp.user_code || "—";
-      ensureCopyOnEveryClick(authCode, copiedHint); // <- cópia a cada clique
+      ensureCopyOnEveryClick(authCode, copiedHint);
     }
-    if (authCard) authCard.style.display = "block";
+    mostrarInstrucoes(true);
 
-    // 3) Registrar listener de status (uma única vez)
     registrarListenerStatus();
 
-    // 4) Iniciar polling (quando disponível)
     if (resp.device_code) {
       await iniciarPolling(resp.device_code, resp.interval || 5);
       console.log("⏱️ [backupUI] Polling solicitado ao backend.");
     } else {
-      console.log("ℹ️ [backupUI] device_code ausente — polling deve estar no backend (API antiga).");
+      console.log("ℹ️ [backupUI] device_code ausente — polling é interno (API antiga).");
     }
 
     if (authStatus) authStatus.textContent = "Aguardando autorização no Google…";
     setStatus("pendente", "Aguardando autorização…");
-
   } catch (err) {
-    console.error("❌ [backupUI] Erro no fluxo de conexão:", err);
+    console.error("❌ [backupUI] Erro ao iniciar conexão:", err);
     setStatus("erro", "Erro ao iniciar conexão");
     if (authStatus) authStatus.textContent = `Erro: ${err.message || String(err)}`;
-    btnConectar && (btnConectar.disabled = false);
+    setBotaoModo("reconnect");
   }
 });
 
 // ----------------------------
-// Estado inicial (garantia visual)
+// Estado inicial (persistência)
 // ----------------------------
-if (oauthRow && oauthRow.style.display !== "none") {
-  setStatus("desconectado", "Desconectado");
-}
+(async function initFromPersisted() {
+  try {
+    setStatus("desconectado", "Desconectado");
+    setBotaoModo("connect");
+    if (!window.api?.backup?.carregarConfiguracao) return;
+
+    const cfg = await window.api.backup.carregarConfiguracao();
+    const servGoogle = (cfg?.servico || "") === "google-drive";
+    const temToken = !!cfg?.oauthTokenEnc;
+
+    if (!servGoogle || !temToken) {
+      mostrarInstrucoes(false);
+      return;
+    }
+
+    let r = null;
+    if (window.api?.testarConexaoGoogle) r = await window.api.testarConexaoGoogle();
+    else if (window.api?.backup?.testarConexao) r = await window.api.backup.testarConexao("google-drive");
+
+    if (r?.ok) {
+      isConectado = true;
+      setStatus("conectado", "Conectado ao Google Drive");
+      if (authStatus) authStatus.textContent = "Conexão ativa.";
+      setBotaoModo("disconnect");  // ← já entra como Desconectar
+      mostrarInstrucoes(false);
+    } else {
+      isConectado = false;
+      setStatus("desconectado", "Desconectado");
+      setBotaoModo("connect");
+      mostrarInstrucoes(false);
+    }
+  } catch (e) {
+    console.warn("⚠️ [backupUI] Falha ao verificar persistência:", e?.message || e);
+    setStatus("desconectado", "Desconectado");
+    setBotaoModo("connect");
+    mostrarInstrucoes(false);
+  }
+})();

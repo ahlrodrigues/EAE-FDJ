@@ -19,8 +19,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 // ----------------------------------------------------------------------------
-// 🔑 Constantes & helpers de log
-// ----------------------------------------------------------------------------
 const APP_MASTER_KEY = process.env.APP_MASTER_KEY;
 const PRE = "🔌 [PRELOAD]";
 
@@ -37,18 +35,13 @@ console.log(`🧠 ${PRE} preload.js carregado`);
 // ============================================================================
 // 🔧 Helpers locais (NÃO expostos diretamente)
 // ============================================================================
-/** Retorna o primeiro usuário do objeto usuarios (o "registro ativo"). */
 function obterPrimeiroUsuario(dados) {
   const chaves = Object.keys(dados?.usuarios || {});
   return dados?.usuarios?.[chaves[0]] || null;
 }
-
-/** Caminho do arquivo de configuração do usuário. */
 function getUserConfigPath() {
   return path.join(os.homedir(), ".config", "escola-aprendizes", "config", "usuario.json");
 }
-
-/** Lê o emailHash (chave) do primeiro usuário no usuario.json. */
 function obterEmailHashInterno() {
   try {
     const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
@@ -62,14 +55,10 @@ function obterEmailHashInterno() {
     return null;
   }
 }
-
-/** Diretório de temas conforme padrão do projeto: ~/.config/escola-aprendizes/temas/<emailHash>/ */
 function getTemasDir(emailHash) {
   const hash = String(emailHash || "").trim();
   return path.join(os.homedir(), ".config", "escola-aprendizes", "temas", hash);
 }
-
-/** Gera HMAC-SHA256 a partir do email com a APP_MASTER_KEY. */
 function gerarEmailHashInterno(email) {
   try {
     return crypto.createHmac("sha256", APP_MASTER_KEY || "").update(email || "").digest("hex");
@@ -99,17 +88,28 @@ ipcRenderer.on("termo-aceito", (_evento, _dados) => {
 });
 
 // ============================================================================
+// 🧭 Logs auxiliares dos eventos de Drive (debug único)
+// ============================================================================
+let _driveListenersBound = false;
+function _bindDriveLogListenersOnce() {
+  if (_driveListenersBound) return;
+  ipcRenderer.on("drive:codigo", (_e, payload) => {
+    console.log(`${PRE} drive:codigo`, payload);
+  });
+  ipcRenderer.on("drive:codigo:status", (_e, payload) => {
+    console.log(`${PRE} drive:codigo:status`, payload);
+  });
+  _driveListenersBound = true;
+}
+
+// ============================================================================
 // 🧭 Expor alguns módulos nativos de forma limitada
 // ============================================================================
 contextBridge.exposeInMainWorld("nativo", {
-  fs, // assíncrono (promises)
-  path,
-  os,
+  fs, path, os,
   getEnv: (chave) => process.env[chave] || null,
-
   gerarEmailHash: (email) => gerarEmailHashInterno(email),
 
-  // 👉 Criptografia via IPC (NÃO direto no preload)
   criptografarComMestra: async (texto) => {
     try {
       const res = await ipcRenderer.invoke("criptografar-com-mestra", texto);
@@ -148,7 +148,6 @@ function obterNomeUsuarioPlano() {
     return null;
   }
 }
-
 async function obterNomeAlunoDescriptografadoInterno() {
   try {
     const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
@@ -171,21 +170,9 @@ async function obterNomeAlunoDescriptografadoInterno() {
 
 // ============================================================================
 // 🧩 API principal exposta para o renderer (window.api)
-//   - Mantém compat com API antiga de Drive (drive:codigo / drive:codigo:status)
-//   - Adiciona API nova do Device Flow (backup:google:startDeviceAuth / startPolling / status)
+//   - Compat com API antiga de Drive (drive:codigo / drive:codigo:status)
+//   - API de backup com Device Code (sem abrir navegador automaticamente)
 // ============================================================================
-let _driveListenersBound = false;
-function _bindDriveLogListenersOnce() {
-  if (_driveListenersBound) return;
-  ipcRenderer.on("drive:codigo", (_e, payload) => {
-    console.log(`${PRE} drive:codigo`, payload);
-  });
-  ipcRenderer.on("drive:codigo:status", (_e, payload) => {
-    console.log(`${PRE} drive:codigo:status`, payload);
-  });
-  _driveListenersBound = true;
-}
-
 contextBridge.exposeInMainWorld("api", {
   // ---- Autenticação / sessão / cadastro
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
@@ -298,39 +285,105 @@ contextBridge.exposeInMainWorld("api", {
   bloquearApp: () => ipcRenderer.send("bloquear-app"),
 
   // ========================================================================
-  // 🔁 Backup – Configurações gerais (compat)
+  // 🔁 Backup – API principal
   // ========================================================================
   backup: {
     carregarConfiguracao: () => ipcRenderer.invoke("backup:carregar-config"),
     salvarConfiguracao: (cfg) => ipcRenderer.invoke("backup:salvar-config", cfg),
-    iniciarOAuth: (servico) => ipcRenderer.invoke("backup:iniciar-oauth", servico), // compat
     testarConexao: (alvo) => ipcRenderer.invoke("backup:testar-conexao", alvo),
     executarAgora: () => ipcRenderer.invoke("backup:executar-agora"),
+    desconectar: () => ipcRenderer.invoke("backup:desconectar"),
 
-    // ===== NOVO: Fluxo Device Code sem abrir navegador =====
-    iniciarConexaoGoogle: () => ipcRenderer.invoke("backup:google:startDeviceAuth"),
-    iniciarPollingToken: (device_code, interval) =>
-      ipcRenderer.invoke("backup:google:startPolling", { device_code, interval }),
+    // ===== Fluxo Device Code (sem abrir navegador automaticamente) =====
+    /**
+     * Inicia o Device Flow e resolve COM os dados de UI (url/código) quando
+     * o backend emitir 'drive:codigo'. Se o backend não retornar ok, rejeita.
+     */
+    iniciarConexaoGoogle: () => {
+      console.log(`${PRE} backup.iniciarConexaoGoogle → startDeviceAuth (aguardando drive:codigo)…`);
+      _bindDriveLogListenersOnce();
 
-    // Listener de status do device flow (authorized / pending / expired / error)
+      return new Promise(async (resolve, reject) => {
+        const onceCodigo = (_evt, payload) => {
+          try {
+            console.log(`${PRE} [Device] drive:codigo recebido`, payload);
+            resolve({
+              verification_uri: payload?.url || "https://www.google.com/device",
+              user_code: payload?.code || "—",
+              // device_code não é enviado ao renderer por padrão; polling é interno
+              interval: Number(payload?.interval || 5) || 5,
+              _event: payload,
+            });
+          } catch (e) {
+            reject(e);
+          }
+        };
+
+        ipcRenderer.once("drive:codigo", onceCodigo);
+
+        try {
+          // Alias compat já implementado no backend; inicia o flow (lib emite eventos)
+          const resp = await ipcRenderer.invoke("backup:google:startDeviceAuth");
+          if (resp?.ok === false) {
+            ipcRenderer.removeListener("drive:codigo", onceCodigo);
+            return reject(new Error(resp?.erro || "Falha ao iniciar OAuth"));
+          }
+        } catch (e) {
+          ipcRenderer.removeListener("drive:codigo", onceCodigo);
+          reject(e);
+        }
+      });
+    },
+
+    /**
+     * No nosso backend o polling é conduzido pela lib OAuth.
+     * Mantemos a função por compat, com log claro.
+     */
+    iniciarPollingToken: async (device_code, interval) => {
+      console.log(`${PRE} backup.iniciarPollingToken (no-op): polling é interno à lib OAuth`, {
+        hasDeviceCode: !!device_code,
+        interval,
+      });
+      return { ok: true, message: "Polling conduzido no backend" };
+    },
+
+    /**
+     * Listener de status unificado:
+     * Mapeia 'drive:codigo:status' → estados ('authorized' | 'pending' | 'expired' | 'error').
+     */
     onAtualizacaoStatus: (cb) => {
       if (!ensureFn(cb, "backup.onAtualizacaoStatus")) return;
-      ipcRenderer.removeAllListeners("backup:google:status"); // evita duplicidade em hot reload
-      ipcRenderer.on("backup:google:status", (_e, payload) => cb(payload));
+      ipcRenderer.removeAllListeners("drive:codigo:status");
+      ipcRenderer.on("drive:codigo:status", (_e, payload) => {
+        // Compat: se vier { ok:true/false, message }
+        if (payload && typeof payload.ok === "boolean") {
+          if (payload.ok) {
+            return cb({ state: "authorized", message: payload.message || "Conexão autorizada." });
+          }
+          const msg = String(payload.message || "").toLowerCase();
+          if (msg.includes("expirad")) {
+            return cb({ state: "expired", message: payload.message });
+          }
+          // Sem sinal claro de expiração → erro genérico
+          return cb({ state: "error", message: payload.message || "Falha na autorização." });
+        }
+        // Já normalizado? repassa
+        cb(payload);
+      });
     },
   },
 
   // ========================================================================
-  // 🔁 Google Drive OAuth – API antiga (mantida p/ retrocompatibilidade)
+  // 🔁 Google Drive OAuth – API antiga (retrocompat)
   // ========================================================================
   conectarGoogle: async () => {
     try {
       console.log(`${PRE} conectarGoogle → backup:iniciar-oauth (google-drive)`);
       const resp = await ipcRenderer.invoke("backup:iniciar-oauth", "google-drive");
       if (!resp?.ok) {
-        console.warn(`${PRE} iniciar-oauth respondeu erro:`, resp?.error);
+        console.warn(`${PRE} iniciar-oauth respondeu erro:`, resp?.error || resp?.erro);
       }
-      return resp; // { ok, url, code, expiresIn, issuedAt } ou { ok:false, error }
+      return resp;
     } catch (e) {
       console.error(`${PRE} invoke backup:iniciar-oauth falhou:`, e?.message || e);
       return { ok: false, error: e?.message || String(e) };
@@ -341,7 +394,7 @@ contextBridge.exposeInMainWorld("api", {
     try {
       console.log(`${PRE} testarConexaoGoogle → backup:testar-conexao (google-drive)`);
       const resp = await ipcRenderer.invoke("backup:testar-conexao", "google-drive");
-      return resp; // { ok, message }
+      return resp; // { ok, user } | { ok:false, erro }
     } catch (e) {
       console.error(`${PRE} invoke backup:testar-conexao falhou:`, e?.message || e);
       return { ok: false, error: e?.message || String(e) };
@@ -350,13 +403,18 @@ contextBridge.exposeInMainWorld("api", {
 
   ouvirDriveCodigo: (cb) => {
     if (!ensureFn(cb, "ouvirDriveCodigo")) return;
-    _bindDriveLogListenersOnce(); // só logs internos, uma vez
+    _bindDriveLogListenersOnce();
     ipcRenderer.on("drive:codigo", (_e, payload) => cb(payload));
   },
-
   ouvirDriveStatus: (cb) => {
     if (!ensureFn(cb, "ouvirDriveStatus")) return;
     ipcRenderer.on("drive:codigo:status", (_e, payload) => cb(payload));
+  },
+
+  // 🔁 Replay do cartão (quando a UI montar depois do evento)
+  pedirReplayDriveCodigo: () => {
+    console.log(`${PRE} pedirReplayDriveCodigo → drive:codigo:request`);
+    ipcRenderer.send("drive:codigo:request");
   },
 
   // Abrir link no navegador padrão (Main → shell.openExternal)
@@ -371,11 +429,10 @@ contextBridge.exposeInMainWorld("api", {
     console.log(`${PRE} removerOuvintesDrive`);
     ipcRenderer.removeAllListeners("drive:codigo");
     ipcRenderer.removeAllListeners("drive:codigo:status");
-    ipcRenderer.removeAllListeners("backup:google:status");
     _driveListenersBound = false;
   },
 
-  // (opcional) enviar code por e-mail (mantém compat se existir no main)
+  // (opcional) enviar code por e-mail (se existir no main)
   enviarCodePorEmail: async (email) => {
     console.log(`${PRE} enviarCodePorEmail →`, email);
     try {
