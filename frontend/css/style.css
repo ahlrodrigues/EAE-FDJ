@@ -1190,3 +1190,32 @@ textarea.invalido:focus {
 }
 .auth-status.ok { color: #0a7f2e; }
 .auth-status.err { color: #b00020; }
+
+/* frontend/css/style.css */
+.blog-rodape-link {
+  display: inline-block;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.blog-rodape-link:hover,
+.blog-rodape-link:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* Link do rodapé do card do blog */
+#cartao-blog .blog-rodape-link {
+  font-size: 0.85rem;   /* ~13.6px se base 16px */
+  line-height: 1.25;
+  opacity: 0.95;        /* opcional: leve suavizada visual */
+}
+
+/* Opcional: reduz um pouco mais em telas muito pequenas */
+@media (max-width: 480px) {
+  #cartao-blog .blog-rodape-link {
+    font-size: 0.8rem;  /* ~12.8px */
+  }
+}

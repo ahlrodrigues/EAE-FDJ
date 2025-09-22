@@ -1,4 +1,12 @@
-<!-- ===> /frontend/cadastro.html -->
+<!-- =======================================================================
+Caminho: /frontend/cadastro.html
+Objetivo: Tela de PRIMEIRO cadastro (criação de conta).
+Notas:
+ - IDs compatíveis com js/cadastro.js
+ - Campos obrigatórios (com labels e spans de erro associados)
+ - Idioma em BCP47 (pt-BR, en-US, …)
+ - Logs com prefixo 🧩 [CADASTRO-NOVO-UI]
+======================================================================= -->
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -7,99 +15,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="css/style.css" />
+  <!-- Força da senha -->
   <script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.js"></script>
 </head>
 <body>
   <div id="cabecalho"></div>
-  
-     <!-- Menus -->
-     <div id="menuSuperior"></div>
+  <div id="menuSuperior"></div>
 
-  <h2>Cadastro de Usuário</h2>
-  <div class="card">
-    <div class="aviso-obrigatorio">⚠️ Todos os campos são obrigatórios.</div></br>
-    <form id="cadastroForm">
+  <main class="container">
+    <h2>Cadastro de Usuário</h2>
 
-  <input type="text" id="casaEspírita" placeholder="Nome da casa espírita" required />
-  <span id="erro-casaEspírita" class="erro-campo"></span>
-  
-  <input type="number" id="numeroTurma" placeholder="Número da turma" required />
-  <span id="erro-numeroTurma" class="erro-campo"></span>
-  
-  <input type="text" id="dirigente" placeholder="Nome do dirigente" required />
-  <span id="erro-dirigente" class="erro-campo"></span>
-  
-  <input type="email" id="emailDirigente" placeholder="E-mail do dirigente" required />
-  <span id="erro-emailDirigente" class="erro-campo"></span>
-  
-  <input type="text" id="secretarios" placeholder="Nomes dos secretários" required />
-  <span id="erro-secretarios" class="erro-campo"></span>
-  
-  <input type="text" id="aluno" placeholder="Nome do aluno" required />
-  <span id="erro-aluno" class="erro-campo"></span>
-  
-  <input type="email" id="email" placeholder="E-mail do aluno" required />
-  <span id="erro-email" class="erro-campo"></span>
-  
-  <input type="tel" id="telefone" placeholder="Telefone com DDI e DDD (ex: +055 11 91234-5678)" required />
-  <span id="erro-telefone" class="erro-campo"></span>
-  
-  <div class="campo-senha">
-    <input type="password" id="senha" placeholder="Senha" required />
-    <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
-  </div>
-  <span id="erro-senha" class="erro-campo"></span>
-  
-  <div id="forcaSenha" class="mensagem-sucesso"></div>
-  
-  <div id="senhaRegrasContainer">
-    <!-- Este conteúdo será injetado dinamicamente -->
-  </div>
-  
-  
-  <div class="campo-senha">
-    <input type="password" id="confirmarsenha" placeholder="Confirmar senha" required />
-    <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
-  </div>
-  <span id="erro-confirmarsenha" class="erro-campo"></span>
-  
-  <label for="codigoTemas">Código da planilha</label>
-  <input type="text" id="codigoTemas" placeholder="Código da planilha" required />
-  <span id="erro-codigoTemas" class="erro-campo"></span>
-  
+    <div class="card">
+      <div class="aviso-obrigatorio">⚠️ Todos os campos são obrigatórios.</div><br/>
 
-      <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-        <label for="idioma">Idioma:</label>
-        <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
-        <select id="idioma" name="idioma">
-          <option value="pt" data-flag="br" selected>Português</option>
-          <option value="en" data-flag="us">English</option>
-          <option value="fr" data-flag="fr">Français</option>
-          <option value="de" data-flag="de">Deutsch</option>
-          <option value="it" data-flag="it">Italiano</option>
-        </select>
-      </div>
+      <form id="cadastroForm">
+        <!-- Casa Espírita -->
+        <label for="casaEspírita">Nome da casa espírita</label>
+        <input type="text" id="casaEspírita" required autocomplete="organization" />
+        <span id="erro-casaEspírita" class="erro-campo" aria-live="polite"></span>
 
+        <!-- Número da turma -->
+        <label for="numeroTurma">Número da turma</label>
+        <input type="number" id="numeroTurma" required min="1" inputmode="numeric" autocomplete="off" />
+        <span id="erro-numeroTurma" class="erro-campo" aria-live="polite"></span>
 
+        <!-- Dirigente -->
+        <label for="dirigente">Nome do dirigente</label>
+        <input type="text" id="dirigente" required autocomplete="name" />
+        <span id="erro-dirigente" class="erro-campo" aria-live="polite"></span>
 
-<!-- Botão para abrir o termo -->
-<button id="btnTermo" type="button" class="btn-principal" style="display: none;">Abrir Termos de Uso</button>
+        <!-- E-mail do dirigente -->
+        <label for="emailDirigente">E-mail do dirigente</label>
+        <input type="email" id="emailDirigente" required autocomplete="email" inputmode="email" />
+        <span id="erro-emailDirigente" class="erro-campo" aria-live="polite"></span>
 
-<p id="msgAceite" style="display: none;">✅ Termos aceitos.</p>
+        <!-- Secretários -->
+        <label for="secretarios">Nomes dos secretários</label>
+        <input type="text" id="secretarios" required autocomplete="off" />
+        <span id="erro-secretarios" class="erro-campo" aria-live="polite"></span>
 
-<button id="btnSalvar" class="btn-principal" style="display: none;" disabled>Salvar Cadastro</button>
+        <!-- Aluno -->
+        <label for="aluno">Nome do aluno</label>
+        <input type="text" id="aluno" required autocomplete="name" />
+        <span id="erro-aluno" class="erro-campo" aria-live="polite"></span>
 
-</form>
-</div> <!-- fecha div.card -->
+        <!-- E-mail do aluno -->
+        <label for="email">E-mail do aluno</label>
+        <input type="email" id="email" required autocomplete="email" inputmode="email" />
+        <span id="erro-email" class="erro-campo" aria-live="polite"></span>
 
-<div id="modalAvisoContainer"></div>
-<div id="rodape"></div>
+        <!-- Telefone -->
+        <label for="telefone">Telefone com +DDI e DDD</label>
+        <input
+          type="tel" id="telefone" required
+          placeholder="+55 11 91234-5678"
+          pattern="^\+\d{2}\s?\d{2}\s?\d{4,5}-?\d{4}$"
+          inputmode="tel" autocomplete="tel"
+          aria-describedby="erro-telefone"
+        />
+        <span id="erro-telefone" class="erro-campo" aria-live="polite"></span>
 
-<!-- Scripts principais -->
-<script type="module" src="js/incluirComponentes.js"></script>
-<script type="module" src="js/modalAviso.js"></script>
-<script type="module" src="js/cadastro.js"></script>
-<script type="module" src="js/verSenha.js"></script>
-<script type="module" src="js/forcaSenha.js"></script>
+        <!-- Senha -->
+        <label for="senha">Senha</label>
+        <div class="campo-senha">
+          <input type="password" id="senha" required autocomplete="new-password" />
+          <button type="button" class="btn-olho" id="toggleSenha1" title="Mostrar senha">👁️</button>
+        </div>
+        <span id="erro-senha" class="erro-campo" aria-live="polite"></span>
+
+        <!-- Força e regras -->
+        <div id="forcaSenha" class="mensagem-sucesso" aria-live="polite"></div>
+        <div id="senhaRegrasContainer"><!-- preenchido via JS --></div>
+
+        <!-- Confirmar senha -->
+        <label for="confirmarsenha">Confirmar senha</label>
+        <div class="campo-senha">
+          <input type="password" id="confirmarsenha" required autocomplete="new-password" />
+          <button type="button" class="btn-olho" id="toggleSenha2" title="Mostrar senha">👁️</button>
+        </div>
+        <span id="erro-confirmarsenha" class="erro-campo" aria-live="polite"></span>
+
+        <!-- Idioma -->
+        <div style="display:flex; align-items:center; gap:.5rem; margin-top:1rem;">
+          <label for="idioma" style="margin:0;">Idioma:</label>
+          <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira" />
+          <select id="idioma" name="idioma" required>
+            <option value="pt-BR" data-flag="br" selected>Português (Brasil)</option>
+            <option value="en-US" data-flag="us">English (US)</option>
+            <option value="fr-FR" data-flag="fr">Français (FR)</option>
+            <option value="de-DE" data-flag="de">Deutsch (DE)</option>
+            <option value="it-IT" data-flag="it">Italiano (IT)</option>
+          </select>
+        </div>
+
+        <!-- Termos (fluxo controlado por JS) -->
+        <button id="btnTermo" type="button" class="btn-principal" style="display:none;">Abrir Termos de Uso</button>
+        <p id="msgAceite" style="display:none;">✅ Termos de uso aceitos.</p>
+
+        <!-- Ações -->
+        <div class="acoes" style="margin-top: 16px;">
+          <button id="btnSalvar" class="btn-principal" style="display:none;" disabled>Salvar Cadastro</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="modalAvisoContainer"></div>
+  <div id="rodape"></div>
+
+  <!-- Logs simples desta view -->
+  <script>
+    console.log("🧩 [CADASTRO-NOVO-UI] /frontend/cadastro.html carregado");
+  </script>
+
+  <!-- Scripts principais -->
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/modalAviso.js"></script>
+  <script type="module" src="js/cadastro.js"></script>
+  <script type="module" src="js/verSenha.js"></script>
+  <script type="module" src="js/forcaSenha.js"></script>
 </body>
 </html>

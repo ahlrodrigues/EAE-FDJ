@@ -1,0 +1,91 @@
+<!-- =======================================================================
+Caminho: /frontend/cadastro2.html
+Tela: EDIÇÃO de cadastro (usa /frontend/js/config.js)
+Ajustes:
+ - Removidos "Código das atividades" e bloco de Funções (roles).
+ - Checkbox "Aceito os termos de uso" alinhado em linha (flex).
+ - Mantidos IDs esperados por config.js (#aluno, #casaEspírita, ... #aceiteTermos).
+======================================================================= -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurações ▸ Cadastro</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <!-- Componentes -->
+  <div id="cabecalho"></div>
+  <div id="menuSuperior"></div>
+  <div id="modalAvisoContainer"></div>
+
+  <main class="container">
+    <h2>Cadastro de Usuário</h2>
+
+    <div class="card">
+      <!-- IDs e estrutura compatíveis com frontend/js/config.js -->
+      <form id="formConfig" novalidate>
+        <label for="aluno">Nome do aluno</label>
+        <input type="text" id="aluno" required />
+
+        <label for="casaEspírita">Nome da casa espírita</label>
+        <input type="text" id="casaEspírita" />
+
+        <label for="numeroTurma">Número da turma</label>
+        <input type="number" id="numeroTurma" min="1" />
+
+        <label for="dirigente">Nome do dirigente</label>
+        <input type="text" id="dirigente" />
+
+        <label for="emailDirigente">E-mail do dirigente</label>
+        <input type="email" id="emailDirigente" />
+
+        <label for="secretarios">Nomes dos secretários</label>
+        <input type="text" id="secretarios" />
+
+        <label for="telefone">Telefone com +DDI e DDD</label>
+        <input
+          type="tel" id="telefone"
+          placeholder="+55 11 91234-5678"
+          pattern="^\+\d{2}\s?\d{2}\s?\d{4,5}-?\d{4}$"
+        />
+
+        <!-- Idioma -->
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <label for="idioma" style="margin:0;">Idioma:</label>
+          <img id="bandeiraIdioma" src="https://flagcdn.com/24x18/br.png" alt="Bandeira atual"/>
+          <select id="idioma" name="idioma">
+            <!-- Valores normalizados (BCP47) para casar com o backend e com config.js -->
+            <option value="pt-BR" data-flag="br" selected>Português (Brasil)</option>
+            <option value="en-US" data-flag="us">English (US)</option>
+            <option value="fr-FR" data-flag="fr">Français (FR)</option>
+            <option value="de-DE" data-flag="de">Deutsch (DE)</option>
+            <option value="it-IT" data-flag="it">Italiano (IT)</option>
+          </select>
+        </div>
+
+        <!-- Aceite de termos (alinhado como no primeiro cadastro) -->
+        <div class="row-checkbox" id="row-aceite-termos" style="display:flex; align-items:center; gap:.5rem; margin-top:8px;">
+          <input type="checkbox" id="aceiteTermos" />
+          <label for="aceiteTermos" style="margin:0;">Aceito os termos de uso</label>
+        </div>
+
+        <div class="acoes" style="margin-top: 16px;">
+          <button id="btnSalvar" type="submit" class="btn-principal">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <!-- Scripts (sempre no final) -->
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/config.js"></script>
+  <script>
+    console.log("⚙️[CONFIG-UI] cadastro2.html carregado");
+  </script>
+</body>
+</html>

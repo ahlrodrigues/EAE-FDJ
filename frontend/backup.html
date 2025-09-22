@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurações ▸ Backup</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <!-- Componentes -->
+  <div id="cabecalho"></div>
+  <div id="menuSuperior"></div>
+  <div id="modalAvisoContainer"></div>
+
+  <main class="container">
+    <h2>Backup</h2>
+
+    <div class="card" id="card-backup">
+      <div class="form-group">
+        <label for="backup-servico">Selecione o serviço</label>
+        <select id="backup-servico">
+          <option value="">Selecione…</option>
+          <option value="google-drive">Google Drive</option>
+          <option value="dropbox" disabled>Dropbox (em breve)</option>
+          <option value="onedrive" disabled>OneDrive (em breve)</option>
+        </select>
+      </div>
+
+      <!-- Linha de OAuth (aparece quando Google Drive for selecionado) -->
+      <div class="form-group" id="oauth-row" style="display:none;">
+        <button id="btnConectarGoogle" class="btn-principal" type="button">Conectar ao Google Drive</button>
+
+        <div id="oauth-status" class="oauth-status" role="status" aria-live="polite"
+             style="display:block; margin-top:8px; margin-bottom:12px;">
+          Status: Desconectado
+        </div>
+        <div aria-hidden="true" style="height:4px;"></div>
+      </div>
+
+      <!-- Cartão de device code (não abre navegador automaticamente) -->
+      <div id="authCodeCard" style="display:none; margin-top:12px; border:1px solid #ddd; padding:12px; border-radius:10px;">
+        <ol style="margin:0; padding-left:18px; line-height:1.5;">
+          <li>
+            Copie o código abaixo:
+            <div style="margin:10px 0;">
+              <code id="authCode" title="Clique para copiar"
+                    style="display:inline-block; font-size:18px; font-weight:700; color:#16a34a; background:#f0fdf4; border:1px dashed #16a34a; padding:6px 10px; border-radius:8px; cursor:pointer; user-select:none;">—</code>
+              <span id="copiedHint" style="margin-left:8px; font-size:12px; color:#16a34a; display:none;">Copiado!</span>
+            </div>
+            <small style="color:#666; display:block; margin-top:4px;">
+              Dica: Toque no código para copiá-lo rapidamente.
+            </small>
+          </li>
+          <li style="margin-top: 8px;">
+            Clique em <a id="authUrl" href="#" target="_blank" rel="noopener">https://www.google.com/device</a>
+            para abrir no seu navegador.
+            <small style="color:#666; display:block; margin-top:4px;">
+              Dica: Não fecharemos esta tela. Volte aqui após autorizar.
+            </small>
+          </li>
+          <li style="margin-top: 8px;">
+            Autorize o acesso e retorne ao app. Detectaremos a conexão automaticamente.
+            <small style="color:#666; display:block; margin-top:4px;">
+              Você verá a confirmação “Conectado ao Google Drive” quando tudo estiver pronto.
+            </small>
+          </li>
+        </ol>
+
+        <div id="authStatus" style="margin-top:12px; font-size:0.9em; color:#555;"></div>
+      </div>
+
+      <!-- Pasta remota -->
+      <div class="form-group" style="margin-top:12px;">
+        <label for="backup-pasta-remota">Pasta no Google Drive</label>
+        <input id="backup-pasta-remota" type="text" value="EAEbackup" readonly disabled />
+        <small id="hint-pasta" class="assistive">Será criada na raiz do seu Google Drive.</small>
+        <div class="erro-campo" id="erro-backup-pasta" style="display:none;"></div>
+      </div>
+
+      <!-- Modo -->
+      <fieldset class="form-group" aria-describedby="backup-modo-ajuda">
+        <legend>Modo</legend>
+        <div class="radio-row">
+          <label class="radio-item">
+            <input type="radio" name="backup-modo" value="manual" checked />
+            <span class="radio-label">
+              <strong>Sob demanda</strong>
+              <small class="hint">Você decide quando executar (botão “Executar agora”).</small>
+            </span>
+          </label>
+
+          <label class="radio-item">
+            <input type="radio" name="backup-modo" value="agendado" />
+            <span class="radio-label">
+              <strong>Agendado diário</strong>
+              <small class="hint">Roda automaticamente no horário definido abaixo.</small>
+            </span>
+          </label>
+
+          <label class="radio-item">
+            <input type="radio" name="backup-modo" value="continuo" />
+            <span class="radio-label">
+              <strong>Contínuo</strong>
+              <small class="hint">Monitora alterações e envia incrementos (maior uso de recursos).</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div id="agendamento-row" class="agendamento-linha" style="display:none">
+        <label for="backup-horario">Horário (agendado diário):</label>
+        <input id="backup-horario" type="time" step="60" value="22:30" />
+      </div>
+
+      <!-- Ações -->
+      <div class="form-actions form-actions--grid">
+        <button id="btn-backup-testar" class="btn-principal" type="button">Testar conexão</button>
+        <button id="btn-backup-executar" class="btn-principal" type="button">Executar agora</button>
+        <button id="btn-backup-salvar" class="btn-principal btn-full" type="button">Salvar configurações</button>
+      </div>
+
+      <small id="backup-ultima-info" class="ultima-info">Último backup: —</small>
+    </div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script src="js/backupUI.js"></script>
+  <script type="module" src="js/backupConfig.js"></script>
+</body>
+</html>

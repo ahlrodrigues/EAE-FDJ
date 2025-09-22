@@ -1,245 +1,322 @@
-// === js/cadastro.js ===
-
-console.log("\u{1F50D} window.api:", window.api);
-console.log("\u{1F50D} window.api.ouvirTermoAceito:", window.api?.ouvirTermoAceito);
+// =============================================================================
+// Caminho: /frontend/js/cadastro.js
+// Tela: PRIMEIRO CADASTRO (criação de conta)
+// Objetivos:
+//  - Usar spans de erro existentes (#erro-<id>) em vez de criar <div> dinâmicos.
+//  - Validar e-mail, telefone (via pattern do input), senha=confirmar.
+//  - Normalizar idioma (BCP47 quando possível).
+//  - Logs seguros e consistentes (sem vazar senha / email puro).
+//  - Compat com backend: window.api.salvarCadastro(dados) e
+//    window.api.verificarEmailExistente(email).
+// Logs: prefixo 🧩[CADASTRO-NOVO-UI]
+// =============================================================================
 
 import { exibirAviso } from "./modalAviso.js";
 import { componentesCarregados } from "./incluirComponentes.js";
 import { inicializarValidacaoSenha } from "./senhaRegra.js";
 import { inicializarBotaoVerSenha } from "./verSenha.js";
 
+const LOG = "🧩[CADASTRO-NOVO-UI]";
 let aceiteTermos = false;
 
+// 🔎 Helpers DOM
 async function esperarElemento(seletor, tentativas = 20, intervalo = 100) {
   for (let i = 0; i < tentativas; i++) {
     if (document.querySelector(seletor)) return true;
-    await new Promise(resolve => setTimeout(resolve, intervalo));
+    await new Promise((r) => setTimeout(r, intervalo));
   }
-  console.warn(`\u26A0\uFE0F Elemento ${seletor} n\u00E3o encontrado ap\u00F3s ${tentativas} tentativas.`);
+  console.warn(`${LOG} ⚠️ Elemento ${seletor} não encontrado após ${tentativas} tentativas.`);
   return false;
 }
+const qs  = (sel) => document.querySelector(sel);
+const qsa = (sel) => Array.from(document.querySelectorAll(sel));
 
+// 🔧 Erros (usa os <span id="erro-<id>"> já existentes no HTML)
+function setErro(inputEl, mensagem) {
+  if (!inputEl) return;
+  inputEl.classList.add("invalido");
+  const spanId = `erro-${inputEl.id}`;
+  let span = qs(`#${spanId}`);
+  if (!span) {
+    // fallback: cria se não existir (evita quebrar se HTML mudar)
+    span = document.createElement("span");
+    span.id = spanId;
+    span.className = "erro-campo";
+    inputEl.insertAdjacentElement("afterend", span);
+  }
+  span.textContent = mensagem || "";
+  span.style.display = mensagem ? "block" : "none";
+}
+function clearErro(inputEl) {
+  if (!inputEl) return;
+  inputEl.classList.remove("invalido");
+  const span = qs(`#erro-${inputEl.id}`);
+  if (span) {
+    span.textContent = "";
+    span.style.display = "none";
+  }
+}
+
+// 🧪 Validações
+function isValidEmail(v) {
+  return /\S+@\S+\.\S+/.test(String(v || "").trim());
+}
+function isValidTelefone(inputEl) {
+  if (!inputEl) return false;
+  const v = String(inputEl.value || "").trim();
+  // Se houver pattern no HTML, respeite-o:
+  const pattern = inputEl.getAttribute("pattern");
+  if (pattern) {
+    try {
+      const re = new RegExp(pattern);
+      return re.test(v);
+    } catch {
+      // fallback simples
+      return v.length >= 8;
+    }
+  }
+  return v.length >= 8;
+}
+function normalizarIdioma(v) {
+  // Aceita pt → pt-BR, en → en-US, etc. Mantém se já vier BCP47.
+  const map = { pt: "pt-BR", en: "en-US", fr: "fr-FR", de: "de-DE", it: "it-IT" };
+  return map[v] || v || "pt-BR";
+}
+
+// ✔️ Validação automática por campo
 function validarCampoIndividual(campo) {
-  const valor = campo.value.trim();
+  if (!campo) return;
   const id = campo.id;
-  let mensagemErro = "";
-
-  const erroExistente = document.getElementById(`erro-${id}`);
-  if (erroExistente) erroExistente.remove();
+  const valor = String(campo.value || "").trim();
+  let msg = "";
 
   switch (id) {
     case "email":
-      if (!/\S+@\S+\.\S+/.test(valor)) mensagemErro = "E-mail inv\u00E1lido.";
+      if (!isValidEmail(valor)) msg = "E-mail inválido.";
       break;
+
     case "telefone":
-      if (valor.length < 8) mensagemErro = "Telefone muito curto.";
+      if (!isValidTelefone(campo)) msg = "Telefone inválido. Ex.: +55 11 91234-5678";
       break;
+
     case "senha":
-    case "confirmarsenha":
-      const senha = document.getElementById("senha")?.value.trim();
-      const confirmar = document.getElementById("confirmarsenha")?.value.trim();
+    case "confirmarsenha": {
+      const senha = String(qs("#senha")?.value || "").trim();
+      const confirmar = String(qs("#confirmarsenha")?.value || "").trim();
       if (senha && confirmar && senha !== confirmar) {
-        mensagemErro = "Senhas n\u00E3o coincidem.";
-        aplicarErro(document.getElementById("senha"), mensagemErro);
-        aplicarErro(document.getElementById("confirmarsenha"), mensagemErro);
-        atualizarEstadoBotaoSalvar();
+        msg = "Senhas não coincidem.";
+        setErro(qs("#senha"), msg);
+        setErro(qs("#confirmarsenha"), msg);
+        atualizarEstadoBotoes();
         return;
       } else {
-        removerErro(document.getElementById("senha"));
-        removerErro(document.getElementById("confirmarsenha"));
+        clearErro(qs("#senha"));
+        clearErro(qs("#confirmarsenha"));
       }
       break;
+    }
+
     default:
-      if (!valor) mensagemErro = "Campo obrigat\u00F3rio.";
+      if (campo.required && !valor) msg = "Campo obrigatório.";
   }
 
-  if (mensagemErro) aplicarErro(campo, mensagemErro);
-  else removerErro(campo);
+  if (msg) setErro(campo, msg);
+  else clearErro(campo);
 
-  atualizarEstadoBotaoSalvar();
-}
-
-function aplicarErro(campo, mensagem) {
-  if (!campo) return;
-  campo.classList.add("invalido");
-  const divErro = document.createElement("div");
-  divErro.className = "erro-campo";
-  divErro.id = `erro-${campo.id}`;
-  divErro.textContent = mensagem;
-  const parent = campo.parentElement;
-  if (parent) parent.insertBefore(divErro, campo);
-}
-
-function removerErro(campo) {
-  if (!campo) return;
-  campo.classList.remove("invalido");
-  const erroEl = document.getElementById(`erro-${campo.id}`);
-  if (erroEl) erroEl.remove();
-}
-
-function verificarCamposCadastroPreenchidos() {
-  const camposObrigatorios = [
-    "casaEsp\u00EDrita", "numeroTurma", "dirigente", "emailDirigente",
-    "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
-  ];
-  return camposObrigatorios.every(id => {
-    const el = document.getElementById(id);
-    return el && el.value.trim() !== "";
-  });
+  atualizarEstadoBotoes();
 }
 
 function camposPossuemErro() {
-  return document.querySelectorAll(".invalido").length > 0;
+  return qsa(".invalido").length > 0;
 }
 
-function ativarValidacaoAoDigitar() {
-  const campos = document.querySelectorAll("input, textarea, select");
-  campos.forEach(campo => {
-    campo.addEventListener("input", () => {
-      validarCampoIndividual(campo);
-      atualizarEstadoBotaoTermo();
-    });
-    campo.addEventListener("blur", () => validarCampoIndividual(campo));
+function verificarCamposCadastroPreenchidos() {
+  const obrig = [
+    "casaEspírita", "numeroTurma", "dirigente", "emailDirigente",
+    "secretarios", "aluno", "email", "telefone", "senha", "confirmarsenha"
+  ];
+  return obrig.every((id) => {
+    const el = qs("#" + id);
+    return el && String(el.value || "").trim() !== "";
   });
 }
 
-function atualizarEstadoBotaoTermo() {
-  const tudoPreenchido = verificarCamposCadastroPreenchidos();
-  const senha = document.getElementById("senha")?.value.trim();
-  const codigoTemas = document.getElementById("codigoTemas")?.value.trim();
-  const btnTermo = document.getElementById("btnTermo");
+function ativarValidacaoAoDigitar() {
+  qsa("input, textarea, select").forEach((el) => {
+    el.addEventListener("input", () => {
+      validarCampoIndividual(el);
+      atualizarEstadoBotoes();
+    });
+    el.addEventListener("blur", () => validarCampoIndividual(el));
+  });
+}
 
-  if (tudoPreenchido && senha && codigoTemas) {
-    btnTermo.style.display = "inline-block";
-    btnTermo.disabled = false;
-    console.log("\u2705 Campos obrigat\u00F3rios preenchidos + senha + codigoTemas → Bot\u00E3o termo exibido.");
-  } else {
-    btnTermo.style.display = "none";
-    btnTermo.disabled = true;
-    console.log("⛔ Campos incompletos → Bot\u00E3o termo oculto.");
+// 🎛️ Controle dos botões (termo/salvar)
+function atualizarEstadoBotoes() {
+  const btnTermo  = qs("#btnTermo");
+  const btnSalvar = qs("#btnSalvar");
+
+  const tudoPreenchido = verificarCamposCadastroPreenchidos();
+  const semErros       = !camposPossuemErro();
+
+  if (btnTermo) {
+    const mostrarTermo = tudoPreenchido && semErros && !aceiteTermos;
+    btnTermo.style.display = mostrarTermo ? "inline-block" : "none";
+    btnTermo.disabled = !mostrarTermo;
+  }
+  if (btnSalvar) {
+    // Só mostra após aceite; habilita se sem erros:
+    btnSalvar.style.display = aceiteTermos ? "inline-block" : "none";
+    btnSalvar.disabled = !aceiteTermos || !semErros;
   }
 }
 
-function atualizarEstadoBotaoSalvar() {
-  const btnSalvar = document.getElementById("btnSalvar");
-  if (!btnSalvar) return;
-  const temErro = camposPossuemErro();
-  btnSalvar.disabled = temErro;
-  console.log(`\u{1F504} Bot\u00E3o Salvar ${temErro ? "desativado" : "ativado"} devido a erros.`);
-}
-
+// 🚀 Main
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("⚙️ DOM totalmente carregado.");
+  console.log(`${LOG} janela carregada. window.api=`, !!window.api);
+
   await componentesCarregados;
   await esperarElemento("#cadastroForm");
 
   inicializarValidacaoSenha();
   inicializarBotaoVerSenha();
+  console.log(`${LOG} componentes de senha prontos.`);
 
-  console.log("✅ Componentes carregados e senha pronta para valida\u00E7\u00E3o.");
-
-  const idiomaEl = document.getElementById("idioma");
-  const bandeiraEl = document.getElementById("bandeiraIdioma");
-  const btnTermo = document.getElementById("btnTermo");
-  const btnSalvar = document.getElementById("btnSalvar");
-  const msgAceite = document.getElementById("msgAceite");
-
-  btnTermo.style.display = "none";
-  btnSalvar.style.display = "none";
-  msgAceite.style.display = "none";
-
-  idiomaEl.addEventListener("change", () => {
-    const flagCode = idiomaEl.selectedOptions[0].dataset.flag;
-    bandeiraEl.src = `https://flagcdn.com/24x18/${flagCode}.png`;
-  });
-
-  ativarValidacaoAoDigitar();
-  atualizarEstadoBotaoTermo();
-
-  if (typeof window.api?.ouvirTermoAceito === "function") {
-    console.log("\u{1F442} Registrando ouvinte 'termo-aceito'");
-    window.api.ouvirTermoAceito(async () => {
-      console.log("\u{1F4E5} Evento 'termo-aceito' recebido");
-      await aplicarEstadoTermoAceito();
+  // Bind de idioma + bandeira
+  const idiomaEl   = qs("#idioma");
+  const bandeiraEl = qs("#bandeiraIdioma");
+  if (idiomaEl && bandeiraEl) {
+    idiomaEl.addEventListener("change", () => {
+      const opt = idiomaEl.selectedOptions?.[0];
+      const flag = opt?.dataset?.flag || "br";
+      bandeiraEl.src = `https://flagcdn.com/24x18/${flag}.png`;
     });
   }
 
-  async function aplicarEstadoTermoAceito() {
-    aceiteTermos = true;
-    await esperarElemento("#btnSalvar");
-    await esperarElemento("#msgAceite");
-    await esperarElemento("#btnTermo");
+  // Estado inicial de botões
+  const btnTermo  = qs("#btnTermo");
+  const btnSalvar = qs("#btnSalvar");
+  const msgAceite = qs("#msgAceite");
+  if (btnTermo)  { btnTermo.style.display = "none"; btnTermo.disabled = true; }
+  if (btnSalvar) { btnSalvar.style.display = "none"; btnSalvar.disabled = true; }
+  if (msgAceite) { msgAceite.style.display = "none"; }
 
-    btnTermo.style.display = "none";
-    btnTermo.disabled = true;
-    btnSalvar.style.display = "inline-block";
-    btnSalvar.disabled = camposPossuemErro();
-    msgAceite.style.display = "block";
+  ativarValidacaoAoDigitar();
+  atualizarEstadoBotoes();
+
+  // Ouvir aceite do termo (via preload → main)
+  if (typeof window.api?.ouvirTermoAceito === "function") {
+    console.log(`${LOG} registrando ouvinte 'termo-aceito'`);
+    window.api.ouvirTermoAceito(async () => {
+      console.log(`${LOG} evento 'termo-aceito' recebido`);
+      aceiteTermos = true;
+      if (btnTermo)  { btnTermo.style.display = "none"; btnTermo.disabled = true; }
+      if (btnSalvar) { btnSalvar.style.display = "inline-block"; btnSalvar.disabled = camposPossuemErro(); }
+      if (msgAceite) { msgAceite.style.display = "block"; }
+    });
   }
 
-  btnTermo.addEventListener("click", async () => {
+  // Abrir termo
+  btnTermo?.addEventListener("click", async () => {
     try {
-      console.log("📄 Abrindo janela do termo...");
+      console.log(`${LOG} abrindo janela do termo…`);
       await window.api.abrirJanelaTermo();
-    } catch (erro) {
-      console.error("❌ Erro ao abrir termo:", erro);
+    } catch (e) {
+      console.error(`${LOG} ❌ erro ao abrir termo:`, e?.message || e);
     }
   });
 
-  btnSalvar.addEventListener("click", async () => {
-    console.log("📨 Clique em Salvar Cadastro detectado.");
+  // Salvar cadastro
+  btnSalvar?.addEventListener("click", async () => {
+    console.log(`${LOG} clique em Salvar Cadastro`);
 
     if (!verificarCamposCadastroPreenchidos()) {
-      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro." });
+      return exibirAviso({ tipo: "erro", mensagem: "Preencha todos os campos obrigatórios antes de salvar o cadastro." });
     }
-
+    if (camposPossuemErro()) {
+      return exibirAviso({ tipo: "erro", mensagem: "Corrija os campos destacados antes de salvar." });
+    }
     if (!aceiteTermos) {
-      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "Você precisa aceitar os termos antes de salvar o cadastro." });
+      return exibirAviso({ tipo: "erro", mensagem: "Você precisa aceitar os termos antes de salvar o cadastro." });
     }
 
-    const senha = document.getElementById("senha").value.trim();
-    const confirmar = document.getElementById("confirmarsenha").value.trim();
+    const senha     = String(qs("#senha")?.value || "").trim();
+    const confirmar = String(qs("#confirmarsenha")?.value || "").trim();
     if (senha !== confirmar) {
-      return exibirAviso({ tipo: "⚠️ Atenção", mensagem: "As senhas não coincidem. Verifique e tente novamente." });
+      return exibirAviso({ tipo: "erro", mensagem: "As senhas não coincidem. Verifique e tente novamente." });
     }
 
-    const email = document.getElementById("email").value.trim();
-    const emailExiste = await window.api.verificarEmailExistente(email);
+    const email = String(qs("#email")?.value || "").trim().toLowerCase();
+    if (!isValidEmail(email)) {
+      return exibirAviso({ tipo: "erro", mensagem: "E-mail inválido." });
+    }
+
+    // 🔐 emailHash gerado no preload (HMAC-SHA256 com APP_MASTER_KEY)
+    const emailHash = window.nativo?.gerarEmailHash?.(email);
+    if (!emailHash || !/^[a-f0-9]{64}$/i.test(emailHash)) {
+      console.error(`${LOG} ❌ gerarEmailHash falhou ou inválido.`);
+      return exibirAviso({ tipo: "erro", mensagem: "Erro interno ao gerar identificador seguro do e-mail." });
+    }
+
+    // Evita crash se handler não existir
+    let emailExiste = false;
+    try {
+      if (typeof window.api?.verificarEmailExistente === "function") {
+        emailExiste = await window.api.verificarEmailExistente(email);
+      }
+    } catch (e) {
+      console.warn(`${LOG} verificarEmailExistente falhou/ausente:`, e?.message || e);
+    }
     if (emailExiste) {
-      return exibirAviso({ tipo: "❌ Erro", mensagem: "O e-mail informado já está em uso. Por favor, tente outro." });
+      return exibirAviso({ tipo: "erro", mensagem: "O e-mail informado já está em uso. Por favor, tente outro." });
     }
 
-    const idiomaEl = document.getElementById("idioma");
+    // Normaliza idioma (aceita pt → pt-BR, etc.)
+    const idiomaOrig = String(qs("#idioma")?.value || "pt-BR");
+    const idioma = normalizarIdioma(idiomaOrig);
 
     const dadosUsuario = {
       email,
       senha,
-      aluno: document.getElementById("aluno").value,
-      casaEspírita: document.getElementById("casaEspírita").value,
-      numeroTurma: document.getElementById("numeroTurma").value,
-      dirigente: document.getElementById("dirigente").value,
-      emailDirigente: document.getElementById("emailDirigente").value,
-      secretarios: document.getElementById("secretarios").value,
-      telefone: document.getElementById("telefone").value,
-      codigoTemas: document.getElementById("codigoTemas").value,
-      idioma: idiomaEl.value,
+      aluno: qs("#aluno")?.value,
+      casaEspírita: qs("#casaEspírita")?.value,
+      numeroTurma: qs("#numeroTurma")?.value,
+      dirigente: qs("#dirigente")?.value,
+      emailDirigente: qs("#emailDirigente")?.value,
+      secretarios: qs("#secretarios")?.value,
+      telefone: qs("#telefone")?.value,
+      idioma,
       aceiteTermos: true,
-      emailHash: window.nativo.gerarEmailHash(email)
+      emailHash
     };
 
-    console.log("📤 Enviando dados:", dadosUsuario);
+    // Log seguro (não vazar senha/email puro)
+    const masked = {
+      ...dadosUsuario,
+      email: `${email.slice(0, 1)}***@${email.split("@")[1]}`,
+      senha: "***",
+      emailHash: `${emailHash.slice(0, 8)}…`
+    };
+    console.log(`${LOG} enviando dados:`, masked);
 
-    const resultado = await window.api.salvarCadastro(dadosUsuario);
-    if (resultado.sucesso) {
-      exibirAviso({
-        tipo: "✅ Sucesso",
-        mensagem: "Cadastro realizado com sucesso!",
-        aoFechar: () => {
-          window.location.href = "login.html";
-        }
-      });
-    } else {
-      exibirAviso({ tipo: "❌ Erro", mensagem: resultado.erro || "Erro desconhecido ao salvar." });
+    try {
+      const res = await window.api?.salvarCadastro?.(dadosUsuario);
+      if (res?.sucesso) {
+        exibirAviso({
+          tipo: "sucesso",
+          mensagem: "Cadastro realizado com sucesso!",
+          aoFechar: () => (window.location.href = "login.html")
+        });
+      } else {
+        exibirAviso({ tipo: "erro", mensagem: res?.erro || "Erro desconhecido ao salvar." });
+      }
+    } catch (e) {
+      console.error(`${LOG} ❌ salvarCadastro falhou:`, e?.message || e);
+      exibirAviso({ tipo: "erro", mensagem: "Falha ao salvar cadastro. Tente novamente." });
     }
   });
 });
+
+// Debug inicial
+console.log(`${LOG} window.api:`, window.api);
+console.log(`${LOG} window.api.ouvirTermoAceito:`, window.api?.ouvirTermoAceito);

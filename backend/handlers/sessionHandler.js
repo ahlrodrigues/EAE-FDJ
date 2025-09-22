@@ -1,3 +1,7 @@
+// =============================================================================
+// Caminho: backend/handlers/sessionHandler.js
+// Objetivo: registrar IPC de sessão (processo MAIN), sem tocar no preload.
+// =============================================================================
 const { ipcMain } = require("electron");
 const {
   isLoginAtivo,
@@ -6,22 +10,24 @@ const {
   obterEmailHashAtivo,
 } = require("../lib/sessionStore");
 
-function registrarSessionHandler() {
-  console.log("🧩 Registrando sessionHandler...");
+const LOG = "[SESSION]";
 
-  ipcMain.on("sessao-definir", (event, emailHash) => {
-    console.log("🧩 Sessão ativa definida para:", emailHash);
+function registrarSessionHandler() {
+  console.log(`${LOG} registrando IPC…`);
+
+  ipcMain.on("sessao-definir", (_event, emailHash) => {
+    console.log(`${LOG} definir sessão →`, emailHash?.slice(0,8) + "…");
     definirSessaoAtiva(emailHash);
   });
 
   ipcMain.handle("session:isLoginAtivo", () => {
     const status = isLoginAtivo();
-    console.log("🔐 Consulta de sessão ativa:", status);
+    console.log(`${LOG} status login ativo:`, status);
     return status;
   });
 
   ipcMain.handle("session:logout", () => {
-    console.log("🔓 Logout requisitado. Finalizando sessão...");
+    console.log(`${LOG} logout → limpar sessão`);
     limparSessao();
     return true;
   });

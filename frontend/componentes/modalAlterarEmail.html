@@ -1,0 +1,81 @@
+<!-- =========================================================================
+Caminho: frontend/components/modalAlterarEmail.html
+Objetivo: Modal para fluxo "Alterar e-mail" (etapas: iniciar → confirmar).
+Estilos: mínimos inline p/ funcionar sem depender do CSS global.
+Logs: UI com prefixo 🧩 [EMAIL-CHANGE-UI]
+========================================================================= -->
+<div id="modalAlterarEmail"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modalAlterarEmailTitulo"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000;">
+  <div class="modal-card" style="max-width:520px; margin:5vh auto; background:#fff; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.2); overflow:hidden;">
+    <!-- Cabeçalho -->
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #eee;">
+      <h3 id="modalAlterarEmailTitulo" style="margin:0; font-size:18px;">Alterar e-mail</h3>
+      <button id="btnFecharModalAlterarEmail" aria-label="Fechar" title="Fechar"
+              style="border:none; background:transparent; font-size:20px; cursor:pointer; line-height:1;">×</button>
+    </div>
+
+    <!-- Corpo -->
+    <div style="padding:16px;">
+      <!-- Etapa 1: iniciar troca (gera token) -->
+      <div id="etapaIniciar">
+        <p style="margin-top:0; color:#444;">
+          Informe o <strong>novo e-mail</strong> e sua <strong>senha atual</strong>. Enviaremos um código de confirmação.
+        </p>
+
+        <form id="formIniciarTroca" novalidate>
+          <label for="novoEmail" style="display:block; margin:.25rem 0;">Novo e-mail</label>
+          <input id="novoEmail" type="email" required
+                 placeholder="novo.email@exemplo.com"
+                 style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+
+          <label for="senhaAtual" style="display:block; margin:.8rem 0 .25rem;">Senha atual</label>
+          <input id="senhaAtual" type="password" required
+                 placeholder="••••••••"
+                 style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+
+          <div id="erroEtapa1" class="erro-campo" style="display:none; color:#b91c1c; margin-top:.5rem;"></div>
+
+          <div style="display:flex; gap:.5rem; margin-top:1rem;">
+            <button id="btnEnviarCodigo" type="submit" class="btn-principal"
+                    style="flex:1; padding:10px 12px;">Enviar código</button>
+            <button type="button" id="btnCancelarEtapa1"
+                    style="padding:10px 12px; background:#eee; border:1px solid #ddd; border-radius:8px; cursor:pointer;">Cancelar</button>
+          </div>
+          <small style="display:block; color:#666; margin-top:.6rem;">
+            Dica: o código expira após alguns minutos.
+          </small>
+        </form>
+      </div>
+
+      <!-- Etapa 2: confirmar token -->
+      <div id="etapaConfirmar" style="display:none;">
+        <p style="margin-top:0; color:#444;">
+          Digite o <strong>código de confirmação</strong> enviado ao novo e-mail.
+        </p>
+
+        <form id="formConfirmarTroca" novalidate>
+          <label for="tokenEmail" style="display:block; margin:.25rem 0;">Código</label>
+          <input id="tokenEmail" type="text" required
+                 placeholder="Cole aqui o código"
+                 style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+
+          <div id="hintDevToken" style="display:none; color:#166534; background:#ecfdf5; border:1px dashed #34d399; padding:.5rem .6rem; border-radius:8px; margin-top:.5rem; font-size:.9em;"></div>
+          <div id="erroEtapa2" class="erro-campo" style="display:none; color:#b91c1c; margin-top:.5rem;"></div>
+
+          <div style="display:flex; gap:.5rem; margin-top:1rem;">
+            <button id="btnConfirmarTroca" type="submit" class="btn-principal"
+                    style="flex:1; padding:10px 12px;">Confirmar</button>
+            <button type="button" id="btnVoltarEtapa1"
+                    style="padding:10px 12px; background:#eee; border:1px solid #ddd; border-radius:8px; cursor:pointer;">Voltar</button>
+          </div>
+          <small style="display:block; color:#666; margin-top:.6rem;">
+            Se o código expirou, volte e gere um novo.
+          </small>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

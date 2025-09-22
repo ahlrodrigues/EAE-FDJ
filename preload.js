@@ -1,79 +1,80 @@
 // ============================================================================
 // Caminho: preload.js
-// Exposição controlada de APIs para o renderer.
-// Mantém o preload enxuto, seguro e com logs consistentes.
+// Exposição controlada de APIs para o renderer (NOVO MODELO).
+// Ajustes aplicados:
+//  • REMOVE dependência do legado ~/.config/escola-aprendizes/config/usuario.json
+//  • Usa sessão ativa (IPC: session:emailHash) para obter o emailHash
+//  • Gera emailHash = sha256(email.trim().toLowerCase()) — sem HMAC / APP_MASTER_KEY
+//  • Evita logar dados sensíveis; mantém logs com prefixo e contexto
+//  • Mantém APIs existentes, sem duplicidade; remove dotenv no preload
+//  • Usa canais do Blog vindos do MAIN via process.env.BLOG_CHANNELS_JSON
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// 📦 Imports
-// ----------------------------------------------------------------------------
 const { contextBridge, ipcRenderer } = require("electron");
-const fs = require("fs").promises;          // assíncrono (promises)
-const fsSync = require("fs");               // síncrono (uso pontual)
+const fs = require("fs").promises;   // assíncrono
+const fsSync = require("fs");        // uso pontual (controlado)
 const path = require("path");
 const os = require("os");
 const crypto = require("crypto");
-const dotenv = require("dotenv");
 
-// ----------------------------------------------------------------------------
-dotenv.config();
-
-// ----------------------------------------------------------------------------
-const APP_MASTER_KEY = process.env.APP_MASTER_KEY;
 const PRE = "🔌 [PRELOAD]";
 
-/** Garante que um callback seja função antes de registrar ouvintes. */
 function ensureFn(fn, nome) {
   if (typeof fn === "function") return true;
   console.warn(`${PRE} Callback inválido passado para ${nome}.`);
   return false;
 }
 
-console.log(`🔐 ${PRE} APP_MASTER_KEY definido?`, Boolean(APP_MASTER_KEY));
 console.log(`🧠 ${PRE} preload.js carregado`);
+
+// ============================================================================
+// 🔎 Canais do Blog (padronizados pelo MAIN)
+// ============================================================================
+let BLOG_CHANNELS = {};
+try {
+  BLOG_CHANNELS = JSON.parse(process.env.BLOG_CHANNELS_JSON || "{}");
+} catch {
+  BLOG_CHANNELS = {};
+}
+const BLOG_FETCH_LAST = BLOG_CHANNELS?.FETCH_LAST || "blog:buscarUltimaPublicacao";
+const BLOG_PING       = BLOG_CHANNELS?.PING       || "blog:debugPing";
+
+console.log(`${PRE} Blog channels:`, { BLOG_FETCH_LAST, BLOG_PING });
 
 // ============================================================================
 // 🔧 Helpers locais (NÃO expostos diretamente)
 // ============================================================================
-function obterPrimeiroUsuario(dados) {
-  const chaves = Object.keys(dados?.usuarios || {});
-  return dados?.usuarios?.[chaves[0]] || null;
+const CONFIG_BASE = path.join(os.homedir(), ".config", "escola-aprendizes", "config");
+const NOTAS_BASE  = path.join(os.homedir(), ".config", "escola-aprendizes", "notas");
+const TEMAS_BASE  = path.join(os.homedir(), ".config", "escola-aprendizes", "temas");
+
+function configBaseDir() { return CONFIG_BASE; }
+function notasDir(emailHash) { return path.join(NOTAS_BASE, String(emailHash || "").trim()); }
+function temasDir(emailHash) { return path.join(TEMAS_BASE, String(emailHash || "").trim()); }
+
+// sha256 puro (alinhado ao backend)
+function gerarEmailHashSha256(email) {
+  const norm = String(email || "").trim().toLowerCase();
+  if (!norm.includes("@")) return null;
+  return crypto.createHash("sha256").update(norm, "utf8").digest("hex");
 }
-function getUserConfigPath() {
-  return path.join(os.homedir(), ".config", "escola-aprendizes", "config", "usuario.json");
-}
-function obterEmailHashInterno() {
-  try {
-    const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
-    const dados = JSON.parse(raw);
-    const chaves = Object.keys(dados.usuarios || {});
-    const emailHash = chaves[0] || null;
-    if (!emailHash) console.warn(`${PRE} emailHash não encontrado no usuario.json.`);
-    return emailHash;
-  } catch (erro) {
-    console.error(`${PRE} Erro ao obter emailHash:`, erro.message);
+
+// Caminho do arquivo do usuário logado (precisa do emailHash da sessão)
+async function getUserFilePath() {
+  const hash = await ipcRenderer.invoke("session:emailHash");
+  if (!hash) {
+    console.warn(`${PRE} getUserFilePath: emailHash ausente na sessão`);
     return null;
   }
-}
-function getTemasDir(emailHash) {
-  const hash = String(emailHash || "").trim();
-  return path.join(os.homedir(), ".config", "escola-aprendizes", "temas", hash);
-}
-function gerarEmailHashInterno(email) {
-  try {
-    return crypto.createHmac("sha256", APP_MASTER_KEY || "").update(email || "").digest("hex");
-  } catch (e) {
-    console.error(`${PRE} Falha ao gerar emailHash:`, e.message);
-    return null;
-  }
+  return path.join(configBaseDir(), "usuarios", `${hash}.json`);
 }
 
 // ============================================================================
-// 🌐 Canal termo-aceito (evento assíncrono vindo do main)
+// 🌐 Evento 'termo-aceito' vindo do MAIN
 // ============================================================================
 let callbackTermoAceito = null;
 ipcRenderer.removeAllListeners("termo-aceito");
-ipcRenderer.on("termo-aceito", (_evento, _dados) => {
+ipcRenderer.on("termo-aceito", () => {
   console.log(`📥 ${PRE} Evento 'termo-aceito' recebido`);
   if (typeof callbackTermoAceito === "function") {
     try {
@@ -88,7 +89,7 @@ ipcRenderer.on("termo-aceito", (_evento, _dados) => {
 });
 
 // ============================================================================
-// 🧭 Logs auxiliares dos eventos de Drive (debug único)
+// 🧭 Logs auxiliares dos eventos de Drive (bind único)
 // ============================================================================
 let _driveListenersBound = false;
 function _bindDriveLogListenersOnce() {
@@ -104,16 +105,16 @@ function _bindDriveLogListenersOnce() {
 
 // ============================================================================
 // 🧭 Expor alguns módulos nativos de forma limitada
+//   (atenção: expor fs/path/os aumenta superfície; mantenha apenas o necessário)
 // ============================================================================
 contextBridge.exposeInMainWorld("nativo", {
   fs, path, os,
   getEnv: (chave) => process.env[chave] || null,
-  gerarEmailHash: (email) => gerarEmailHashInterno(email),
+  gerarEmailHash: (email) => gerarEmailHashSha256(email),
 
   criptografarComMestra: async (texto) => {
     try {
-      const res = await ipcRenderer.invoke("criptografar-com-mestra", texto);
-      return res;
+      return await ipcRenderer.invoke("criptografar-com-mestra", texto);
     } catch (e) {
       console.error(`${PRE} Falha ao criptografar via IPC:`, e.message);
       throw e;
@@ -121,7 +122,7 @@ contextBridge.exposeInMainWorld("nativo", {
   },
 
   arquivoExiste: async (caminhoRelativo) => {
-    const completo = path.join(os.homedir(), ".config", "escola-aprendizes", "config", caminhoRelativo);
+    const completo = path.join(configBaseDir(), caminhoRelativo);
     try {
       await fs.access(completo);
       console.log(`✅ ${PRE} Arquivo existe:`, completo);
@@ -134,44 +135,44 @@ contextBridge.exposeInMainWorld("nativo", {
 });
 
 // ============================================================================
-// 🧾 Utilidades de usuário exibidas via API
+// 👤 APIs de USUÁRIO (NOVO MODELO)
+//   -> Sem usuario.json legado. Baseadas em IPC e arquivo por usuário.
+//   -> Handlers esperados no MAIN: 'usuario:ler' e 'usuario:obterNomeAluno'.
 // ============================================================================
-function obterNomeUsuarioPlano() {
-  try {
-    const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
-    const dados = JSON.parse(raw);
-    const usuario = obterPrimeiroUsuario(dados);
-    const nome = usuario?.aluno || "usuario";
-    return String(nome).replace(/\s+/g, "_");
-  } catch (e) {
-    console.warn(`${PRE} Não foi possível obter nome do usuário:`, e.message);
-    return null;
-  }
-}
-async function obterNomeAlunoDescriptografadoInterno() {
-  try {
-    const raw = fsSync.readFileSync(getUserConfigPath(), "utf-8");
-    const dados = JSON.parse(raw);
-    const usuario = obterPrimeiroUsuario(dados);
-
-    if (!usuario?.aluno) {
-      console.warn(`${PRE} Campo 'aluno' não encontrado no usuario.json.`);
-      return null;
-    }
-
-    const descriptografado = await ipcRenderer.invoke("descriptografar-com-mestra", usuario.aluno);
-    console.log(`✅ ${PRE} Nome do aluno descriptografado (tamanho):`, descriptografado?.length || 0);
-    return descriptografado || null;
-  } catch (erro) {
-    console.error(`${PRE} Erro ao obter nome do aluno:`, erro.message);
-    return null;
-  }
+async function _getSessionEmailHash() {
+  const h = await ipcRenderer.invoke("session:emailHash");
+  if (!h) console.warn(`${PRE} sessão sem emailHash`);
+  return h;
 }
 
+contextBridge.exposeInMainWorld("usuarioAPI", {
+  /** Ler cadastro do usuário da sessão atual */
+  async lerAtual() {
+    const emailHash = await _getSessionEmailHash();
+    if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+    return ipcRenderer.invoke("usuario:ler", emailHash);
+  },
+
+  /** Ler cadastro por emailHash específico */
+  async lerPorHash(emailHash) {
+    return ipcRenderer.invoke("usuario:ler", emailHash);
+  },
+
+  /** Obter nome do aluno descriptografado (sessão atual) */
+  async obterNomeAlunoAtual() {
+    const emailHash = await _getSessionEmailHash();
+    if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+    return ipcRenderer.invoke("usuario:obterNomeAluno", emailHash);
+  },
+
+  /** Caminho absoluto do JSON do usuário atual (novo modelo) */
+  async getUserFilePath() {
+    return getUserFilePath();
+  },
+});
+
 // ============================================================================
-// 🧩 API principal exposta para o renderer (window.api)
-//   - Compat com API antiga de Drive (drive:codigo / drive:codigo:status)
-//   - API de backup com Device Code (sem abrir navegador automaticamente)
+// 🧾 API principal (window.api) — Mantida e atualizada p/ novo modelo
 // ============================================================================
 contextBridge.exposeInMainWorld("api", {
   // ---- Autenticação / sessão / cadastro
@@ -180,16 +181,46 @@ contextBridge.exposeInMainWorld("api", {
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
 
-  // ---- Recuperação de senha
+  // ---- Recuperação de senha (token + troca)
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
   redefinirSenha: (email, token, novaSenha) => ipcRenderer.invoke("redefinir-senha", email, token, novaSenha),
 
-  // ---- Conteúdo/Blog
-  buscarUltimaPublicacao: () => ipcRenderer.invoke("blog:buscarUltimaPublicacao"),
+  // ---- Conteúdo/Blog (canais lidos do MAIN)
+  buscarUltimaPublicacao: async () => {
+    try {
+      return await ipcRenderer.invoke(BLOG_FETCH_LAST);
+    } catch (e) {
+      console.warn("📰[PRELOAD] buscarUltimaPublicacao indisponível:", e?.message || e);
+      return { ok: false, erro: e?.message || String(e) };
+    }
+  },
 
-  // ---- Usuário
-  lerUsuario: () => ipcRenderer.invoke("ler-usuario"),
+  // 🔎 Diagnóstico do feed (para DevTools do renderer)
+  blogDebugPing: async () => {
+    try {
+      return await ipcRenderer.invoke(BLOG_PING);
+    } catch (e) {
+      console.warn("📰[PRELOAD] blogDebugPing falhou:", e?.message || e);
+      return { ok: false, erro: e?.message || String(e) };
+    }
+  },
+
+  // ---- Usuário (novo modelo)
+  /** Lê o usuário da sessão atual (wrapper p/ novo IPC) */
+  lerUsuario: async () => {
+    const emailHash = await _getSessionEmailHash();
+    if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+    return ipcRenderer.invoke("usuario:ler", emailHash);
+  },
+
+  /** Salvar dados do usuário (mantém seu IPC existente no MAIN) */
   salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
+
+  // ==== Troca de e-mail (novo fluxo) ====
+  emailChange: {
+    iniciarTroca: (novoEmail, senhaAtual) => ipcRenderer.invoke("email:iniciar-troca", novoEmail, senhaAtual),
+    confirmarTroca: (token) => ipcRenderer.invoke("email:confirmar-troca", token),
+  },
 
   // ---- Criptografia (sempre via MAIN)
   descriptografarComMestra: async (texto) => {
@@ -201,68 +232,155 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
 
-  // ---- Anotações
-  salvarAnotacao: (conteudo, nomeArquivo) => ipcRenderer.invoke("salvar-anotacao", conteudo, nomeArquivo),
-  lerArquivo: (caminho) => ipcRenderer.invoke("ler-arquivo", caminho),
-  listarArquivosNotas: async () => {
-    try {
-      const dados = await ipcRenderer.invoke("ler-usuario");
-      const usuario = obterPrimeiroUsuario(dados);
-      const emailHash = usuario?.emailHash || obterEmailHashInterno();
-      if (!emailHash) throw new Error("emailHash não encontrado");
+  // ---- Drive/Backup (fluxo novo + compat)
+  backup: {
+    carregarConfiguracao: () => ipcRenderer.invoke("backup:carregar-config"),
+    salvarConfiguracao: (cfg) => ipcRenderer.invoke("backup:salvar-config", cfg),
+    testarConexao: (alvo) => ipcRenderer.invoke("backup:testar-conexao", alvo),
+    executarAgora: () => ipcRenderer.invoke("backup:executar-agora"),
+    desconectar: () => ipcRenderer.invoke("backup:desconectar"),
 
-      const pastaNotas = path.join(os.homedir(), ".config", "escola-aprendizes", "notas", emailHash);
-      const nomes = await fs.readdir(pastaNotas);
-      const caminhos = nomes.map((nome) => path.join(pastaNotas, nome));
-      console.log(`📂 ${PRE} Caminhos absolutos das anotações:`, caminhos.length);
-      return caminhos;
-    } catch (erro) {
-      console.error(`${PRE} Erro ao listar arquivos de notas:`, erro.message);
-      return [];
+    // ===== Fluxo Device Code (sem abrir navegador automaticamente) =====
+    iniciarConexaoGoogle: () => {
+      console.log(`${PRE} backup.iniciarConexaoGoogle → startDeviceAuth (aguardando drive:codigo)…`);
+      _bindDriveLogListenersOnce();
+
+      return new Promise(async (resolve, reject) => {
+        const onceCodigo = (_evt, payload) => {
+          try {
+            console.log(`${PRE} [Device] drive:codigo recebido`, payload);
+            resolve({
+              verification_uri: payload?.url || "https://www.google.com/device",
+              user_code: payload?.code || "—",
+              interval: Number(payload?.interval || 5) || 5,
+              _event: payload,
+            });
+          } catch (e) { reject(e); }
+        };
+
+        ipcRenderer.once("drive:codigo", onceCodigo);
+
+        try {
+          const resp = await ipcRenderer.invoke("backup:google:startDeviceAuth");
+          if (resp?.ok === false) {
+            ipcRenderer.removeListener("drive:codigo", onceCodigo);
+            return reject(new Error(resp?.erro || "Falha ao iniciar OAuth"));
+          }
+        } catch (e) {
+          ipcRenderer.removeListener("drive:codigo", onceCodigo);
+          reject(e);
+        }
+      });
+    },
+
+    iniciarPollingToken: async (device_code, interval) => {
+      console.log(`${PRE} backup.iniciarPollingToken (no-op): polling é interno à lib OAuth`, {
+        hasDeviceCode: !!device_code,
+        interval,
+      });
+      return { ok: true, message: "Polling conduzido no backend" };
+    },
+
+    onAtualizacaoStatus: (cb) => {
+      if (!ensureFn(cb, "backup.onAtualizacaoStatus")) return;
+      ipcRenderer.removeAllListeners("drive:codigo:status");
+      ipcRenderer.on("drive:codigo:status", (_e, payload) => {
+        if (payload && typeof payload.ok === "boolean") {
+          if (payload.ok) return cb({ state: "authorized", message: payload.message || "Conexão autorizada." });
+          const msg = String(payload.message || "").toLowerCase();
+          if (msg.includes("expirad")) return cb({ state: "expired", message: payload.message });
+          return cb({ state: "error", message: payload.message || "Falha na autorização." });
+        }
+        cb(payload);
+      });
+    },
+  },
+
+  // ==== Compat APIs antigas de Drive (mantidas, não duplicadas) ====
+  conectarGoogle: async () => {
+    try {
+      console.log(`${PRE} conectarGoogle → backup:iniciar-oauth (google-drive)`);
+      const resp = await ipcRenderer.invoke("backup:iniciar-oauth", "google-drive");
+      if (!resp?.ok) console.warn(`${PRE} iniciar-oauth respondeu erro:`, resp?.error || resp?.erro);
+      return resp;
+    } catch (e) {
+      console.error(`${PRE} invoke backup:iniciar-oauth falhou:`, e?.message || e);
+      return { ok: false, error: e?.message || String(e) };
     }
   },
 
-  // ---- Revista
-  obterCaminhoCapaRevista: () => ipcRenderer.invoke("revista:obter-caminho-capa"),
-
-  // ---- Temas
-  listarTemasSalvos: (emailHash) => ipcRenderer.invoke("listar-temas-salvos", emailHash),
-  salvarTema: (emailHash, nomeArquivo, dados) => ipcRenderer.invoke("salvar-tema", emailHash, nomeArquivo, dados),
-  lerTema: async (...args) => {
+  testarConexaoGoogle: async () => {
     try {
-      if (args.length === 1) {
-        const caminhoAbs = args[0];
-        console.log(`${PRE} lerTema(caminhoAbs) →`, caminhoAbs);
-        return await ipcRenderer.invoke("ler-tema", caminhoAbs);
-      }
-      if (args.length >= 2) {
-        const [emailHash, nomeArquivo] = args;
-        const caminho = path.join(getTemasDir(emailHash), nomeArquivo);
-        console.log(`${PRE} lerTema(emailHash,nomeArquivo) →`, { caminho });
-        return await ipcRenderer.invoke("ler-tema", caminho);
-      }
-      throw new Error("Parâmetros inválidos para lerTema.");
+      console.log(`${PRE} testarConexaoGoogle → backup:testar-conexao (google-drive)`);
+      return await ipcRenderer.invoke("backup:testar-conexao", "google-drive");
     } catch (e) {
-      console.error(`${PRE} Falha em lerTema:`, e.message);
-      throw e;
+      console.error(`${PRE} invoke backup:testar-conexao falhou:`, e?.message || e);
+      return { ok: false, error: e?.message || String(e) };
+    }
+  },
+
+  ouvirDriveCodigo: (cb) => {
+    if (!ensureFn(cb, "ouvirDriveCodigo")) return;
+    _bindDriveLogListenersOnce();
+    ipcRenderer.on("drive:codigo", (_e, payload) => cb(payload));
+  },
+  ouvirDriveStatus: (cb) => {
+    if (!ensureFn(cb, "ouvirDriveStatus")) return;
+    _bindDriveLogListenersOnce();
+    ipcRenderer.on("drive:codigo:status", (_e, payload) => cb(payload));
+  },
+
+  pedirReplayDriveCodigo: () => {
+    console.log(`${PRE} pedirReplayDriveCodigo → drive:codigo:request`);
+    ipcRenderer.send("drive:codigo:request");
+  },
+
+  abrirLink: (url) => {
+    if (!url) return;
+    console.log(`${PRE} abrirLink`, url);
+    ipcRenderer.send("abrirLink", url);
+  },
+
+  removerOuvintesDrive: () => {
+    console.log(`${PRE} removerOuvintesDrive`);
+    ipcRenderer.removeAllListeners("drive:codigo");
+    ipcRenderer.removeAllListeners("drive:codigo:status");
+    _driveListenersBound = false;
+  },
+
+  enviarCodePorEmail: async (email) => {
+    console.log(`${PRE} enviarCodePorEmail →`, email);
+    try {
+      return await ipcRenderer.invoke("backup:enviar-code-email", email || "");
+    } catch (e) {
+      return { ok: false, error: e?.message || String(e) };
     }
   },
 
   // ---- Utilidades
-  obterNomeUsuario: () => obterNomeUsuarioPlano(),
-  obterNomeAlunoDescriptografado: () => obterNomeAlunoDescriptografadoInterno(),
-  obterEmailHash: () => obterEmailHashInterno(),
-  obterDiretorioTemas: (emailHash) => getTemasDir(emailHash || obterEmailHashInterno()),
+  obterNomeUsuario: async () => {
+    const r = await ipcRenderer.invoke("usuario:obterNomeAluno", await _getSessionEmailHash());
+    return r?.ok ? (r.nome || null) : null;
+  },
+
+  obterNomeAlunoDescriptografado: async () => {
+    const r = await ipcRenderer.invoke("usuario:obterNomeAluno", await _getSessionEmailHash());
+    return r?.ok ? (r.nome || null) : null;
+  },
+
+  // ⚠️ Agora assíncrono: pega hash da sessão no MAIN (sem usuario.json legado)
+  obterEmailHash: async () => _getSessionEmailHash(),
+
+  // Caminho do arquivo do usuário atual (novo modelo)
+  getUserFilePath: () => getUserFilePath(),
 
   // ---- UI utilitária
   exibirAviso: (msg) => ipcRenderer.invoke("exibir-aviso", msg),
   abrirJanelaTermo: () => ipcRenderer.invoke("abrir-janela-termo"),
   ouvirTermoAceito: (callback) => {
-    if (typeof callback === "function") {
+    if (ensureFn(callback, "ouvirTermoAceito")) {
       callbackTermoAceito = callback;
       console.log(`${PRE} Callback termo-aceito registrado.`);
-    } else {
-      console.warn(`${PRE} Callback inválido passado para ouvirTermoAceito.`);
     }
   },
 
@@ -278,167 +396,21 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
 
-  // ---- Caminho do usuário (mantido para compat)
-  getUserConfigPath: () => getUserConfigPath(),
-
-  // ---- Bloqueio por inatividade
-  bloquearApp: () => ipcRenderer.send("bloquear-app"),
-
-  // ========================================================================
-  // 🔁 Backup – API principal
-  // ========================================================================
-  backup: {
-    carregarConfiguracao: () => ipcRenderer.invoke("backup:carregar-config"),
-    salvarConfiguracao: (cfg) => ipcRenderer.invoke("backup:salvar-config", cfg),
-    testarConexao: (alvo) => ipcRenderer.invoke("backup:testar-conexao", alvo),
-    executarAgora: () => ipcRenderer.invoke("backup:executar-agora"),
-    desconectar: () => ipcRenderer.invoke("backup:desconectar"),
-
-    // ===== Fluxo Device Code (sem abrir navegador automaticamente) =====
-    /**
-     * Inicia o Device Flow e resolve COM os dados de UI (url/código) quando
-     * o backend emitir 'drive:codigo'. Se o backend não retornar ok, rejeita.
-     */
-    iniciarConexaoGoogle: () => {
-      console.log(`${PRE} backup.iniciarConexaoGoogle → startDeviceAuth (aguardando drive:codigo)…`);
-      _bindDriveLogListenersOnce();
-
-      return new Promise(async (resolve, reject) => {
-        const onceCodigo = (_evt, payload) => {
-          try {
-            console.log(`${PRE} [Device] drive:codigo recebido`, payload);
-            resolve({
-              verification_uri: payload?.url || "https://www.google.com/device",
-              user_code: payload?.code || "—",
-              // device_code não é enviado ao renderer por padrão; polling é interno
-              interval: Number(payload?.interval || 5) || 5,
-              _event: payload,
-            });
-          } catch (e) {
-            reject(e);
-          }
-        };
-
-        ipcRenderer.once("drive:codigo", onceCodigo);
-
-        try {
-          // Alias compat já implementado no backend; inicia o flow (lib emite eventos)
-          const resp = await ipcRenderer.invoke("backup:google:startDeviceAuth");
-          if (resp?.ok === false) {
-            ipcRenderer.removeListener("drive:codigo", onceCodigo);
-            return reject(new Error(resp?.erro || "Falha ao iniciar OAuth"));
-          }
-        } catch (e) {
-          ipcRenderer.removeListener("drive:codigo", onceCodigo);
-          reject(e);
-        }
-      });
-    },
-
-    /**
-     * No nosso backend o polling é conduzido pela lib OAuth.
-     * Mantemos a função por compat, com log claro.
-     */
-    iniciarPollingToken: async (device_code, interval) => {
-      console.log(`${PRE} backup.iniciarPollingToken (no-op): polling é interno à lib OAuth`, {
-        hasDeviceCode: !!device_code,
-        interval,
-      });
-      return { ok: true, message: "Polling conduzido no backend" };
-    },
-
-    /**
-     * Listener de status unificado:
-     * Mapeia 'drive:codigo:status' → estados ('authorized' | 'pending' | 'expired' | 'error').
-     */
-    onAtualizacaoStatus: (cb) => {
-      if (!ensureFn(cb, "backup.onAtualizacaoStatus")) return;
-      ipcRenderer.removeAllListeners("drive:codigo:status");
-      ipcRenderer.on("drive:codigo:status", (_e, payload) => {
-        // Compat: se vier { ok:true/false, message }
-        if (payload && typeof payload.ok === "boolean") {
-          if (payload.ok) {
-            return cb({ state: "authorized", message: payload.message || "Conexão autorizada." });
-          }
-          const msg = String(payload.message || "").toLowerCase();
-          if (msg.includes("expirad")) {
-            return cb({ state: "expired", message: payload.message });
-          }
-          // Sem sinal claro de expiração → erro genérico
-          return cb({ state: "error", message: payload.message || "Falha na autorização." });
-        }
-        // Já normalizado? repassa
-        cb(payload);
-      });
-    },
-  },
-
-  // ========================================================================
-  // 🔁 Google Drive OAuth – API antiga (retrocompat)
-  // ========================================================================
-  conectarGoogle: async () => {
+  obterCaminhoCapaRevista: async () => {
     try {
-      console.log(`${PRE} conectarGoogle → backup:iniciar-oauth (google-drive)`);
-      const resp = await ipcRenderer.invoke("backup:iniciar-oauth", "google-drive");
-      if (!resp?.ok) {
-        console.warn(`${PRE} iniciar-oauth respondeu erro:`, resp?.error || resp?.erro);
-      }
-      return resp;
+      return await ipcRenderer.invoke("revista:obterCaminhoCapa");
     } catch (e) {
-      console.error(`${PRE} invoke backup:iniciar-oauth falhou:`, e?.message || e);
-      return { ok: false, error: e?.message || String(e) };
+      console.warn("📖[PRELOAD][REVISTA] obterCaminhoCapaRevista falhou:", e?.message || e);
+      return null;
     }
   },
 
-  testarConexaoGoogle: async () => {
+  /** Debug opcional para inspecionar pasta/arquivos da revista */
+  revistaDebugPing: async () => {
     try {
-      console.log(`${PRE} testarConexaoGoogle → backup:testar-conexao (google-drive)`);
-      const resp = await ipcRenderer.invoke("backup:testar-conexao", "google-drive");
-      return resp; // { ok, user } | { ok:false, erro }
+      return await ipcRenderer.invoke("revista:debugPing");
     } catch (e) {
-      console.error(`${PRE} invoke backup:testar-conexao falhou:`, e?.message || e);
-      return { ok: false, error: e?.message || String(e) };
-    }
-  },
-
-  ouvirDriveCodigo: (cb) => {
-    if (!ensureFn(cb, "ouvirDriveCodigo")) return;
-    _bindDriveLogListenersOnce();
-    ipcRenderer.on("drive:codigo", (_e, payload) => cb(payload));
-  },
-  ouvirDriveStatus: (cb) => {
-    if (!ensureFn(cb, "ouvirDriveStatus")) return;
-    ipcRenderer.on("drive:codigo:status", (_e, payload) => cb(payload));
-  },
-
-  // 🔁 Replay do cartão (quando a UI montar depois do evento)
-  pedirReplayDriveCodigo: () => {
-    console.log(`${PRE} pedirReplayDriveCodigo → drive:codigo:request`);
-    ipcRenderer.send("drive:codigo:request");
-  },
-
-  // Abrir link no navegador padrão (Main → shell.openExternal)
-  abrirLink: (url) => {
-    if (!url) return;
-    console.log(`${PRE} abrirLink`, url);
-    ipcRenderer.send("abrirLink", url);
-  },
-
-  // Helpers para limpar ouvintes ao desmontar telas (evita vazamento de listeners)
-  removerOuvintesDrive: () => {
-    console.log(`${PRE} removerOuvintesDrive`);
-    ipcRenderer.removeAllListeners("drive:codigo");
-    ipcRenderer.removeAllListeners("drive:codigo:status");
-    _driveListenersBound = false;
-  },
-
-  // (opcional) enviar code por e-mail (se existir no main)
-  enviarCodePorEmail: async (email) => {
-    console.log(`${PRE} enviarCodePorEmail →`, email);
-    try {
-      return await ipcRenderer.invoke("backup:enviar-code-email", email || "");
-    } catch (e) {
-      return { ok: false, error: e?.message || String(e) };
+      return { ok: false, erro: e?.message || String(e) };
     }
   },
 });

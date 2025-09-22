@@ -1,39 +1,35 @@
 // === ./main.js ===============================================================
-// ⚙️ Ambiente
+// ⚙️ Ambiente (main pode carregar dotenv; stores/handlers não carregam)
 require("dotenv").config();
 
 // 📦 Electron / Node
-const { app, BrowserWindow, ipcMain, shell } = require("electron"); // ⬅️ inclui shell
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
 // 🧬 Sessão
-const { isLoginAtivo } = require("./backend/lib/sessionStore");
+const { isLoginAtivo, obterEmailHashAtivo } = require("./backend/lib/sessionStore");
 
-// 🧭 Preload
+// 🧭 Preload (conferência de caminho)
 const preloadPath = path.join(__dirname, "preload.js");
 console.log("🧭 Caminho real do preload:", preloadPath);
 
-// 🗂️ usuario.json (config principal)
-const usuarioPath = path.join(
-  process.env.HOME || process.env.USERPROFILE,
-  ".config",
-  "escola-aprendizes",
-  "config",
-  "usuario.json"
-);
+// 🗂️ Caminhos de configuração (NOVO: sem usuario.json legado)
+const HOME = process.env.HOME || process.env.USERPROFILE;
+const CONFIG_DIR = path.join(HOME, ".config", "escola-aprendizes", "config");
+const BACKUP_CFG_PATH = path.join(CONFIG_DIR, "backup.json");   // arquivo global de backup
+const USERS_DIR = path.join(CONFIG_DIR, "usuarios");            // pasta por usuário (json por hash)
 
 // 🪟 janela principal
 let janelaCadastro = null;
 
-// 🧩 Handlers (IMPORTAR NO TOPO; não redefinir aqui)
+// 🧩 Handlers (importados no topo; sem redefinir aqui)
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
-const registrarLoginHandler = require("./backend/handlers/loginHandler");
 const registrarBlogHandler = require("./backend/handlers/blogHandler");
-const { registrarRedefinirSenhaHandler } = require("./backend/handlers/redefinirSenhaHandler");
-const { registrarSolicitarTokenHandler } = require("./backend/handlers/solicitarTokenHandler");
+const { CHANNELS: BLOG_CHANNELS } = require("./backend/handlers/blogHandler"); // ✅ canais padronizados
+const { registrarResetSenhaHandler } = require("./backend/handlers/resetSenhaHandler"); // unificado
 const { registrarVerificacaoEmailHandler } = require("./backend/handlers/verificacaoEmailHandler");
-const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler");
+const { registrarUsuarioHandler } = require("./backend/handlers/usuarioHandler"); // novo modelo
 const { registrarDescriptografarHandler } = require("./backend/handlers/descriptografarHandler");
 const { registrarCriptografarHandler } = require("./backend/handlers/criptografarHandler");
 const { registrarNotasHandler } = require("./backend/handlers/notasHandler");
@@ -51,13 +47,15 @@ const { startSchedule, stopSchedule } = require("./backend/handlers/backupSchedu
 const { registrarBackupScheduleIeHandler } = require("./backend/handlers/backupScheduleIeHandler");
 const { registrarShellHandler } = require("./backend/handlers/shellHandler");
 const { registrarBackupEmailHandler } = require("./backend/handlers/backupEmailHandler");
+const { registrarLoginHandler } = require("./backend/handlers/loginHandler");
+const { registrarEmailChangeHandler } = require("./backend/handlers/emailChangeHandler");
 
 // ▶️ Executor do backup (reutilizado pelo cron)
 async function executarBackupAgendado() {
   try {
     console.log("▶️ [backupSchedule] Execução agendada iniciada…");
 
-    // Tenta usar executor dedicado, se houver
+    // 1) Preferência: executor dedicado, se existir
     try {
       const { execute } = require("./backend/lib/backupRun");
       if (typeof execute === "function") {
@@ -70,24 +68,43 @@ async function executarBackupAgendado() {
       // segue para caminho alternativo
     }
 
-    // Caminho alternativo (simples): enviar diretórios padrão para Google Drive
-    const { carregarUsuarioJsonSeguro, descriptografarCampo, salvarUsuarioJsonSeguro } =
-      require("./backend/lib/usuarioStore");
-    const { GoogleDriveClient } = require("./backend/lib/googleDriveClient");
+    // 2) Alternativo: ler backup.json GLOBAL (novo modelo)
+    if (!fs.existsSync(BACKUP_CFG_PATH)) {
+      console.log("ℹ️ [backupSchedule] backup.json não encontrado. Abortando execução simples.");
+      return;
+    }
+    const cfgRaw = fs.readFileSync(BACKUP_CFG_PATH, "utf-8");
+    const bkp = JSON.parse(cfgRaw || "{}");
 
-    const cfgAll = await carregarUsuarioJsonSeguro();
-    const bkp = cfgAll?.backup || {};
     if (bkp.servico !== "google-drive" || !bkp.oauthTokenEnc) {
       console.log("ℹ️ [backupSchedule] Serviço não configurado para execução.");
       return;
     }
 
-    const token = JSON.parse(descriptografarCampo(bkp.oauthTokenEnc));
+    // 🔓 Token OAuth: AES-GCM (IV=12) com CRYPTO_SECRET — usa helpers do usuarioStore
+    const { descriptografarCampo } = require("./backend/lib/usuarioStore");
+    const { GoogleDriveClient } = require("./backend/lib/googleDriveClient");
+
+    let token;
+    try {
+      token = JSON.parse(descriptografarCampo(bkp.oauthTokenEnc));
+    } catch (e) {
+      console.error("❌ [backupSchedule] Falha ao decifrar oauthTokenEnc de backup.json:", e?.message || e);
+      return;
+    }
+
     const drive = new GoogleDriveClient(token);
 
-    const home = process.env.HOME || process.env.USERPROFILE;
-    const notasDir = path.join(home, ".config", "escola-aprendizes", "notas");
-    const temasDir = path.join(home, ".config", "escola-aprendizes", "temas");
+    // 🔎 Só envia conteúdo do USUÁRIO LOGADO (se houver sessão)
+    if (!isLoginAtivo()) {
+      console.log("ℹ️ [backupSchedule] Sem sessão ativa — executor simples não enviará nada.");
+      return;
+    }
+    const emailHash = obterEmailHashAtivo();
+    const notasDir = path.join(HOME, ".config", "escola-aprendizes", "notas", emailHash);
+    const temasDir = path.join(HOME, ".config", "escola-aprendizes", "temas", emailHash);
+
+    const pastaRemota = bkp.pastaRemota || bkp.pastaNome || "EAEbackup";
 
     const enviarDir = async (dir) => {
       if (!fs.existsSync(dir)) return 0;
@@ -96,7 +113,7 @@ async function executarBackupAgendado() {
         const p = path.join(dir, entry);
         if (fs.statSync(p).isFile()) {
           try {
-            if (await drive.enviarIncremental(bkp.pastaRemota, p)) count++;
+            if (await drive.enviarIncremental(pastaRemota, p)) count++;
           } catch (e) {
             console.warn("⚠️ [backupSchedule] Falha ao enviar arquivo:", p, e?.message || e);
           }
@@ -106,8 +123,6 @@ async function executarBackupAgendado() {
     };
 
     const enviados = (await enviarDir(notasDir)) + (await enviarDir(temasDir));
-    cfgAll.backup.ultimoBackupISO = new Date().toISOString();
-    await salvarUsuarioJsonSeguro(cfgAll);
     console.log("✅ [backupSchedule] Concluído. Arquivos enviados:", enviados);
   } catch (e) {
     console.error("❌ [backupSchedule] Erro na execução agendada:", e?.message || e);
@@ -134,7 +149,6 @@ function forceExternalBrowserHandlers(win) {
   if (!win || win.isDestroyed?.()) return;
   const wc = win.webContents;
 
-  // Abre qualquer window.open/target=_blank em navegador externo
   wc.setWindowOpenHandler(({ url }) => {
     console.log(`${NAV} target=_blank → externo:`, url);
     shell.openExternal(url).catch((err) =>
@@ -143,7 +157,6 @@ function forceExternalBrowserHandlers(win) {
     return { action: "deny" };
   });
 
-  // Impede navegação para http/https dentro da janela: abre externamente
   wc.on("will-navigate", (event, url) => {
     if (/^https?:\/\//i.test(url)) {
       event.preventDefault();
@@ -154,7 +167,7 @@ function forceExternalBrowserHandlers(win) {
     }
   });
 
-  // Compat (Electron < 14) — se disparar, também envia para fora
+  // Compat (Electron < 14)
   wc.on("new-window", (event, url) => {
     event.preventDefault();
     console.log(`${NAV} new-window → externo:`, url);
@@ -164,9 +177,29 @@ function forceExternalBrowserHandlers(win) {
   });
 }
 
+// 👥 Verifica se há ao menos UM usuário cadastrado (modelo novo)
+function existeQualquerUsuario() {
+  try {
+    if (!fs.existsSync(USERS_DIR)) return false;
+    const files = fs.readdirSync(USERS_DIR).filter((n) => n.endsWith(".json"));
+    return files.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 // 🪟 Criação da janela principal
 function createWindow() {
   console.log("🪟 Criando janela principal...");
+
+  // ✅ Disponibiliza canais do blog para o PRELOAD via env (opcional e seguro)
+  //   O preload terá acesso a process.env (node habilitado no preload):
+  process.env.BLOG_CHANNELS_JSON = JSON.stringify(BLOG_CHANNELS);
+
+  // Checagem amigável do preload
+  if (!fs.existsSync(preloadPath)) {
+    console.warn("⚠️ Preload não encontrado em:", preloadPath);
+  }
 
   janelaCadastro = new BrowserWindow({
     width: 1000,
@@ -177,6 +210,8 @@ function createWindow() {
       preload: preloadPath,
       nodeIntegration: false,
       sandbox: false,
+      // Você também pode passar argumentos extras se preferir:
+      // additionalArguments: [`--blog-channels=${encodeURIComponent(process.env.BLOG_CHANNELS_JSON)}`],
     },
   });
 
@@ -189,10 +224,10 @@ function createWindow() {
     bloquearApp("minimize");
   });
 
-  // 🚦 Roteamento inicial
+  // 🚦 Roteamento inicial (SEM usuario.json)
   try {
-    if (!fs.existsSync(usuarioPath)) {
-      console.warn("📂 usuario.json não encontrado. Redirecionando para cadastro.");
+    if (!existeQualquerUsuario()) {
+      console.warn("👤 Nenhum usuário cadastrado (config/usuarios vazio). Redirecionando para cadastro.");
       janelaCadastro.loadFile(path.join(__dirname, "frontend", "cadastro.html"));
     } else if (!isLoginAtivo()) {
       console.log("🔐 Sessão inativa. Abrindo login.");
@@ -207,7 +242,7 @@ function createWindow() {
   }
 }
 
-// 🔧 Helper para não deixar um erro travar todos os registros
+// 🔧 Helper para registro tolerante a falhas
 function safeRegister(nome, fn, ...args) {
   try {
     if (typeof fn !== "function") {
@@ -224,38 +259,38 @@ function safeRegister(nome, fn, ...args) {
 // ✅ Registro de handlers
 console.log("🔧 Registrando handlers de backend (tolerante a falhas)...");
 try {
-  // Demais handlers (cada um isolado, não param o fluxo)
   safeRegister("cadastroHandler", registrarCadastroHandler, ipcMain);
   safeRegister("loginHandler", registrarLoginHandler, ipcMain);
-  safeRegister("blogHandler", registrarBlogHandler, ipcMain);
-  safeRegister("redefinirSenhaHandler", registrarRedefinirSenhaHandler, ipcMain);
-  safeRegister("solicitarTokenHandler", registrarSolicitarTokenHandler, ipcMain);
+  safeRegister("blogHandler", registrarBlogHandler, ipcMain); // ✅ usa canais padronizados
+  safeRegister("resetSenhaHandler", registrarResetSenhaHandler, ipcMain);
   safeRegister("verificacaoEmailHandler", registrarVerificacaoEmailHandler, ipcMain);
-  safeRegister("usuarioHandler", registrarUsuarioHandler);
+  safeRegister("usuarioHandler", registrarUsuarioHandler); // novo modelo (não recebe ipcMain)
   safeRegister("descriptografarHandler", registrarDescriptografarHandler);
   safeRegister("criptografarHandler", registrarCriptografarHandler);
   safeRegister("notasHandler", registrarNotasHandler, ipcMain);
   safeRegister("lerArquivoHandler", registrarLerArquivoHandler);
   safeRegister("sessionHandler", registrarSessionHandler);
-  safeRegister("revistaHandler", registrarRevistaHandler);
+  safeRegister("revistaHandler", registrarRevistaHandler, ipcMain);
   safeRegister("temasHandler", registrarTemasHandler, ipcMain);
   safeRegister("salvarUsuarioHandler", registrarSalvarUsuarioHandler);
   safeRegister("salvarAceiteHandler", registrarSalvarAceiteHandler, ipcMain);
   safeRegister("abrirJanelaTermoHandler", registrarAbrirJanelaTermoHandler);
   safeRegister("lerTermoMarkdownHandler", registrarLerTermoMarkdownHandler, ipcMain);
   safeRegister("termoAceitoHandler", registrarTermoAceitoHandler, () => janelaCadastro);
-
+  safeRegister("emailChangeHandler", registrarEmailChangeHandler, ipcMain);
   safeRegister("backupEmailHandler", registrarBackupEmailHandler);
 
-  // ⚠️ shellHandler estava quebrando o boot — registre só se exporta função
   if (typeof registrarShellHandler === "function") {
     safeRegister("shellHandler", registrarShellHandler);
   } else {
     console.warn("⚠️ [REG] registrarShellHandler não é função (verifique export em ./backend/handlers/shellHandler).");
   }
 
-  // Agendadores e backup geral
-  safeRegister("backupScheduleIeHandler", registrarBackupScheduleIeHandler, { startSchedule, stopSchedule, executarBackupAgendado });
+  safeRegister(
+    "backupScheduleIeHandler",
+    registrarBackupScheduleIeHandler,
+    { startSchedule, stopSchedule, executarBackupAgendado }
+  );
   safeRegister("backupHandler", registrarBackupHandler);
 
   console.log("✅ Todos os handlers registrados (veja logs ✅/❌ por item).");
@@ -272,6 +307,17 @@ app.whenReady().then(async () => {
   console.log("⚙️ App pronto. Inicializando...");
   createWindow();
 
+  // 🩺 Healthcheck/observabilidade — aguarda ping do renderer
+  console.log("🩺 [blog] Aguardando ping via canal:", BLOG_CHANNELS?.PING, "(exposto pelo preload).");
+
+  try {
+  console.log("📗 [revista] Iniciando verificação de capa em segundo plano (base=531, maxTentativas=30)...");
+  await verificarAtualizacaoCapaEmSegundoPlano(); // ← use await para log de término
+  console.log("📗 [revista] Verificação de capa finalizada.");
+} catch (err) {
+  console.error("❌ [revista] Erro na verificação da capa em segundo plano:", err);
+}
+
   // 📕 Capa da revista em segundo plano
   try {
     verificarAtualizacaoCapaEmSegundoPlano();
@@ -279,15 +325,14 @@ app.whenReady().then(async () => {
     console.error("❌ Erro na verificação da capa em segundo plano:", err);
   }
 
-  // ⏰ Agendar backup no startup, se configurado
+  // ⏰ Agendar backup no startup, se configurado (backup.json global)
   if (startSchedule) {
     try {
-      const raw = fs.existsSync(usuarioPath) ? fs.readFileSync(usuarioPath, "utf-8") : null;
-      const cfg = raw ? JSON.parse(raw) : {};
-      const b = cfg?.backup || {};
+      const raw = fs.existsSync(BACKUP_CFG_PATH) ? fs.readFileSync(BACKUP_CFG_PATH, "utf-8") : null;
+      const b = raw ? JSON.parse(raw) : {};
       if (b.modo === "agendado") {
         const hhmm = b.horario || "22:30";
-        console.log("⏰ Config detectada: agendado diário às", hhmm);
+        console.log("⏰ Config detectada: agendado diário às", hhmm, "(fonte:", BACKUP_CFG_PATH, ")");
         startSchedule(hhmm, executarBackupAgendado);
       } else {
         console.log("⏹️ Backup não-agendado no startup (modo:", b.modo || "manual", ").");
