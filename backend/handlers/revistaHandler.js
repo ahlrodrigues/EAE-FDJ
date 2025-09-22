@@ -70,7 +70,7 @@ async function descobrirUltimaEdicaoDisponivel({ base = 531, maxTentativas = 30 
   let ultimaValida = null;
   let nomeCapaValido = null;
 
-  const nomesPossiveis = ["capa.jpg", "capa_edicao.jpg", "cover.jpg"];
+  const nomesPossiveis = ["capa.jpg", "capa_edicao.jpg"];
 
   for (let i = 0; i < maxTentativas; i++) {
     let encontradaNestaEdicao = false;
