@@ -108,18 +108,33 @@ function main() {
     const aulaRef = asNonEmptyString(aulaCell);
     const aulaNumero = seq; // ✅ sempre incremental: 1..fim
 
+    const capitulo = asNonEmptyString(r[colIdx.cap]);
+    const aulaTitulo = asNonEmptyString(r[colIdx.temaAula]);
+    const assuntos = asNonEmptyString(r[colIdx.assunto]);
+    const temaFacilitador = asNonEmptyString(r[colIdx.temaAtividade]);
+    const email = asNonEmptyString(r[colIdx.email]);
+    const contato = asNonEmptyString(r[colIdx.whatsapp]);
+
+    // Ignora linhas "modelo" que só trazem o placeholder de data
+    const isDatePlaceholder = rawData.toUpperCase() === "DD/MM/YYYY";
+    const isAllOtherEmpty = !aulaRef && !capitulo && !aulaTitulo && !assuntos && !temaFacilitador && !email && !contato;
+    if (isDatePlaceholder && isAllOtherEmpty) {
+      seq--; // desfaz incremento
+      continue;
+    }
+
     const rowObj = {
       rowId: genRowId(`${sheetName}:${i + 1}`),
       order: seq,
       dataAulaISO,
       aulaNumero,
       aulaRef,
-      capitulo: asNonEmptyString(r[colIdx.cap]),
-      aulaTitulo: asNonEmptyString(r[colIdx.temaAula]),
-      assuntos: asNonEmptyString(r[colIdx.assunto]),
-      temaFacilitador: asNonEmptyString(r[colIdx.temaAtividade]),
-      email: asNonEmptyString(r[colIdx.email]),
-      contato: asNonEmptyString(r[colIdx.whatsapp]),
+      capitulo,
+      aulaTitulo,
+      assuntos,
+      temaFacilitador,
+      email,
+      contato,
     };
 
     outRows.push(rowObj);

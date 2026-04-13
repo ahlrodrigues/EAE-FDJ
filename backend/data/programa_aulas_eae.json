@@ -5,7 +5,7 @@
     "file": "PROGRAMA EAE.ods",
     "sheetName": "61a Turma EAE"
   },
-  "extractedAtISO": "2026-04-13T13:46:40.248Z",
+  "extractedAtISO": "2026-04-13T13:48:59.150Z",
   "columns": [
     {
       "key": "dataAulaISO",
@@ -861,23 +861,10 @@
       "contato": ""
     },
     {
-      "rowId": "row_45e73043e7cd",
+      "rowId": "row_98c79e35d728",
       "order": 62,
       "dataAulaISO": "",
       "aulaNumero": 62,
-      "aulaRef": "",
-      "capitulo": "",
-      "aulaTitulo": "",
-      "assuntos": "",
-      "temaFacilitador": "",
-      "email": "",
-      "contato": ""
-    },
-    {
-      "rowId": "row_98c79e35d728",
-      "order": 63,
-      "dataAulaISO": "",
-      "aulaNumero": 63,
       "aulaRef": "43",
       "capitulo": "RE 040",
       "aulaTitulo": "Aula 041 - Prisão e Entrega aos Romanos (Cap. 40)",
@@ -888,9 +875,9 @@
     },
     {
       "rowId": "row_fde6bba6f418",
-      "order": 64,
+      "order": 63,
       "dataAulaISO": "",
-      "aulaNumero": 64,
+      "aulaNumero": 63,
       "aulaRef": "44",
       "capitulo": "RE 041",
       "aulaTitulo": "Aula 042 - O Tribunal Judaico (Cap. 41)",
@@ -901,9 +888,9 @@
     },
     {
       "rowId": "row_bf13c2298b0e",
-      "order": 65,
+      "order": 64,
       "dataAulaISO": "",
-      "aulaNumero": 65,
+      "aulaNumero": 64,
       "aulaRef": "45",
       "capitulo": "RE 042",
       "aulaTitulo": "Aula 043 - O Julgamento de Pilatos (Cap. 42)",
@@ -914,9 +901,9 @@
     },
     {
       "rowId": "row_dcbb47ea5027",
-      "order": 66,
+      "order": 65,
       "dataAulaISO": "",
-      "aulaNumero": 66,
+      "aulaNumero": 65,
       "aulaRef": "46",
       "capitulo": "RE 043",
       "aulaTitulo": "Aula 044 - O Calvário (Cap. 43)",
@@ -927,9 +914,9 @@
     },
     {
       "rowId": "row_ecc261d4b4bb",
-      "order": 67,
+      "order": 66,
       "dataAulaISO": "",
-      "aulaNumero": 67,
+      "aulaNumero": 66,
       "aulaRef": "47",
       "capitulo": "RE 044",
       "aulaTitulo": "Aula 045 - Ressurreição (Cap. 44 e 45)",
@@ -940,9 +927,9 @@
     },
     {
       "rowId": "row_a1f563464993",
-      "order": 68,
+      "order": 67,
       "dataAulaISO": "",
-      "aulaNumero": 68,
+      "aulaNumero": 67,
       "aulaRef": "48",
       "capitulo": "AE",
       "aulaTitulo": "AULA PRÉ -EXAME TEMA A DEFINIR",
@@ -953,9 +940,9 @@
     },
     {
       "rowId": "row_5b44baec70d5",
-      "order": 69,
+      "order": 68,
       "dataAulaISO": "",
-      "aulaNumero": 69,
+      "aulaNumero": 68,
       "aulaRef": "49",
       "capitulo": "",
       "aulaTitulo": "QUARTA-FEIRA DE CINZAS - NÃO HAVERA AULA",
@@ -966,9 +953,9 @@
     },
     {
       "rowId": "row_91e5c0cfd8c1",
-      "order": 70,
+      "order": 69,
       "dataAulaISO": "",
-      "aulaNumero": 70,
+      "aulaNumero": 69,
       "aulaRef": "50",
       "capitulo": "AE",
       "aulaTitulo": "AULA PRÉ -EXAME TEMA A DEFINIR",
@@ -979,9 +966,9 @@
     },
     {
       "rowId": "row_ec81a65c794d",
-      "order": 71,
+      "order": 70,
       "dataAulaISO": "",
-      "aulaNumero": 71,
+      "aulaNumero": 70,
       "aulaRef": "51",
       "capitulo": "AE",
       "aulaTitulo": "Aula 046 - Exame Espiritual - Vivência",
@@ -992,9 +979,9 @@
     },
     {
       "rowId": "row_92e35d8623b1",
-      "order": 72,
+      "order": 71,
       "dataAulaISO": "",
-      "aulaNumero": 72,
+      "aulaNumero": 71,
       "aulaRef": "52",
       "capitulo": "AE",
       "aulaTitulo": "Aula 047 - Exame Espiritual - Vivência",
@@ -1005,9 +992,9 @@
     },
     {
       "rowId": "row_c68948443824",
-      "order": 73,
+      "order": 72,
       "dataAulaISO": "",
-      "aulaNumero": 73,
+      "aulaNumero": 72,
       "aulaRef": "53",
       "capitulo": "IE 065",
       "aulaTitulo": "Aula 048 - Passagem para o Grau de Servidor (pag. 225 IE) e Inscrições para o Curso de Médiuns (pag. 47 IE)",
@@ -1018,9 +1005,9 @@
     },
     {
       "rowId": "row_d505e85a2349",
-      "order": 74,
+      "order": 73,
       "dataAulaISO": "",
-      "aulaNumero": 74,
+      "aulaNumero": 73,
       "aulaRef": "54",
       "capitulo": "AE",
       "aulaTitulo": "Aula 049 - Evolução do Homem Animal para o Homem Espiritual",
@@ -1031,9 +1018,9 @@
     },
     {
       "rowId": "row_e79892c188c8",
-      "order": 75,
+      "order": 74,
       "dataAulaISO": "",
-      "aulaNumero": 75,
+      "aulaNumero": 74,
       "aulaRef": "55",
       "capitulo": "IE 011",
       "aulaTitulo": "Aula 050 - Interpretação do Sermão do Monte I",
@@ -1044,9 +1031,9 @@
     },
     {
       "rowId": "row_60bda13ead03",
-      "order": 76,
+      "order": 75,
       "dataAulaISO": "",
-      "aulaNumero": 76,
+      "aulaNumero": 75,
       "aulaRef": "56",
       "capitulo": "IE 012",
       "aulaTitulo": "Aula 051 - Interpretação do Sermão do Monte II",
@@ -1057,9 +1044,9 @@
     },
     {
       "rowId": "row_29b93bc8e479",
-      "order": 77,
+      "order": 76,
       "dataAulaISO": "",
-      "aulaNumero": 77,
+      "aulaNumero": 76,
       "aulaRef": "57",
       "capitulo": "IE 013",
       "aulaTitulo": "Aula 052 - Interpretação do Sermão do Monte III",
@@ -1070,9 +1057,9 @@
     },
     {
       "rowId": "row_ef1c9df227e6",
-      "order": 78,
+      "order": 77,
       "dataAulaISO": "",
-      "aulaNumero": 78,
+      "aulaNumero": 77,
       "aulaRef": "58",
       "capitulo": "IE 014",
       "aulaTitulo": "Aula 053 - Interpretação do Sermão do Monte IV",
@@ -1083,9 +1070,9 @@
     },
     {
       "rowId": "row_1bce0ecda78c",
-      "order": 79,
+      "order": 78,
       "dataAulaISO": "",
-      "aulaNumero": 79,
+      "aulaNumero": 78,
       "aulaRef": "59",
       "capitulo": "IE 015",
       "aulaTitulo": "Aula 054 - A Fundação da Igreja Cristã",
@@ -1096,9 +1083,9 @@
     },
     {
       "rowId": "row_f02d5dbecb34",
-      "order": 80,
+      "order": 79,
       "dataAulaISO": "",
-      "aulaNumero": 80,
+      "aulaNumero": 79,
       "aulaRef": "60",
       "capitulo": "IE 016",
       "aulaTitulo": "Aula 055 - Ascensão",
@@ -1109,9 +1096,9 @@
     },
     {
       "rowId": "row_ba10f916c80f",
-      "order": 81,
+      "order": 80,
       "dataAulaISO": "",
-      "aulaNumero": 81,
+      "aulaNumero": 80,
       "aulaRef": "61",
       "capitulo": "IE 070",
       "aulaTitulo": "Aula 056 - Vida Plena - Conceito",
@@ -1122,9 +1109,9 @@
     },
     {
       "rowId": "row_c45bb54ffc6c",
-      "order": 82,
+      "order": 81,
       "dataAulaISO": "",
-      "aulaNumero": 82,
+      "aulaNumero": 81,
       "aulaRef": "62",
       "capitulo": "IE 017",
       "aulaTitulo": "Aula 057 - Instituição dos Diáconos",
@@ -1135,9 +1122,9 @@
     },
     {
       "rowId": "row_3a3c00da15ac",
-      "order": 83,
+      "order": 82,
       "dataAulaISO": "",
-      "aulaNumero": 83,
+      "aulaNumero": 82,
       "aulaRef": "63",
       "capitulo": "IE 018",
       "aulaTitulo": "Aula 058 - A Conversão de Paulo",
@@ -1148,9 +1135,9 @@
     },
     {
       "rowId": "row_c5fc74c599a2",
-      "order": 84,
+      "order": 83,
       "dataAulaISO": "",
-      "aulaNumero": 84,
+      "aulaNumero": 83,
       "aulaRef": "64",
       "capitulo": "IE 019",
       "aulaTitulo": "Aula 059 - O Apóstolo Paulo e Suas Pregações",
@@ -1161,9 +1148,9 @@
     },
     {
       "rowId": "row_313556b49ad0",
-      "order": 85,
+      "order": 84,
       "dataAulaISO": "",
-      "aulaNumero": 85,
+      "aulaNumero": 84,
       "aulaRef": "65",
       "capitulo": "IE 020",
       "aulaTitulo": "Aula 060 - Paulo Defende-se em Jerusalém",
@@ -1174,9 +1161,9 @@
     },
     {
       "rowId": "row_8e212c71cf36",
-      "order": 86,
+      "order": 85,
       "dataAulaISO": "",
-      "aulaNumero": 86,
+      "aulaNumero": 85,
       "aulaRef": "66",
       "capitulo": "IE 021",
       "aulaTitulo": "Aula 061 - Os Apóstolos Que Mais se Destacaram e Seus",
@@ -1187,9 +1174,9 @@
     },
     {
       "rowId": "row_eb4068890cad",
-      "order": 87,
+      "order": 86,
       "dataAulaISO": "",
-      "aulaNumero": 87,
+      "aulaNumero": 86,
       "aulaRef": "67",
       "capitulo": "IE 069",
       "aulaTitulo": "Aula 062 - Preconceito - Definição (pag. 232 IE)",
@@ -1200,9 +1187,9 @@
     },
     {
       "rowId": "row_981077b795ff",
-      "order": 88,
+      "order": 87,
       "dataAulaISO": "",
-      "aulaNumero": 88,
+      "aulaNumero": 87,
       "aulaRef": "68",
       "capitulo": "IE 022",
       "aulaTitulo": "Aula 064 - Estudo das Epístolas",
@@ -1213,9 +1200,9 @@
     },
     {
       "rowId": "row_f71833483d89",
-      "order": 89,
+      "order": 88,
       "dataAulaISO": "",
-      "aulaNumero": 89,
+      "aulaNumero": 88,
       "aulaRef": "69",
       "capitulo": "IE 023",
       "aulaTitulo": "Aula 065 - A Predestinação Segundo a Doutrina de Paulo",
@@ -1226,9 +1213,9 @@
     },
     {
       "rowId": "row_98ccab8f365d",
-      "order": 90,
+      "order": 89,
       "dataAulaISO": "",
-      "aulaNumero": 90,
+      "aulaNumero": 89,
       "aulaRef": "",
       "capitulo": "",
       "aulaTitulo": "FÉRIAS JULHO 2026",
@@ -1238,23 +1225,10 @@
       "contato": ""
     },
     {
-      "rowId": "row_2dd817e5b35c",
-      "order": 91,
-      "dataAulaISO": "",
-      "aulaNumero": 91,
-      "aulaRef": "",
-      "capitulo": "",
-      "aulaTitulo": "",
-      "assuntos": "",
-      "temaFacilitador": "",
-      "email": "",
-      "contato": ""
-    },
-    {
       "rowId": "row_99f27e67d036",
-      "order": 92,
+      "order": 90,
       "dataAulaISO": "",
-      "aulaNumero": 92,
+      "aulaNumero": 90,
       "aulaRef": "70",
       "capitulo": "IE 024",
       "aulaTitulo": "Aula 066 - Justificação dos Pecados",
@@ -1265,9 +1239,9 @@
     },
     {
       "rowId": "row_90cd8555a133",
-      "order": 93,
+      "order": 91,
       "dataAulaISO": "",
-      "aulaNumero": 93,
+      "aulaNumero": 91,
       "aulaRef": "71",
       "capitulo": "IE 025",
       "aulaTitulo": "Aula 067 - Continuação das Epístolas",
@@ -1278,9 +1252,9 @@
     },
     {
       "rowId": "row_80b5145009f2",
-      "order": 94,
+      "order": 92,
       "dataAulaISO": "",
-      "aulaNumero": 94,
+      "aulaNumero": 92,
       "aulaRef": "72",
       "capitulo": "IE 068",
       "aulaTitulo": "Aula 068 - Vícios e Defeitos - Conceitos",
@@ -1291,9 +1265,9 @@
     },
     {
       "rowId": "row_8a594111cd6c",
-      "order": 95,
+      "order": 93,
       "dataAulaISO": "",
-      "aulaNumero": 95,
+      "aulaNumero": 93,
       "aulaRef": "73",
       "capitulo": "IE 026",
       "aulaTitulo": "Aula 069 - A Doutrina de Tiago Sobre a Salvação",
@@ -1304,9 +1278,9 @@
     },
     {
       "rowId": "row_7e5f830d91f3",
-      "order": 96,
+      "order": 94,
       "dataAulaISO": "",
-      "aulaNumero": 96,
+      "aulaNumero": 94,
       "aulaRef": "74",
       "capitulo": "IE 027",
       "aulaTitulo": "Aula 070 - Doutrinas de Pedro, João e Judas",
@@ -1317,9 +1291,9 @@
     },
     {
       "rowId": "row_d222e708b900",
-      "order": 97,
+      "order": 95,
       "dataAulaISO": "",
-      "aulaNumero": 97,
+      "aulaNumero": 95,
       "aulaRef": "75",
       "capitulo": "IE 028",
       "aulaTitulo": "Aula 071 - O Apocalipse de João I",
@@ -1330,9 +1304,9 @@
     },
     {
       "rowId": "row_27543797fe70",
-      "order": 98,
+      "order": 96,
       "dataAulaISO": "",
-      "aulaNumero": 98,
+      "aulaNumero": 96,
       "aulaRef": "76",
       "capitulo": "IE 029",
       "aulaTitulo": "Aula 072 - O Apocalipse de João II",
@@ -1343,9 +1317,9 @@
     },
     {
       "rowId": "row_98bc8fc0fde4",
-      "order": 99,
+      "order": 97,
       "dataAulaISO": "",
-      "aulaNumero": 99,
+      "aulaNumero": 97,
       "aulaRef": "77",
       "capitulo": "AE",
       "aulaTitulo": "Aula 073 - Vícios e Defeitos - Vivência",
@@ -1356,9 +1330,9 @@
     },
     {
       "rowId": "row_a482572da035",
-      "order": 100,
+      "order": 98,
       "dataAulaISO": "",
-      "aulaNumero": 100,
+      "aulaNumero": 98,
       "aulaRef": "78",
       "capitulo": "IE 030",
       "aulaTitulo": "Aula 074 - Ciência e Religião",
@@ -1369,9 +1343,9 @@
     },
     {
       "rowId": "row_7390c09f0158",
-      "order": 101,
+      "order": 99,
       "dataAulaISO": "",
-      "aulaNumero": 101,
+      "aulaNumero": 99,
       "aulaRef": "79",
       "capitulo": "IE 031",
       "aulaTitulo": "Aula 075 - O Pensamento e a Vontade",
@@ -1382,9 +1356,9 @@
     },
     {
       "rowId": "row_3d54692561ea",
-      "order": 102,
+      "order": 100,
       "dataAulaISO": "",
-      "aulaNumero": 102,
+      "aulaNumero": 100,
       "aulaRef": "80",
       "capitulo": "IE 032",
       "aulaTitulo": "Aula 076 - Lei de Ação e Reação",
@@ -1395,9 +1369,9 @@
     },
     {
       "rowId": "row_9c0bbb68710f",
-      "order": 103,
+      "order": 101,
       "dataAulaISO": "",
-      "aulaNumero": 103,
+      "aulaNumero": 101,
       "aulaRef": "81",
       "capitulo": "IE 033",
       "aulaTitulo": "Aula 077 - Amor como Lei Soberana - O Valor Científico da Prece - Lei da Solidariedade",
@@ -1408,9 +1382,9 @@
     },
     {
       "rowId": "row_7754bffb150f",
-      "order": 104,
+      "order": 102,
       "dataAulaISO": "",
-      "aulaNumero": 104,
+      "aulaNumero": 102,
       "aulaRef": "82",
       "capitulo": "IE 034",
       "aulaTitulo": "Aula 078 - A Medicina Psicossomática",
@@ -1421,9 +1395,9 @@
     },
     {
       "rowId": "row_4cdb68347707",
-      "order": 105,
+      "order": 103,
       "dataAulaISO": "",
-      "aulaNumero": 105,
+      "aulaNumero": 103,
       "aulaRef": "83",
       "capitulo": "IE 070",
       "aulaTitulo": "Aula 079 - Exercício de Vida Plena",
@@ -1434,9 +1408,9 @@
     },
     {
       "rowId": "row_ddbf3b2d94ad",
-      "order": 106,
+      "order": 104,
       "dataAulaISO": "",
-      "aulaNumero": 106,
+      "aulaNumero": 104,
       "aulaRef": "84",
       "capitulo": "IE 035",
       "aulaTitulo": "Aula 080 - Curas e Milagres do Evangelho",
@@ -1447,9 +1421,9 @@
     },
     {
       "rowId": "row_f4cc189fbdd4",
-      "order": 107,
+      "order": 105,
       "dataAulaISO": "",
-      "aulaNumero": 107,
+      "aulaNumero": 105,
       "aulaRef": "85",
       "capitulo": "IE 036 E037",
       "aulaTitulo": "Aula 081 - Cosmogonias e as Concepções do Universo",
@@ -1460,9 +1434,9 @@
     },
     {
       "rowId": "row_72dd56074866",
-      "order": 108,
+      "order": 106,
       "dataAulaISO": "",
-      "aulaNumero": 108,
+      "aulaNumero": 106,
       "aulaRef": "86",
       "capitulo": "IE 038",
       "aulaTitulo": "Aula 082 - Estudo dos Seres e das Formas",
@@ -1473,9 +1447,9 @@
     },
     {
       "rowId": "row_c64b635e2b80",
-      "order": 109,
+      "order": 107,
       "dataAulaISO": "",
-      "aulaNumero": 109,
+      "aulaNumero": 107,
       "aulaRef": "87",
       "capitulo": "IE 039 E040",
       "aulaTitulo": "Aula 083 - Evolução nos Diferentes Reinos da Natureza - Histórico da Evolução dos Seres Vivos",
@@ -1486,9 +1460,9 @@
     },
     {
       "rowId": "row_0100279acec8",
-      "order": 110,
+      "order": 108,
       "dataAulaISO": "",
-      "aulaNumero": 110,
+      "aulaNumero": 108,
       "aulaRef": "88",
       "capitulo": "IE 041",
       "aulaTitulo": "Aula 084 - Leis Universais",
@@ -1499,9 +1473,9 @@
     },
     {
       "rowId": "row_59878c29aa14",
-      "order": 111,
+      "order": 109,
       "dataAulaISO": "",
-      "aulaNumero": 111,
+      "aulaNumero": 109,
       "aulaRef": "89",
       "capitulo": "AE",
       "aulaTitulo": "Aula 085 - Exercício de Vida Plena",
@@ -1512,9 +1486,9 @@
     },
     {
       "rowId": "row_ac1d7b717705",
-      "order": 112,
+      "order": 110,
       "dataAulaISO": "",
-      "aulaNumero": 112,
+      "aulaNumero": 110,
       "aulaRef": "90",
       "capitulo": "IE 042",
       "aulaTitulo": "Aula 086 - O Plano Divino - A Lei da Evolução",
@@ -1525,9 +1499,9 @@
     },
     {
       "rowId": "row_d480c79a8772",
-      "order": 113,
+      "order": 111,
       "dataAulaISO": "",
-      "aulaNumero": 113,
+      "aulaNumero": 111,
       "aulaRef": "91",
       "capitulo": "IE 043",
       "aulaTitulo": "Aula 087 - A Lei do Trabalho - A Lei da Justiça",
@@ -1538,9 +1512,9 @@
     },
     {
       "rowId": "row_9d786e867f4f",
-      "order": 114,
+      "order": 112,
       "dataAulaISO": "",
-      "aulaNumero": 114,
+      "aulaNumero": 112,
       "aulaRef": "",
       "capitulo": "",
       "aulaTitulo": "FÉRIAS 2026",
@@ -1550,23 +1524,10 @@
       "contato": ""
     },
     {
-      "rowId": "row_042fd1a36885",
-      "order": 115,
-      "dataAulaISO": "",
-      "aulaNumero": 115,
-      "aulaRef": "",
-      "capitulo": "",
-      "aulaTitulo": "",
-      "assuntos": "",
-      "temaFacilitador": "",
-      "email": "",
-      "contato": ""
-    },
-    {
       "rowId": "row_b6bc25c389e2",
-      "order": 116,
+      "order": 113,
       "dataAulaISO": "",
-      "aulaNumero": 116,
+      "aulaNumero": 113,
       "aulaRef": "92",
       "capitulo": "IE 044",
       "aulaTitulo": "Aula 088 - A Lei do Amor",
@@ -1577,9 +1538,9 @@
     },
     {
       "rowId": "row_dd1b62c834d4",
-      "order": 117,
+      "order": 114,
       "dataAulaISO": "",
-      "aulaNumero": 117,
+      "aulaNumero": 114,
       "aulaRef": "93",
       "capitulo": "IE 045",
       "aulaTitulo": "Aula 089 - Amor a Deus, ao Próximo e aos Inimigos",
@@ -1590,9 +1551,9 @@
     },
     {
       "rowId": "row_cc6f5c7fe107",
-      "order": 118,
+      "order": 115,
       "dataAulaISO": "",
-      "aulaNumero": 118,
+      "aulaNumero": 115,
       "aulaRef": "94",
       "capitulo": "IE 046",
       "aulaTitulo": "Aula 090 - A Filosofia da Dor",
@@ -1603,9 +1564,9 @@
     },
     {
       "rowId": "row_8b6451974dfd",
-      "order": 119,
+      "order": 116,
       "dataAulaISO": "",
-      "aulaNumero": 119,
+      "aulaNumero": 116,
       "aulaRef": "95",
       "capitulo": "IE 047",
       "aulaTitulo": "Aula 091 - Normas da Vida Espiritual",
@@ -1616,9 +1577,9 @@
     },
     {
       "rowId": "row_a041fd56a70e",
-      "order": 120,
+      "order": 117,
       "dataAulaISO": "",
-      "aulaNumero": 120,
+      "aulaNumero": 117,
       "aulaRef": "96",
       "capitulo": "AE",
       "aulaTitulo": "Aula 092 - Exame Espiritual - Vivência",
@@ -1629,9 +1590,9 @@
     },
     {
       "rowId": "row_ffd082175ec3",
-      "order": 121,
+      "order": 118,
       "dataAulaISO": "",
-      "aulaNumero": 121,
+      "aulaNumero": 118,
       "aulaRef": "97",
       "capitulo": "AE",
       "aulaTitulo": "Aula 093 - Exame Espiritual - Vivência",
@@ -1642,9 +1603,9 @@
     },
     {
       "rowId": "row_6f8a40fb431f",
-      "order": 122,
+      "order": 119,
       "dataAulaISO": "",
-      "aulaNumero": 122,
+      "aulaNumero": 119,
       "aulaRef": "98",
       "capitulo": "AE",
       "aulaTitulo": "Aula 094 - Estrutura da Aliança e de um Centro Espírita - Como abrir um Centro Espírita (V.E.R.)",
@@ -1655,9 +1616,9 @@
     },
     {
       "rowId": "row_3c868b63420b",
-      "order": 123,
+      "order": 120,
       "dataAulaISO": "",
-      "aulaNumero": 123,
+      "aulaNumero": 120,
       "aulaRef": "99",
       "capitulo": "AE",
       "aulaTitulo": "Aula 095 - Nova Frente de Trabalho",
@@ -1668,9 +1629,9 @@
     },
     {
       "rowId": "row_892cae3937ca",
-      "order": 124,
+      "order": 121,
       "dataAulaISO": "",
-      "aulaNumero": 124,
+      "aulaNumero": 121,
       "aulaRef": "100",
       "capitulo": "AE",
       "aulaTitulo": "Aula 095 - Nova Frente de Trabalho",
@@ -1681,9 +1642,9 @@
     },
     {
       "rowId": "row_8890b70caf62",
-      "order": 125,
+      "order": 122,
       "dataAulaISO": "",
-      "aulaNumero": 125,
+      "aulaNumero": 122,
       "aulaRef": "101",
       "capitulo": "IE 048",
       "aulaTitulo": "Aula 096 - Evolução Anímica I",
@@ -1694,9 +1655,9 @@
     },
     {
       "rowId": "row_7e740cca488a",
-      "order": 126,
+      "order": 123,
       "dataAulaISO": "",
-      "aulaNumero": 126,
+      "aulaNumero": 123,
       "aulaRef": "102",
       "capitulo": "IE 049",
       "aulaTitulo": "Aula 097 - Evolução Anímica II",
@@ -1707,9 +1668,9 @@
     },
     {
       "rowId": "row_09bd276f61fe",
-      "order": 127,
+      "order": 124,
       "dataAulaISO": "",
-      "aulaNumero": 127,
+      "aulaNumero": 124,
       "aulaRef": "103",
       "capitulo": "IE 050",
       "aulaTitulo": "Aula 098 - Categoria dos Mundos",
@@ -1720,9 +1681,9 @@
     },
     {
       "rowId": "row_18e75bddb062",
-      "order": 128,
+      "order": 125,
       "dataAulaISO": "",
-      "aulaNumero": 128,
+      "aulaNumero": 125,
       "aulaRef": "104",
       "capitulo": "IE 051",
       "aulaTitulo": "Aula 099 - Imortalidade",
@@ -1733,9 +1694,9 @@
     },
     {
       "rowId": "row_4c2728d4c4ad",
-      "order": 129,
+      "order": 126,
       "dataAulaISO": "",
-      "aulaNumero": 129,
+      "aulaNumero": 126,
       "aulaRef": "105",
       "capitulo": "AE",
       "aulaTitulo": "Aula 100 - A Fraternidade do Trevo e a FDJ",
@@ -1746,9 +1707,9 @@
     },
     {
       "rowId": "row_2fd016399935",
-      "order": 130,
+      "order": 127,
       "dataAulaISO": "",
-      "aulaNumero": 130,
+      "aulaNumero": 127,
       "aulaRef": "106",
       "capitulo": "AE",
       "aulaTitulo": "AULA INCLUÍDA - Conceito de Fraternidade - Pesquisa das Fraternidades do Espaço",
@@ -1759,9 +1720,9 @@
     },
     {
       "rowId": "row_9486739d9faa",
-      "order": 131,
+      "order": 128,
       "dataAulaISO": "",
-      "aulaNumero": 131,
+      "aulaNumero": 128,
       "aulaRef": "107",
       "capitulo": "IE 052",
       "aulaTitulo": "Aula 101 - Reencarnação",
@@ -1772,9 +1733,9 @@
     },
     {
       "rowId": "row_827491aad7b3",
-      "order": 132,
+      "order": 129,
       "dataAulaISO": "",
-      "aulaNumero": 132,
+      "aulaNumero": 129,
       "aulaRef": "108",
       "capitulo": "",
       "aulaTitulo": "Aula 102 - Exercício de Vida Plena",
@@ -1785,9 +1746,9 @@
     },
     {
       "rowId": "row_c9df115041d3",
-      "order": 133,
+      "order": 130,
       "dataAulaISO": "",
-      "aulaNumero": 133,
+      "aulaNumero": 130,
       "aulaRef": "109",
       "capitulo": "IE 053",
       "aulaTitulo": "Aula 103 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres I",
@@ -1798,9 +1759,9 @@
     },
     {
       "rowId": "row_1a82448fa6e7",
-      "order": 134,
+      "order": 131,
       "dataAulaISO": "",
-      "aulaNumero": 134,
+      "aulaNumero": 131,
       "aulaRef": "110",
       "capitulo": "IE 054",
       "aulaTitulo": "Aula 104 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres II",
@@ -1811,9 +1772,9 @@
     },
     {
       "rowId": "row_b3a54cb4c4f8",
-      "order": 135,
+      "order": 132,
       "dataAulaISO": "",
-      "aulaNumero": 135,
+      "aulaNumero": 132,
       "aulaRef": "111",
       "capitulo": "IE 055",
       "aulaTitulo": "Aula 105 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres III",
@@ -1824,9 +1785,9 @@
     },
     {
       "rowId": "row_a48a8926fcf6",
-      "order": 136,
+      "order": 133,
       "dataAulaISO": "",
-      "aulaNumero": 136,
+      "aulaNumero": 133,
       "aulaRef": "112",
       "capitulo": "AE",
       "aulaTitulo": "Aula 106 - O Papel do Discípulo",
@@ -1837,9 +1798,9 @@
     },
     {
       "rowId": "row_72a500498845",
-      "order": 137,
+      "order": 134,
       "dataAulaISO": "",
-      "aulaNumero": 137,
+      "aulaNumero": 134,
       "aulaRef": "113",
       "capitulo": "IE 056",
       "aulaTitulo": "Aula 107 - O Cristão no Lar",
@@ -1850,9 +1811,9 @@
     },
     {
       "rowId": "row_4361dda171bc",
-      "order": 138,
+      "order": 135,
       "dataAulaISO": "",
-      "aulaNumero": 138,
+      "aulaNumero": 135,
       "aulaRef": "114",
       "capitulo": "IE 057",
       "aulaTitulo": "Aula 108 - O Cristão no Meio Religioso e no Meio Profano",
@@ -1863,9 +1824,9 @@
     },
     {
       "rowId": "row_f6760b1773a8",
-      "order": 139,
+      "order": 136,
       "dataAulaISO": "",
-      "aulaNumero": 139,
+      "aulaNumero": 136,
       "aulaRef": "115",
       "capitulo": "AE",
       "aulaTitulo": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA",
@@ -1876,9 +1837,9 @@
     },
     {
       "rowId": "row_0e508323c0e4",
-      "order": 140,
+      "order": 137,
       "dataAulaISO": "",
-      "aulaNumero": 140,
+      "aulaNumero": 137,
       "aulaRef": "116",
       "capitulo": "IE 058",
       "aulaTitulo": "Aula 109 - Os Recursos do Cristão",
@@ -1889,9 +1850,9 @@
     },
     {
       "rowId": "row_49ae3eb5ead0",
-      "order": 141,
+      "order": 138,
       "dataAulaISO": "",
-      "aulaNumero": 141,
+      "aulaNumero": 138,
       "aulaRef": "117",
       "capitulo": "AE",
       "aulaTitulo": "Aula 110 - Exercício de Vida Plena",
@@ -1902,9 +1863,9 @@
     },
     {
       "rowId": "row_70ba8aea9d5e",
-      "order": 142,
+      "order": 139,
       "dataAulaISO": "",
-      "aulaNumero": 142,
+      "aulaNumero": 139,
       "aulaRef": "118",
       "capitulo": "IE 059",
       "aulaTitulo": "Aula 111 - Iniciação Espiritual",
@@ -1915,9 +1876,9 @@
     },
     {
       "rowId": "row_9c8bbd26c413",
-      "order": 143,
+      "order": 140,
       "dataAulaISO": "",
-      "aulaNumero": 143,
+      "aulaNumero": 140,
       "aulaRef": "119",
       "capitulo": "AE",
       "aulaTitulo": "AULA INCLUÍDA - Significado do Ingresso na FDJ. Testemunho do discípulo",
@@ -1928,9 +1889,9 @@
     },
     {
       "rowId": "row_79e78667acdf",
-      "order": 144,
+      "order": 141,
       "dataAulaISO": "",
-      "aulaNumero": 144,
+      "aulaNumero": 141,
       "aulaRef": "120",
       "capitulo": "IE 060",
       "aulaTitulo": "Aula 112 - O Estudo do Perispírito - Centros de Força",
@@ -1941,9 +1902,9 @@
     },
     {
       "rowId": "row_781d12585af0",
-      "order": 145,
+      "order": 142,
       "dataAulaISO": "",
-      "aulaNumero": 145,
+      "aulaNumero": 142,
       "aulaRef": "121",
       "capitulo": "IE 061",
       "aulaTitulo": "Aula 113 - Regras de Conduta",
@@ -1954,9 +1915,9 @@
     },
     {
       "rowId": "row_159aac404e79",
-      "order": 146,
+      "order": 143,
       "dataAulaISO": "",
-      "aulaNumero": 146,
+      "aulaNumero": 143,
       "aulaRef": "",
       "capitulo": "",
       "aulaTitulo": "FÉRIAS JULHO 2027",
@@ -1966,23 +1927,10 @@
       "contato": ""
     },
     {
-      "rowId": "row_0e011d757123",
-      "order": 147,
-      "dataAulaISO": "",
-      "aulaNumero": 147,
-      "aulaRef": "",
-      "capitulo": "",
-      "aulaTitulo": "",
-      "assuntos": "",
-      "temaFacilitador": "",
-      "email": "",
-      "contato": ""
-    },
-    {
       "rowId": "row_42b751e83932",
-      "order": 148,
+      "order": 144,
       "dataAulaISO": "",
-      "aulaNumero": 148,
+      "aulaNumero": 144,
       "aulaRef": "122",
       "capitulo": "IE 062",
       "aulaTitulo": "Aula 114 - O Espírito e o Sexo",
@@ -1993,9 +1941,9 @@
     },
     {
       "rowId": "row_51b87d7be181",
-      "order": 149,
+      "order": 145,
       "dataAulaISO": "",
-      "aulaNumero": 149,
+      "aulaNumero": 145,
       "aulaRef": "123",
       "capitulo": "AE",
       "aulaTitulo": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA",
@@ -2006,9 +1954,9 @@
     },
     {
       "rowId": "row_e5e4017079a6",
-      "order": 150,
+      "order": 146,
       "dataAulaISO": "",
-      "aulaNumero": 150,
+      "aulaNumero": 146,
       "aulaRef": "124",
       "capitulo": "AE",
       "aulaTitulo": "AULA INCLUÍDA - Divulgação doutrinária",
@@ -2019,9 +1967,9 @@
     },
     {
       "rowId": "row_3b4dfa74cf01",
-      "order": 151,
+      "order": 147,
       "dataAulaISO": "",
-      "aulaNumero": 151,
+      "aulaNumero": 147,
       "aulaRef": "125",
       "capitulo": "IE 063",
       "aulaTitulo": "Aula 115 - Problemas da Propagação do Espiritismo",
@@ -2032,9 +1980,9 @@
     },
     {
       "rowId": "row_5f169ee75051",
-      "order": 152,
+      "order": 148,
       "dataAulaISO": "",
-      "aulaNumero": 152,
+      "aulaNumero": 148,
       "aulaRef": "126",
       "capitulo": "AE",
       "aulaTitulo": "Aula 116 - Exame Espiritual - Vivência",
@@ -2045,9 +1993,9 @@
     },
     {
       "rowId": "row_88d68ac19474",
-      "order": 153,
+      "order": 149,
       "dataAulaISO": "",
-      "aulaNumero": 153,
+      "aulaNumero": 149,
       "aulaRef": "126",
       "capitulo": "AE",
       "aulaTitulo": "Aula 117 - Exame Espiritual - Vivência",
@@ -2058,9 +2006,9 @@
     },
     {
       "rowId": "row_b6b3b6d814b1",
-      "order": 154,
+      "order": 150,
       "dataAulaISO": "",
-      "aulaNumero": 154,
+      "aulaNumero": 150,
       "aulaRef": "127",
       "capitulo": "AE",
       "aulaTitulo": "Aula 118 - Exame Espiritual. Devolução das Cadernetas",
@@ -2071,9 +2019,9 @@
     },
     {
       "rowId": "row_742fa2e30577",
-      "order": 155,
+      "order": 151,
       "dataAulaISO": "",
-      "aulaNumero": 155,
+      "aulaNumero": 151,
       "aulaRef": "1",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS -0 1",
@@ -2084,9 +2032,9 @@
     },
     {
       "rowId": "row_72f5c0b307c1",
-      "order": 156,
+      "order": 152,
       "dataAulaISO": "",
-      "aulaNumero": 156,
+      "aulaNumero": 152,
       "aulaRef": "2",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 02",
@@ -2097,9 +2045,9 @@
     },
     {
       "rowId": "row_e20f38499a57",
-      "order": 157,
+      "order": 153,
       "dataAulaISO": "",
-      "aulaNumero": 157,
+      "aulaNumero": 153,
       "aulaRef": "3",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 03",
@@ -2110,9 +2058,9 @@
     },
     {
       "rowId": "row_bd5fe663aef0",
-      "order": 158,
+      "order": 154,
       "dataAulaISO": "",
-      "aulaNumero": 158,
+      "aulaNumero": 154,
       "aulaRef": "4",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 04",
@@ -2123,9 +2071,9 @@
     },
     {
       "rowId": "row_aee941eb8c0e",
-      "order": 159,
+      "order": 155,
       "dataAulaISO": "",
-      "aulaNumero": 159,
+      "aulaNumero": 155,
       "aulaRef": "5",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 05",
@@ -2136,9 +2084,9 @@
     },
     {
       "rowId": "row_992ca78c8645",
-      "order": 160,
+      "order": 156,
       "dataAulaISO": "",
-      "aulaNumero": 160,
+      "aulaNumero": 156,
       "aulaRef": "6",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 06",
@@ -2149,9 +2097,9 @@
     },
     {
       "rowId": "row_569b85a4a65d",
-      "order": 161,
+      "order": 157,
       "dataAulaISO": "",
-      "aulaNumero": 161,
+      "aulaNumero": 157,
       "aulaRef": "7",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 07",
@@ -2162,9 +2110,9 @@
     },
     {
       "rowId": "row_f0db439ebbff",
-      "order": 162,
+      "order": 158,
       "dataAulaISO": "",
-      "aulaNumero": 162,
+      "aulaNumero": 158,
       "aulaRef": "8",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 08",
@@ -2175,9 +2123,9 @@
     },
     {
       "rowId": "row_496dd94f6891",
-      "order": 163,
+      "order": 159,
       "dataAulaISO": "",
-      "aulaNumero": 163,
+      "aulaNumero": 159,
       "aulaRef": "9",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 09",
@@ -2188,9 +2136,9 @@
     },
     {
       "rowId": "row_3de725b437c9",
-      "order": 164,
+      "order": 160,
       "dataAulaISO": "",
-      "aulaNumero": 164,
+      "aulaNumero": 160,
       "aulaRef": "10",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 10",
@@ -2201,9 +2149,9 @@
     },
     {
       "rowId": "row_180c63a2d289",
-      "order": 165,
+      "order": 161,
       "dataAulaISO": "",
-      "aulaNumero": 165,
+      "aulaNumero": 161,
       "aulaRef": "11",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 11",
@@ -2214,9 +2162,9 @@
     },
     {
       "rowId": "row_36b274328da8",
-      "order": 166,
+      "order": 162,
       "dataAulaISO": "",
-      "aulaNumero": 166,
+      "aulaNumero": 162,
       "aulaRef": "12",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 12",
@@ -2227,9 +2175,9 @@
     },
     {
       "rowId": "row_8296c0e35c8d",
-      "order": 167,
+      "order": 163,
       "dataAulaISO": "",
-      "aulaNumero": 167,
+      "aulaNumero": 163,
       "aulaRef": "13",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 13",
@@ -2240,9 +2188,9 @@
     },
     {
       "rowId": "row_796821acdd63",
-      "order": 168,
+      "order": 164,
       "dataAulaISO": "",
-      "aulaNumero": 168,
+      "aulaNumero": 164,
       "aulaRef": "14",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 14",
@@ -2253,9 +2201,9 @@
     },
     {
       "rowId": "row_60072be2f997",
-      "order": 169,
+      "order": 165,
       "dataAulaISO": "",
-      "aulaNumero": 169,
+      "aulaNumero": 165,
       "aulaRef": "",
       "capitulo": "",
       "aulaTitulo": "FÉRIAS  DEZEMBRO 2027",
@@ -2265,23 +2213,10 @@
       "contato": ""
     },
     {
-      "rowId": "row_59694e6053dc",
-      "order": 170,
-      "dataAulaISO": "",
-      "aulaNumero": 170,
-      "aulaRef": "",
-      "capitulo": "",
-      "aulaTitulo": "",
-      "assuntos": "",
-      "temaFacilitador": "",
-      "email": "",
-      "contato": ""
-    },
-    {
       "rowId": "row_07b0d7dd1f46",
-      "order": 171,
+      "order": 166,
       "dataAulaISO": "",
-      "aulaNumero": 171,
+      "aulaNumero": 166,
       "aulaRef": "15",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 15",
@@ -2292,9 +2227,9 @@
     },
     {
       "rowId": "row_3d16f68cb227",
-      "order": 172,
+      "order": 167,
       "dataAulaISO": "",
-      "aulaNumero": 172,
+      "aulaNumero": 167,
       "aulaRef": "16",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 16",
@@ -2305,9 +2240,9 @@
     },
     {
       "rowId": "row_e351237cf74d",
-      "order": 173,
+      "order": 168,
       "dataAulaISO": "",
-      "aulaNumero": 173,
+      "aulaNumero": 168,
       "aulaRef": "17",
       "capitulo": "",
       "aulaTitulo": "LIVRO DOS ESPÍRITOS - 17",
@@ -2318,9 +2253,9 @@
     },
     {
       "rowId": "row_0d439b9fb411",
-      "order": 174,
+      "order": 169,
       "dataAulaISO": "",
-      "aulaNumero": 174,
+      "aulaNumero": 169,
       "aulaRef": "18",
       "capitulo": "",
       "aulaTitulo": "ULTIMA AULA - EXPLICAÇÃO SOBRE O PERÍODO PROBATÓRIO",
@@ -2331,9 +2266,9 @@
     },
     {
       "rowId": "row_18de519c90e9",
-      "order": 175,
+      "order": 170,
       "dataAulaISO": "",
-      "aulaNumero": 175,
+      "aulaNumero": 170,
       "aulaRef": "1",
       "capitulo": "",
       "aulaTitulo": "ESTÁGIO PROBATÓRIO",
@@ -2344,9 +2279,9 @@
     },
     {
       "rowId": "row_872dfd4c8c11",
-      "order": 176,
+      "order": 171,
       "dataAulaISO": "",
-      "aulaNumero": 176,
+      "aulaNumero": 171,
       "aulaRef": "2",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2357,9 +2292,9 @@
     },
     {
       "rowId": "row_d18f4bc832cd",
-      "order": 177,
+      "order": 172,
       "dataAulaISO": "",
-      "aulaNumero": 177,
+      "aulaNumero": 172,
       "aulaRef": "3",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2370,9 +2305,9 @@
     },
     {
       "rowId": "row_805c55739aa2",
-      "order": 178,
+      "order": 173,
       "dataAulaISO": "",
-      "aulaNumero": 178,
+      "aulaNumero": 173,
       "aulaRef": "4",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2383,9 +2318,9 @@
     },
     {
       "rowId": "row_18c5d4a05587",
-      "order": 179,
+      "order": 174,
       "dataAulaISO": "",
-      "aulaNumero": 179,
+      "aulaNumero": 174,
       "aulaRef": "5",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2396,9 +2331,9 @@
     },
     {
       "rowId": "row_de4de6506cd6",
-      "order": 180,
+      "order": 175,
       "dataAulaISO": "",
-      "aulaNumero": 180,
+      "aulaNumero": 175,
       "aulaRef": "6",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2409,9 +2344,9 @@
     },
     {
       "rowId": "row_fc7bb5e6af7e",
-      "order": 181,
+      "order": 176,
       "dataAulaISO": "",
-      "aulaNumero": 181,
+      "aulaNumero": 176,
       "aulaRef": "7",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2422,9 +2357,9 @@
     },
     {
       "rowId": "row_86cf10728a25",
-      "order": 182,
+      "order": 177,
       "dataAulaISO": "",
-      "aulaNumero": 182,
+      "aulaNumero": 177,
       "aulaRef": "8",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2435,9 +2370,9 @@
     },
     {
       "rowId": "row_3eca60e3fd0f",
-      "order": 183,
+      "order": 178,
       "dataAulaISO": "",
-      "aulaNumero": 183,
+      "aulaNumero": 178,
       "aulaRef": "9",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2448,9 +2383,9 @@
     },
     {
       "rowId": "row_35ba5d521514",
-      "order": 184,
+      "order": 179,
       "dataAulaISO": "",
-      "aulaNumero": 184,
+      "aulaNumero": 179,
       "aulaRef": "10",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2461,9 +2396,9 @@
     },
     {
       "rowId": "row_57ede69a2961",
-      "order": 185,
+      "order": 180,
       "dataAulaISO": "",
-      "aulaNumero": 185,
+      "aulaNumero": 180,
       "aulaRef": "11",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2474,9 +2409,9 @@
     },
     {
       "rowId": "row_dced6bd90a81",
-      "order": 186,
+      "order": 181,
       "dataAulaISO": "",
-      "aulaNumero": 186,
+      "aulaNumero": 181,
       "aulaRef": "12",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2487,9 +2422,9 @@
     },
     {
       "rowId": "row_a27735475d84",
-      "order": 187,
+      "order": 182,
       "dataAulaISO": "",
-      "aulaNumero": 187,
+      "aulaNumero": 182,
       "aulaRef": "13",
       "capitulo": "",
       "aulaTitulo": "",
@@ -2500,9 +2435,9 @@
     },
     {
       "rowId": "row_57ba2f9a9f67",
-      "order": 188,
+      "order": 183,
       "dataAulaISO": "",
-      "aulaNumero": 188,
+      "aulaNumero": 183,
       "aulaRef": "14",
       "capitulo": "",
       "aulaTitulo": "RETORNO DO ESTÁGIO PROBATÓRIO - EXPLICAÇÕES SOBRE FDJ - RECOLHER CADERNETAS",
@@ -3061,21 +2996,6 @@
     },
     {
       "aulaNumero": 183
-    },
-    {
-      "aulaNumero": 184
-    },
-    {
-      "aulaNumero": 185
-    },
-    {
-      "aulaNumero": 186
-    },
-    {
-      "aulaNumero": 187
-    },
-    {
-      "aulaNumero": 188
     }
   ],
   "temaMap": [
@@ -3385,553 +3305,553 @@
       "temaTexto": "FÉRIAS 2025"
     },
     {
+      "aulaNumero": 62,
+      "temaNumero": 62,
+      "temaTexto": "Aula 041 - Prisão e Entrega aos Romanos (Cap. 40)"
+    },
+    {
       "aulaNumero": 63,
       "temaNumero": 63,
-      "temaTexto": "Aula 041 - Prisão e Entrega aos Romanos (Cap. 40)"
+      "temaTexto": "Aula 042 - O Tribunal Judaico (Cap. 41)"
     },
     {
       "aulaNumero": 64,
       "temaNumero": 64,
-      "temaTexto": "Aula 042 - O Tribunal Judaico (Cap. 41)"
+      "temaTexto": "Aula 043 - O Julgamento de Pilatos (Cap. 42)"
     },
     {
       "aulaNumero": 65,
       "temaNumero": 65,
-      "temaTexto": "Aula 043 - O Julgamento de Pilatos (Cap. 42)"
+      "temaTexto": "Aula 044 - O Calvário (Cap. 43)"
     },
     {
       "aulaNumero": 66,
       "temaNumero": 66,
-      "temaTexto": "Aula 044 - O Calvário (Cap. 43)"
+      "temaTexto": "Aula 045 - Ressurreição (Cap. 44 e 45)"
     },
     {
       "aulaNumero": 67,
       "temaNumero": 67,
-      "temaTexto": "Aula 045 - Ressurreição (Cap. 44 e 45)"
+      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
     },
     {
       "aulaNumero": 68,
       "temaNumero": 68,
-      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
+      "temaTexto": "QUARTA-FEIRA DE CINZAS - NÃO HAVERA AULA"
     },
     {
       "aulaNumero": 69,
       "temaNumero": 69,
-      "temaTexto": "QUARTA-FEIRA DE CINZAS - NÃO HAVERA AULA"
+      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
     },
     {
       "aulaNumero": 70,
       "temaNumero": 70,
-      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
+      "temaTexto": "Aula 046 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 71,
       "temaNumero": 71,
-      "temaTexto": "Aula 046 - Exame Espiritual - Vivência"
+      "temaTexto": "Aula 047 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 72,
       "temaNumero": 72,
-      "temaTexto": "Aula 047 - Exame Espiritual - Vivência"
+      "temaTexto": "Aula 048 - Passagem para o Grau de Servidor (pag. 225 IE) e Inscrições para o Curso de Médiuns (pag. 47 IE)"
     },
     {
       "aulaNumero": 73,
       "temaNumero": 73,
-      "temaTexto": "Aula 048 - Passagem para o Grau de Servidor (pag. 225 IE) e Inscrições para o Curso de Médiuns (pag. 47 IE)"
+      "temaTexto": "Aula 049 - Evolução do Homem Animal para o Homem Espiritual"
     },
     {
       "aulaNumero": 74,
       "temaNumero": 74,
-      "temaTexto": "Aula 049 - Evolução do Homem Animal para o Homem Espiritual"
+      "temaTexto": "Aula 050 - Interpretação do Sermão do Monte I"
     },
     {
       "aulaNumero": 75,
       "temaNumero": 75,
-      "temaTexto": "Aula 050 - Interpretação do Sermão do Monte I"
+      "temaTexto": "Aula 051 - Interpretação do Sermão do Monte II"
     },
     {
       "aulaNumero": 76,
       "temaNumero": 76,
-      "temaTexto": "Aula 051 - Interpretação do Sermão do Monte II"
+      "temaTexto": "Aula 052 - Interpretação do Sermão do Monte III"
     },
     {
       "aulaNumero": 77,
       "temaNumero": 77,
-      "temaTexto": "Aula 052 - Interpretação do Sermão do Monte III"
+      "temaTexto": "Aula 053 - Interpretação do Sermão do Monte IV"
     },
     {
       "aulaNumero": 78,
       "temaNumero": 78,
-      "temaTexto": "Aula 053 - Interpretação do Sermão do Monte IV"
+      "temaTexto": "Aula 054 - A Fundação da Igreja Cristã"
     },
     {
       "aulaNumero": 79,
       "temaNumero": 79,
-      "temaTexto": "Aula 054 - A Fundação da Igreja Cristã"
+      "temaTexto": "Aula 055 - Ascensão"
     },
     {
       "aulaNumero": 80,
       "temaNumero": 80,
-      "temaTexto": "Aula 055 - Ascensão"
+      "temaTexto": "Aula 056 - Vida Plena - Conceito"
     },
     {
       "aulaNumero": 81,
       "temaNumero": 81,
-      "temaTexto": "Aula 056 - Vida Plena - Conceito"
+      "temaTexto": "Aula 057 - Instituição dos Diáconos"
     },
     {
       "aulaNumero": 82,
       "temaNumero": 82,
-      "temaTexto": "Aula 057 - Instituição dos Diáconos"
+      "temaTexto": "Aula 058 - A Conversão de Paulo"
     },
     {
       "aulaNumero": 83,
       "temaNumero": 83,
-      "temaTexto": "Aula 058 - A Conversão de Paulo"
+      "temaTexto": "Aula 059 - O Apóstolo Paulo e Suas Pregações"
     },
     {
       "aulaNumero": 84,
       "temaNumero": 84,
-      "temaTexto": "Aula 059 - O Apóstolo Paulo e Suas Pregações"
+      "temaTexto": "Aula 060 - Paulo Defende-se em Jerusalém"
     },
     {
       "aulaNumero": 85,
       "temaNumero": 85,
-      "temaTexto": "Aula 060 - Paulo Defende-se em Jerusalém"
+      "temaTexto": "Aula 061 - Os Apóstolos Que Mais se Destacaram e Seus"
     },
     {
       "aulaNumero": 86,
       "temaNumero": 86,
-      "temaTexto": "Aula 061 - Os Apóstolos Que Mais se Destacaram e Seus"
+      "temaTexto": "Aula 062 - Preconceito - Definição (pag. 232 IE)"
     },
     {
       "aulaNumero": 87,
       "temaNumero": 87,
-      "temaTexto": "Aula 062 - Preconceito - Definição (pag. 232 IE)"
+      "temaTexto": "Aula 064 - Estudo das Epístolas"
     },
     {
       "aulaNumero": 88,
       "temaNumero": 88,
-      "temaTexto": "Aula 064 - Estudo das Epístolas"
+      "temaTexto": "Aula 065 - A Predestinação Segundo a Doutrina de Paulo"
     },
     {
       "aulaNumero": 89,
       "temaNumero": 89,
-      "temaTexto": "Aula 065 - A Predestinação Segundo a Doutrina de Paulo"
+      "temaTexto": "FÉRIAS JULHO 2026"
     },
     {
       "aulaNumero": 90,
       "temaNumero": 90,
-      "temaTexto": "FÉRIAS JULHO 2026"
+      "temaTexto": "Aula 066 - Justificação dos Pecados"
+    },
+    {
+      "aulaNumero": 91,
+      "temaNumero": 91,
+      "temaTexto": "Aula 067 - Continuação das Epístolas"
     },
     {
       "aulaNumero": 92,
       "temaNumero": 92,
-      "temaTexto": "Aula 066 - Justificação dos Pecados"
+      "temaTexto": "Aula 068 - Vícios e Defeitos - Conceitos"
     },
     {
       "aulaNumero": 93,
       "temaNumero": 93,
-      "temaTexto": "Aula 067 - Continuação das Epístolas"
+      "temaTexto": "Aula 069 - A Doutrina de Tiago Sobre a Salvação"
     },
     {
       "aulaNumero": 94,
       "temaNumero": 94,
-      "temaTexto": "Aula 068 - Vícios e Defeitos - Conceitos"
+      "temaTexto": "Aula 070 - Doutrinas de Pedro, João e Judas"
     },
     {
       "aulaNumero": 95,
       "temaNumero": 95,
-      "temaTexto": "Aula 069 - A Doutrina de Tiago Sobre a Salvação"
+      "temaTexto": "Aula 071 - O Apocalipse de João I"
     },
     {
       "aulaNumero": 96,
       "temaNumero": 96,
-      "temaTexto": "Aula 070 - Doutrinas de Pedro, João e Judas"
+      "temaTexto": "Aula 072 - O Apocalipse de João II"
     },
     {
       "aulaNumero": 97,
       "temaNumero": 97,
-      "temaTexto": "Aula 071 - O Apocalipse de João I"
+      "temaTexto": "Aula 073 - Vícios e Defeitos - Vivência"
     },
     {
       "aulaNumero": 98,
       "temaNumero": 98,
-      "temaTexto": "Aula 072 - O Apocalipse de João II"
+      "temaTexto": "Aula 074 - Ciência e Religião"
     },
     {
       "aulaNumero": 99,
       "temaNumero": 99,
-      "temaTexto": "Aula 073 - Vícios e Defeitos - Vivência"
+      "temaTexto": "Aula 075 - O Pensamento e a Vontade"
     },
     {
       "aulaNumero": 100,
       "temaNumero": 100,
-      "temaTexto": "Aula 074 - Ciência e Religião"
+      "temaTexto": "Aula 076 - Lei de Ação e Reação"
     },
     {
       "aulaNumero": 101,
       "temaNumero": 101,
-      "temaTexto": "Aula 075 - O Pensamento e a Vontade"
+      "temaTexto": "Aula 077 - Amor como Lei Soberana - O Valor Científico da Prece - Lei da Solidariedade"
     },
     {
       "aulaNumero": 102,
       "temaNumero": 102,
-      "temaTexto": "Aula 076 - Lei de Ação e Reação"
+      "temaTexto": "Aula 078 - A Medicina Psicossomática"
     },
     {
       "aulaNumero": 103,
       "temaNumero": 103,
-      "temaTexto": "Aula 077 - Amor como Lei Soberana - O Valor Científico da Prece - Lei da Solidariedade"
+      "temaTexto": "Aula 079 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 104,
       "temaNumero": 104,
-      "temaTexto": "Aula 078 - A Medicina Psicossomática"
+      "temaTexto": "Aula 080 - Curas e Milagres do Evangelho"
     },
     {
       "aulaNumero": 105,
       "temaNumero": 105,
-      "temaTexto": "Aula 079 - Exercício de Vida Plena"
+      "temaTexto": "Aula 081 - Cosmogonias e as Concepções do Universo"
     },
     {
       "aulaNumero": 106,
       "temaNumero": 106,
-      "temaTexto": "Aula 080 - Curas e Milagres do Evangelho"
+      "temaTexto": "Aula 082 - Estudo dos Seres e das Formas"
     },
     {
       "aulaNumero": 107,
       "temaNumero": 107,
-      "temaTexto": "Aula 081 - Cosmogonias e as Concepções do Universo"
+      "temaTexto": "Aula 083 - Evolução nos Diferentes Reinos da Natureza - Histórico da Evolução dos Seres Vivos"
     },
     {
       "aulaNumero": 108,
       "temaNumero": 108,
-      "temaTexto": "Aula 082 - Estudo dos Seres e das Formas"
+      "temaTexto": "Aula 084 - Leis Universais"
     },
     {
       "aulaNumero": 109,
       "temaNumero": 109,
-      "temaTexto": "Aula 083 - Evolução nos Diferentes Reinos da Natureza - Histórico da Evolução dos Seres Vivos"
+      "temaTexto": "Aula 085 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 110,
       "temaNumero": 110,
-      "temaTexto": "Aula 084 - Leis Universais"
+      "temaTexto": "Aula 086 - O Plano Divino - A Lei da Evolução"
     },
     {
       "aulaNumero": 111,
       "temaNumero": 111,
-      "temaTexto": "Aula 085 - Exercício de Vida Plena"
+      "temaTexto": "Aula 087 - A Lei do Trabalho - A Lei da Justiça"
     },
     {
       "aulaNumero": 112,
       "temaNumero": 112,
-      "temaTexto": "Aula 086 - O Plano Divino - A Lei da Evolução"
+      "temaTexto": "FÉRIAS 2026"
     },
     {
       "aulaNumero": 113,
       "temaNumero": 113,
-      "temaTexto": "Aula 087 - A Lei do Trabalho - A Lei da Justiça"
+      "temaTexto": "Aula 088 - A Lei do Amor"
     },
     {
       "aulaNumero": 114,
       "temaNumero": 114,
-      "temaTexto": "FÉRIAS 2026"
+      "temaTexto": "Aula 089 - Amor a Deus, ao Próximo e aos Inimigos"
+    },
+    {
+      "aulaNumero": 115,
+      "temaNumero": 115,
+      "temaTexto": "Aula 090 - A Filosofia da Dor"
     },
     {
       "aulaNumero": 116,
       "temaNumero": 116,
-      "temaTexto": "Aula 088 - A Lei do Amor"
+      "temaTexto": "Aula 091 - Normas da Vida Espiritual"
     },
     {
       "aulaNumero": 117,
       "temaNumero": 117,
-      "temaTexto": "Aula 089 - Amor a Deus, ao Próximo e aos Inimigos"
+      "temaTexto": "Aula 092 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 118,
       "temaNumero": 118,
-      "temaTexto": "Aula 090 - A Filosofia da Dor"
+      "temaTexto": "Aula 093 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 119,
       "temaNumero": 119,
-      "temaTexto": "Aula 091 - Normas da Vida Espiritual"
+      "temaTexto": "Aula 094 - Estrutura da Aliança e de um Centro Espírita - Como abrir um Centro Espírita (V.E.R.)"
     },
     {
       "aulaNumero": 120,
       "temaNumero": 120,
-      "temaTexto": "Aula 092 - Exame Espiritual - Vivência"
+      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
     },
     {
       "aulaNumero": 121,
       "temaNumero": 121,
-      "temaTexto": "Aula 093 - Exame Espiritual - Vivência"
+      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
     },
     {
       "aulaNumero": 122,
       "temaNumero": 122,
-      "temaTexto": "Aula 094 - Estrutura da Aliança e de um Centro Espírita - Como abrir um Centro Espírita (V.E.R.)"
+      "temaTexto": "Aula 096 - Evolução Anímica I"
     },
     {
       "aulaNumero": 123,
       "temaNumero": 123,
-      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
+      "temaTexto": "Aula 097 - Evolução Anímica II"
     },
     {
       "aulaNumero": 124,
       "temaNumero": 124,
-      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
+      "temaTexto": "Aula 098 - Categoria dos Mundos"
     },
     {
       "aulaNumero": 125,
       "temaNumero": 125,
-      "temaTexto": "Aula 096 - Evolução Anímica I"
+      "temaTexto": "Aula 099 - Imortalidade"
     },
     {
       "aulaNumero": 126,
       "temaNumero": 126,
-      "temaTexto": "Aula 097 - Evolução Anímica II"
+      "temaTexto": "Aula 100 - A Fraternidade do Trevo e a FDJ"
     },
     {
       "aulaNumero": 127,
       "temaNumero": 127,
-      "temaTexto": "Aula 098 - Categoria dos Mundos"
+      "temaTexto": "AULA INCLUÍDA - Conceito de Fraternidade - Pesquisa das Fraternidades do Espaço"
     },
     {
       "aulaNumero": 128,
       "temaNumero": 128,
-      "temaTexto": "Aula 099 - Imortalidade"
+      "temaTexto": "Aula 101 - Reencarnação"
     },
     {
       "aulaNumero": 129,
       "temaNumero": 129,
-      "temaTexto": "Aula 100 - A Fraternidade do Trevo e a FDJ"
+      "temaTexto": "Aula 102 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 130,
       "temaNumero": 130,
-      "temaTexto": "AULA INCLUÍDA - Conceito de Fraternidade - Pesquisa das Fraternidades do Espaço"
+      "temaTexto": "Aula 103 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres I"
     },
     {
       "aulaNumero": 131,
       "temaNumero": 131,
-      "temaTexto": "Aula 101 - Reencarnação"
+      "temaTexto": "Aula 104 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres II"
     },
     {
       "aulaNumero": 132,
       "temaNumero": 132,
-      "temaTexto": "Aula 102 - Exercício de Vida Plena"
+      "temaTexto": "Aula 105 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres III"
     },
     {
       "aulaNumero": 133,
       "temaNumero": 133,
-      "temaTexto": "Aula 103 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres I"
+      "temaTexto": "Aula 106 - O Papel do Discípulo"
     },
     {
       "aulaNumero": 134,
       "temaNumero": 134,
-      "temaTexto": "Aula 104 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres II"
+      "temaTexto": "Aula 107 - O Cristão no Lar"
     },
     {
       "aulaNumero": 135,
       "temaNumero": 135,
-      "temaTexto": "Aula 105 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres III"
+      "temaTexto": "Aula 108 - O Cristão no Meio Religioso e no Meio Profano"
     },
     {
       "aulaNumero": 136,
       "temaNumero": 136,
-      "temaTexto": "Aula 106 - O Papel do Discípulo"
+      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
     },
     {
       "aulaNumero": 137,
       "temaNumero": 137,
-      "temaTexto": "Aula 107 - O Cristão no Lar"
+      "temaTexto": "Aula 109 - Os Recursos do Cristão"
     },
     {
       "aulaNumero": 138,
       "temaNumero": 138,
-      "temaTexto": "Aula 108 - O Cristão no Meio Religioso e no Meio Profano"
+      "temaTexto": "Aula 110 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 139,
       "temaNumero": 139,
-      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
+      "temaTexto": "Aula 111 - Iniciação Espiritual"
     },
     {
       "aulaNumero": 140,
       "temaNumero": 140,
-      "temaTexto": "Aula 109 - Os Recursos do Cristão"
+      "temaTexto": "AULA INCLUÍDA - Significado do Ingresso na FDJ. Testemunho do discípulo"
     },
     {
       "aulaNumero": 141,
       "temaNumero": 141,
-      "temaTexto": "Aula 110 - Exercício de Vida Plena"
+      "temaTexto": "Aula 112 - O Estudo do Perispírito - Centros de Força"
     },
     {
       "aulaNumero": 142,
       "temaNumero": 142,
-      "temaTexto": "Aula 111 - Iniciação Espiritual"
+      "temaTexto": "Aula 113 - Regras de Conduta"
     },
     {
       "aulaNumero": 143,
       "temaNumero": 143,
-      "temaTexto": "AULA INCLUÍDA - Significado do Ingresso na FDJ. Testemunho do discípulo"
+      "temaTexto": "FÉRIAS JULHO 2027"
     },
     {
       "aulaNumero": 144,
       "temaNumero": 144,
-      "temaTexto": "Aula 112 - O Estudo do Perispírito - Centros de Força"
+      "temaTexto": "Aula 114 - O Espírito e o Sexo"
     },
     {
       "aulaNumero": 145,
       "temaNumero": 145,
-      "temaTexto": "Aula 113 - Regras de Conduta"
+      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
     },
     {
       "aulaNumero": 146,
       "temaNumero": 146,
-      "temaTexto": "FÉRIAS JULHO 2027"
+      "temaTexto": "AULA INCLUÍDA - Divulgação doutrinária"
+    },
+    {
+      "aulaNumero": 147,
+      "temaNumero": 147,
+      "temaTexto": "Aula 115 - Problemas da Propagação do Espiritismo"
     },
     {
       "aulaNumero": 148,
       "temaNumero": 148,
-      "temaTexto": "Aula 114 - O Espírito e o Sexo"
+      "temaTexto": "Aula 116 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 149,
       "temaNumero": 149,
-      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
+      "temaTexto": "Aula 117 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 150,
       "temaNumero": 150,
-      "temaTexto": "AULA INCLUÍDA - Divulgação doutrinária"
+      "temaTexto": "Aula 118 - Exame Espiritual. Devolução das Cadernetas"
     },
     {
       "aulaNumero": 151,
       "temaNumero": 151,
-      "temaTexto": "Aula 115 - Problemas da Propagação do Espiritismo"
+      "temaTexto": "LIVRO DOS ESPÍRITOS -0 1"
     },
     {
       "aulaNumero": 152,
       "temaNumero": 152,
-      "temaTexto": "Aula 116 - Exame Espiritual - Vivência"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 02"
     },
     {
       "aulaNumero": 153,
       "temaNumero": 153,
-      "temaTexto": "Aula 117 - Exame Espiritual - Vivência"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 03"
     },
     {
       "aulaNumero": 154,
       "temaNumero": 154,
-      "temaTexto": "Aula 118 - Exame Espiritual. Devolução das Cadernetas"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 04"
     },
     {
       "aulaNumero": 155,
       "temaNumero": 155,
-      "temaTexto": "LIVRO DOS ESPÍRITOS -0 1"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 05"
     },
     {
       "aulaNumero": 156,
       "temaNumero": 156,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 02"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 06"
     },
     {
       "aulaNumero": 157,
       "temaNumero": 157,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 03"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 07"
     },
     {
       "aulaNumero": 158,
       "temaNumero": 158,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 04"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 08"
     },
     {
       "aulaNumero": 159,
       "temaNumero": 159,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 05"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 09"
     },
     {
       "aulaNumero": 160,
       "temaNumero": 160,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 06"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 10"
     },
     {
       "aulaNumero": 161,
       "temaNumero": 161,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 07"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 11"
     },
     {
       "aulaNumero": 162,
       "temaNumero": 162,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 08"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 12"
     },
     {
       "aulaNumero": 163,
       "temaNumero": 163,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 09"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 13"
     },
     {
       "aulaNumero": 164,
       "temaNumero": 164,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 10"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 14"
     },
     {
       "aulaNumero": 165,
       "temaNumero": 165,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 11"
+      "temaTexto": "FÉRIAS  DEZEMBRO 2027"
     },
     {
       "aulaNumero": 166,
       "temaNumero": 166,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 12"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 15"
     },
     {
       "aulaNumero": 167,
       "temaNumero": 167,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 13"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 16"
     },
     {
       "aulaNumero": 168,
       "temaNumero": 168,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 14"
+      "temaTexto": "LIVRO DOS ESPÍRITOS - 17"
     },
     {
       "aulaNumero": 169,
       "temaNumero": 169,
-      "temaTexto": "FÉRIAS  DEZEMBRO 2027"
-    },
-    {
-      "aulaNumero": 171,
-      "temaNumero": 171,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 15"
-    },
-    {
-      "aulaNumero": 172,
-      "temaNumero": 172,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 16"
-    },
-    {
-      "aulaNumero": 173,
-      "temaNumero": 173,
-      "temaTexto": "LIVRO DOS ESPÍRITOS - 17"
-    },
-    {
-      "aulaNumero": 174,
-      "temaNumero": 174,
       "temaTexto": "ULTIMA AULA - EXPLICAÇÃO SOBRE O PERÍODO PROBATÓRIO"
     },
     {
-      "aulaNumero": 175,
-      "temaNumero": 175,
+      "aulaNumero": 170,
+      "temaNumero": 170,
       "temaTexto": "ESTÁGIO PROBATÓRIO"
     },
     {
-      "aulaNumero": 188,
-      "temaNumero": 188,
+      "aulaNumero": 183,
+      "temaNumero": 183,
       "temaTexto": "RETORNO DO ESTÁGIO PROBATÓRIO - EXPLICAÇÕES SOBRE FDJ - RECOLHER CADERNETAS"
     }
   ]

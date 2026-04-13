@@ -182,6 +182,51 @@ async function loadPrograma() {
   return { source: "bundled", dados: res.dados };
 }
 
+function hasAnyMissingProgramaFields(rows) {
+  const arr = Array.isArray(rows) ? rows : [];
+  for (const r of arr) {
+    const cap = String(r?.capitulo || "").trim();
+    const aula = String(r?.aulaTitulo || "").trim();
+    if (!cap || !aula) return true;
+  }
+  return false;
+}
+
+async function backfillCapituloEAulaFromBundledIfNeeded(localDados) {
+  const rows = Array.isArray(localDados?.rows) ? localDados.rows : null;
+  if (!rows || !rows.length) return localDados;
+  if (!hasAnyMissingProgramaFields(rows)) return localDados;
+
+  let bundled = null;
+  try {
+    const res = await window.api?.programa?.getPadrao?.();
+    if (res?.ok) bundled = res.dados;
+  } catch {}
+  if (!bundled || !Array.isArray(bundled.rows) || !bundled.rows.length) return localDados;
+
+  const byOrder = new Map();
+  for (const r of bundled.rows) {
+    const k = Number.isFinite(Number(r?.order)) ? Number(r.order) : (Number.isFinite(Number(r?.aulaNumero)) ? Number(r.aulaNumero) : null);
+    if (k == null) continue;
+    if (!byOrder.has(k)) byOrder.set(k, r);
+  }
+
+  const mergedRows = rows.map((r) => {
+    const k = Number.isFinite(Number(r?.order)) ? Number(r.order) : (Number.isFinite(Number(r?.aulaNumero)) ? Number(r.aulaNumero) : null);
+    const b = k == null ? null : byOrder.get(k);
+    if (!b) return r;
+    const cap = String(r?.capitulo || "").trim();
+    const aula = String(r?.aulaTitulo || "").trim();
+    return {
+      ...r,
+      capitulo: cap ? r.capitulo : (b.capitulo || ""),
+      aulaTitulo: aula ? r.aulaTitulo : (b.aulaTitulo || ""),
+    };
+  });
+
+  return { ...localDados, rows: mergedRows };
+}
+
 async function loadProgramaSchedule(turmaId) {
   try {
     const local = await window.api?.content?.getItem?.("programa_aulas_eae_schedule", turmaId);
@@ -338,7 +383,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function refresh() {
     programa = await loadPrograma();
-    const dados = programa?.dados || {};
+    let dados = programa?.dados || {};
+    if (programa?.source === "local") {
+      dados = await backfillCapituloEAulaFromBundledIfNeeded(dados);
+      programa = { ...programa, dados };
+    }
     allColumns = normalizeColumns(dados.columns);
     allRows = normalizeRows(dados.rows);
 
