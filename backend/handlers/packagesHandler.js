@@ -18,6 +18,7 @@ const axios = require("axios");
 const crypto = require("crypto");
 
 const { obterEmailHashAtivo } = require("../lib/sessionStore");
+const { obterPerfilAtivo } = require("../lib/sessionStore");
 const { loadUserByHash } = require("../lib/usuarioStore");
 const packageStore = require("../lib/packageStore");
 const cursorStore = require("../lib/syncCursorStore");
@@ -52,6 +53,14 @@ async function getRemoteConfig() {
 async function getActorRolesOrEmpty(actorId) {
   const id = String(actorId || "").trim();
   if (!id) return [];
+
+  // Se for o ator da sessão atual e houver perfil ativo selecionado, restringe a ele.
+  try {
+    const current = obterEmailHashAtivo();
+    const active = String(obterPerfilAtivo() || "").trim().toLowerCase();
+    if (current && id === current && active) return [active];
+  } catch {}
+
   try {
     const user = await loadUserByHash(id);
     return Array.isArray(user?.roles) ? user.roles.map((r) => String(r || "").trim().toLowerCase()) : [];

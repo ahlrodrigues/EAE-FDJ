@@ -14,7 +14,7 @@
   <main class="container">
     <h2>Integrações</h2>
 
-    <div class="card">
+    <div class="card" data-roles="analista">
       <h3>Atualizações (WebSocket + Pull)</h3>
 
       <form id="formSync" novalidate>
@@ -43,7 +43,7 @@
       </small>
     </div>
 
-    <div class="card">
+    <div class="card" data-roles="analista">
       <h3>Pacotes (Requests / Packages)</h3>
 
       <h4 style="margin: 6px 0 0;">Vínculos (Dirigente ↔ Aluno)</h4>
@@ -111,6 +111,13 @@
       </div>
 
       <pre id="pkgDebugOut" style="margin-top:12px; padding:10px; background:#111; color:#eee; border-radius:8px; overflow:auto; max-height:240px;">(saída)</pre>
+    </div>
+
+    <div class="card" data-roles="aluno,dirigente">
+      <h3>Integrações automáticas</h3>
+      <small style="display:block; color:#555;">
+        As integrações são configuradas e atualizadas automaticamente pelo sistema. Esta tela fica disponível apenas para suporte (analista).
+      </small>
     </div>
   </main>
 

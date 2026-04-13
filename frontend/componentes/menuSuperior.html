@@ -2,9 +2,19 @@
 
 <!-- 🔊 Rádio acima do card (mantido) -->
 <div id="radio-widget" class="radio-widget">
-  <img id="webRadioImg" src="../../assets/playradio.png" alt="Web Rádio" title="Clique para tocar/pausar" aria-label="Tocar Web Rádio" role="button"/>
+  <img id="webRadioImg" src="../assets/playradio.png" alt="Web Rádio" title="Clique para tocar/pausar" aria-label="Tocar Web Rádio" role="button"/>
   <div class="radio-label">Rádio Estrellar</div>
   <audio id="webRadioPlayer" preload="none"></audio>
+</div>
+
+<!-- Perfil ativo (fora do card do menu) -->
+<div id="perfilSelector" class="perfil-selector-bar" style="display:none;">
+  <small style="color:#666; font-weight:600;">Perfil</small>
+  <select id="perfilSelect" aria-label="Selecionar perfil">
+    <option value="aluno">Aluno</option>
+    <option value="dirigente">Dirigente</option>
+    <option value="analista">Analista</option>
+  </select>
 </div>
 
 <nav class="menu-superior">
@@ -32,7 +42,7 @@
       <ul class="submenu-itens">
         <li><a href="cadastro2.html" class="link-submenu"><span>👤</span> Cadastro</a></li>
         <li><a href="backup.html" class="link-submenu"><span>☁️</span> Backup</a></li>
-        <li><a href="integracoes.html" class="link-submenu"><span>🧩</span> Integrações</a></li>
+        <li data-roles="analista"><a href="diagnostico.html" class="link-submenu"><span>🩺</span> Diagnóstico</a></li>
         <li data-roles="dirigente,analista"><a href="admin.html" class="link-submenu"><span>🛠️</span> Administração</a></li>
         <li data-roles="dirigente,analista"><a href="programa.html" class="link-submenu"><span>📘</span> Programa de Aulas</a></li>
       </ul>

@@ -81,6 +81,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("🔐 Login bem-sucedido. Redirecionando...");
         window.api.definirSessao(resultado.emailHash);
         sessionStorage.setItem("emailHash", resultado.emailHash);
+
+        // Seleção de perfil: se houver múltiplas roles, direciona para tela de escolha
+        try {
+          const uResp = await window.usuarioAPI?.lerAtual?.();
+          const u = uResp?.ok ? (uResp.dados || {}) : {};
+          const roles = Array.isArray(u.roles) ? u.roles : [];
+          const cleaned = roles.map((r) => String(r || "").trim().toLowerCase()).filter(Boolean);
+          const unique = Array.from(new Set(cleaned));
+          if (unique.length > 1) {
+            window.location.href = "perfil.html";
+            return;
+          }
+          const active = unique[0] || "aluno";
+          sessionStorage.setItem("activeRole", active);
+          await window.api?.session?.setActiveRole?.(active);
+        } catch {}
+
         window.location.href = "index.html";
       } else {
         const msg = resultado?.erro || "Erro desconhecido ao fazer login.";

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diagnóstico (Suporte)</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+  <div id="menuSuperior"></div>
+  <div id="modalAvisoContainer"></div>
+
+  <main class="container">
+    <h2>Diagnóstico (Suporte)</h2>
+
+    <div class="card" data-roles="analista">
+      <h3>Contexto</h3>
+      <small id="diagUserMeta" style="display:block; color:#555;">—</small>
+      <small id="diagSyncMeta" style="display:block; margin-top:8px; color:#555;">—</small>
+
+      <div class="acoes" style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnDiagSyncStatus" type="button" class="btn-secundario">Sync status</button>
+        <button id="btnDiagSyncCheck" type="button" class="btn-secundario">Sync check</button>
+        <button id="btnDiagSyncPull" type="button" class="btn-principal">Sync pullNow</button>
+      </div>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+
+      <h3>Vínculos / Requests / Packages</h3>
+      <div class="acoes" style="margin-top: 8px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnDiagLinks" type="button" class="btn-secundario">Listar vínculos</button>
+        <button id="btnDiagRequests" type="button" class="btn-secundario">Listar requests (open)</button>
+        <button id="btnDiagPackages" type="button" class="btn-secundario">Listar packages (pending)</button>
+      </div>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+
+      <label for="diagPkgId">Package ID (download/applied)</label>
+      <input id="diagPkgId" type="text" placeholder="ex.: pkg_..." autocomplete="off" />
+      <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnDiagPkgDownload" type="button" class="btn-secundario">Baixar</button>
+        <button id="btnDiagPkgApplied" type="button" class="btn-principal">Confirmar aplicado</button>
+      </div>
+
+      <pre id="diagOut" style="margin-top:12px; padding:10px; background:#111; color:#eee; border-radius:8px; overflow:auto; max-height:320px;">(saída)</pre>
+    </div>
+
+    <div class="card" data-roles="aluno,dirigente">
+      <h3>Acesso restrito</h3>
+      <small style="display:block; color:#555;">
+        Esta área é destinada ao suporte (analista).
+      </small>
+    </div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/modalAviso.js"></script>
+  <script type="module" src="js/diagnostico.js"></script>
+</body>
+</html>
+

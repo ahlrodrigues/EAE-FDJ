@@ -290,6 +290,27 @@ input {
   overflow: visible;
 }
 
+.perfil-selector-bar {
+  width: 100%;
+  max-width: 800px;
+  margin: 0.25rem auto 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.perfil-selector-bar select {
+  width: auto;
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+
 .menu-superior ul {
   display: flex;
   list-style: none;

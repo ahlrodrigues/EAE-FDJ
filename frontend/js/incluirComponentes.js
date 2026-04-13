@@ -56,21 +56,50 @@ function normalizeRoles(input) {
   return cleaned.length ? cleaned : ["aluno"];
 }
 
-function primaryRole(roles) {
-  const set = new Set(normalizeRoles(roles));
-  if (set.has("analista")) return "analista";
-  if (set.has("dirigente")) return "dirigente";
-  return "aluno";
+function readActiveRoleFromSessionStorage() {
+  const v = String(sessionStorage.getItem("activeRole") || "").trim().toLowerCase();
+  return v || null;
 }
 
-async function getRolesFromSessionOrDefault() {
-  try {
-    const resp = await window.usuarioAPI?.lerAtual?.();
-    const u = resp?.ok ? (resp.dados || {}) : {};
-    return normalizeRoles(u.roles);
-  } catch {
-    return ["aluno"];
+function labelForRole(role) {
+  if (role === "analista") return "Analista";
+  if (role === "dirigente") return "Dirigente";
+  return "Aluno";
+}
+
+async function initProfileSelector(allRoles) {
+  const el = document.getElementById("perfilSelector");
+  const select = document.getElementById("perfilSelect");
+  if (!el || !select) return;
+
+  const roles = normalizeRoles(allRoles);
+  if (roles.length <= 1) {
+    el.style.display = "none";
+    return;
   }
+
+  // Render options (ordem fixa)
+  const order = ["aluno", "dirigente", "analista"].filter((r) => roles.includes(r));
+  select.innerHTML = "";
+  for (const r of order) {
+    const opt = document.createElement("option");
+    opt.value = r;
+    opt.textContent = labelForRole(r);
+    select.appendChild(opt);
+  }
+
+  const active = readActiveRoleFromSessionStorage();
+  const current = (active && roles.includes(active)) ? active : roles[0];
+  select.value = current;
+  el.style.display = "flex";
+
+  select.onchange = async () => {
+    const next = String(select.value || "").trim().toLowerCase();
+    sessionStorage.setItem("activeRole", next);
+    try { await window.api?.session?.setActiveRole?.(next); } catch {}
+    // Reaplica tema/visibilidade recarregando a página
+    try { window.location.reload(); } catch {}
+  };
 }
 
 function applyRoleVisibility(rootEl, roles) {
@@ -87,7 +116,7 @@ function applyRoleVisibility(rootEl, roles) {
 }
 
 function applyRoleTheme(roles) {
-  const role = primaryRole(roles);
+  const role = normalizeRoles(roles)[0] || "aluno";
   try {
     document.documentElement.dataset.role = role;
     document.documentElement.dataset.roles = normalizeRoles(roles).join(",");
@@ -96,9 +125,15 @@ function applyRoleTheme(roles) {
 
 async function applyRoleUi() {
   try {
-    const roles = await getRolesFromSessionOrDefault();
-    applyRoleVisibility(document, roles);
-    applyRoleTheme(roles);
+    const resp = await window.usuarioAPI?.lerAtual?.();
+    const u = resp?.ok ? (resp.dados || {}) : {};
+    const all = normalizeRoles(u.roles);
+    const active = readActiveRoleFromSessionStorage();
+    const effective = (active && all.includes(active)) ? [active] : all;
+
+    applyRoleVisibility(document, effective);
+    applyRoleTheme(effective);
+    await initProfileSelector(all);
   } catch (e) {
     console.warn("[Componentes] falha ao aplicar UI por roles:", e?.message || e);
   }
@@ -109,6 +144,12 @@ componentesCarregados.then(async () => {
   if (menuEl && menuEl.querySelector("#webRadioImg") && menuEl.querySelector("#webRadioPlayer")) {
     console.log("[Componentes] menuSuperior injetado com sucesso (contém rádio).");
     window.dispatchEvent(new CustomEvent("menu:ready", { detail: { source: "menuSuperior" } }));
+    // Garante que o controlador da Rádio seja carregado em todas as telas (não só no index.html)
+    try {
+      await import("./radio.js");
+    } catch (e) {
+      console.warn("[Componentes] falha ao importar radio.js:", e?.message || e);
+    }
   } else if (menuEl) {
     console.warn("[Componentes] menuSuperior injetado, mas rádio não encontrado (verifique IDs).");
   }

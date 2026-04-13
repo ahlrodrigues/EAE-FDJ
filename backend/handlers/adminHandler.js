@@ -13,7 +13,7 @@ const { ipcMain } = require("electron");
 
 const contentStore = require("../lib/contentStore");
 const programaAulasEae = require("../data/programa_aulas_eae.json");
-const { obterEmailHashAtivo } = require("../lib/sessionStore");
+const { obterEmailHashAtivo, obterPerfilAtivo } = require("../lib/sessionStore");
 const { loadUserByHash } = require("../lib/usuarioStore");
 
 const LOG = "🛠️[admin]";
@@ -119,7 +119,9 @@ async function publishLocal(payload) {
     if (!emailHash) throw new Error("Sessão inativa.");
     const user = await loadUserByHash(emailHash);
     const roles = Array.isArray(user?.roles) ? user.roles : [];
-    const ok = roles.includes("dirigente") || roles.includes("analista");
+    const active = String(obterPerfilAtivo() || "").trim().toLowerCase();
+    const effective = active ? [active] : roles;
+    const ok = effective.includes("dirigente") || effective.includes("analista");
     if (!ok) throw new Error("Acesso restrito: perfil dirigente/analista necessário.");
   }
 

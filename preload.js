@@ -183,6 +183,10 @@ contextBridge.exposeInMainWorld("api", {
   // ---- Autenticação / sessão / cadastro
   validarLogin: (email, senha) => ipcRenderer.invoke("validar-login", email, senha),
   definirSessao: (emailHash) => ipcRenderer.send("sessao-definir", emailHash),
+  session: {
+    getActiveRole: () => ipcRenderer.invoke("session:activeRole"),
+    setActiveRole: (role) => ipcRenderer.invoke("session:activeRole:set", role),
+  },
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
   usuarioPreferenciasGet: async (emailHash) => ipcRenderer.invoke("usuario:prefs:get", { emailHash }),

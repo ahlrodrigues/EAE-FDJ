@@ -8,6 +8,8 @@ const {
   definirSessaoAtiva,
   limparSessao,
   obterEmailHashAtivo,
+  definirPerfilAtivo,
+  obterPerfilAtivo,
 } = require("../lib/sessionStore");
 
 const LOG = "[SESSION]";
@@ -34,6 +36,15 @@ function registrarSessionHandler() {
 
   ipcMain.handle("session:emailHash", () => {
     return obterEmailHashAtivo();
+  });
+
+  ipcMain.handle("session:activeRole", () => {
+    return obterPerfilAtivo();
+  });
+
+  ipcMain.handle("session:activeRole:set", (_evt, role) => {
+    definirPerfilAtivo(role);
+    return true;
   });
 }
 

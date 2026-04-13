@@ -14,6 +14,7 @@
 import { exibirAviso } from "./modalAviso.js";
 
 const LOG = "🔔[syncWS]";
+let _pulling = false;
 
 function getEnv(key) {
   try { return window.nativo?.getEnv?.(key); } catch { return null; }
@@ -52,6 +53,8 @@ function hideBanner() {
 }
 
 async function pullNow() {
+  if (_pulling) return;
+  _pulling = true;
   try {
     const resp = await window.api?.sync?.pullNow?.();
     if (resp?.ok) {
@@ -63,7 +66,20 @@ async function pullNow() {
   } catch (e) {
     console.error(`${LOG} pullNow falhou:`, e);
     await exibirAviso({ tipo: "Erro", mensagem: e?.message || "Falha ao atualizar conteúdo." });
+  } finally {
+    _pulling = false;
   }
+}
+
+function shouldAutoPullOnUpdateAvailable(rs) {
+  // Padrão: auto-pull ligado (sem intervenção manual).
+  // Desabilitar com:
+  // - env: SYNC_AUTO_PULL_ON_UPDATE_AVAILABLE=0
+  // - config: remoteSync.autoPullOnUpdateAvailable=false
+  const envOverride = String(getEnv("SYNC_AUTO_PULL_ON_UPDATE_AVAILABLE") || "").trim().toLowerCase();
+  if (envOverride === "0" || envOverride === "false" || envOverride === "off" || envOverride === "no") return false;
+  if (rs && typeof rs === "object" && rs.autoPullOnUpdateAvailable === false) return false;
+  return true;
 }
 
 async function devAutoPullOnce() {
@@ -172,6 +188,7 @@ export async function startSyncWsClient() {
   let turmaId = "";
   let token = "";
   let httpBaseUrl = "";
+  let rsCfg = {};
 
   // Preferir config do usuário (persistida) quando existir
   let checkIntervalMinutes = null;
@@ -179,6 +196,7 @@ export async function startSyncWsClient() {
     const resp = await window.usuarioAPI?.lerAtual?.();
     const u = resp?.ok ? (resp.dados || {}) : {};
     const rs = (u.remoteSync && typeof u.remoteSync === "object") ? u.remoteSync : {};
+    rsCfg = rs;
     wsBase = String(rs.wsUrl || "").trim();
     turmaId = String(rs.turmaId || "").trim();
     token = String(rs.token || "").trim();
@@ -200,16 +218,25 @@ export async function startSyncWsClient() {
   const shouldScheduleChecks = intervalMin > 0;
   const scheduleChecks = () => {
     if (!shouldScheduleChecks) return null;
-    return setInterval(() => { checkNow(); }, intervalMin * 60_000);
+    return setInterval(async () => {
+      const st = await checkNow();
+      if (st?.ok && st.configured && st.changed && shouldAutoPullOnUpdateAvailable(rsCfg)) {
+        await pullNow();
+      }
+    }, intervalMin * 60_000);
   };
 
   // Se não houver WS, mantém apenas a ação manual de pull (botão escondido por padrão)
   if (!wsBase || !turmaId) {
     console.log(`${LOG} WS não configurado (SYNC_WS_URL/SYNC_TURMA_ID).`);
     // Mesmo sem WS, podemos checar via HTTP e mostrar banner
-    await checkNow();
+    const st = await checkNow();
+    if (st?.ok && st.configured && st.changed && shouldAutoPullOnUpdateAvailable(rsCfg)) {
+      await pullNow();
+    }
     scheduleChecks();
     if (envFlag("SYNC_DEV_AUTO_PULL")) await devAutoPullOnce();
+    await autoPullIfTodayHasTheme();
     return;
   }
 
@@ -243,6 +270,14 @@ export async function startSyncWsClient() {
       if (data.type === "updateAvailable") {
         const ver = data.manifestVersion != null ? `v${data.manifestVersion}` : "";
         showBanner(`Há atualizações disponíveis ${ver}`.trim());
+        if (shouldAutoPullOnUpdateAvailable(rsCfg)) {
+          const key = `sync:autoPull:updateAvailable:${turmaId}`;
+          const last = String(localStorage.getItem(key) || "");
+          const marker = String(data.manifestVersion ?? data.updatedAtISO ?? "");
+          if (marker && last === marker) return;
+          if (marker) localStorage.setItem(key, marker);
+          await pullNow();
+        }
       }
     };
 
@@ -273,8 +308,11 @@ export async function startSyncWsClient() {
     }
   } catch {}
 
-  // Checagem HTTP (mostra banner sem depender de WS)
-  await checkNow();
+  // Checagem HTTP (mostra banner sem depender de WS); auto-pull se habilitado
+  const stHttp = await checkNow();
+  if (stHttp?.ok && stHttp.configured && stHttp.changed && shouldAutoPullOnUpdateAvailable(rsCfg)) {
+    await pullNow();
+  }
   await autoPullIfTodayHasTheme();
   const intervalId = scheduleChecks();
 
