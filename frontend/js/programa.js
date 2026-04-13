@@ -42,6 +42,7 @@ function normalizeColumns(cols) {
       type: String(c?.type || "text").trim(),
       width: Number(c?.width) || null,
       rolesHidden: Array.isArray(c?.rolesHidden) ? c.rolesHidden.map((r) => String(r || "").trim().toLowerCase()).filter(Boolean) : [],
+      readonly: !!c?.readonly,
     }))
     .filter((c) => c.key);
 }
@@ -121,11 +122,13 @@ function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, o
       td.setAttribute("data-label", c.label);
 
       const v = r?.[c.key] ?? "";
+      const ro = !!c.readonly || c.key === "aulaNumero";
       if (c.type === "date") {
         const inp = document.createElement("input");
         inp.type = "date";
         inp.className = "programa-cell-date";
         inp.value = String(v || "");
+        inp.disabled = ro;
         inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value));
         td.appendChild(inp);
       } else if (c.type === "number") {
@@ -134,6 +137,7 @@ function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, o
         inp.inputMode = "numeric";
         inp.className = "programa-cell-number";
         inp.value = v === null || v === undefined ? "" : String(v);
+        inp.disabled = ro;
         inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value === "" ? "" : Number(inp.value)));
         td.appendChild(inp);
       } else if (String(v || "").length > 70 || c.key === "assuntoDirigente" || c.key === "assuntos") {
@@ -141,6 +145,7 @@ function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, o
         ta.className = "programa-cell-textarea";
         ta.value = String(v || "");
         ta.rows = 2;
+        ta.disabled = ro;
         ta.addEventListener("input", () => onEditCell?.(r.rowId, c.key, ta.value));
         td.appendChild(ta);
       } else {
@@ -148,6 +153,7 @@ function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, o
         inp.type = "text";
         inp.className = "programa-cell-input";
         inp.value = String(v || "");
+        inp.disabled = ro;
         inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value));
         td.appendChild(inp);
       }
@@ -239,7 +245,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btn) btn.textContent = dirtyPrograma ? "Salvar programa (pendente)" : "Salvar programa (local)";
   }
 
+  function renumberRowsInPlace() {
+    // ✅ Mantém N.o incremental (1..fim), independente do conteúdo do ODS
+    allRows.sort((a, b) => (Number(a?.order) || 0) - (Number(b?.order) || 0));
+    for (let i = 0; i < allRows.length; i++) {
+      const n = i + 1;
+      allRows[i] = { ...allRows[i], order: n, aulaNumero: n };
+    }
+  }
+
   function renderNow() {
+    renumberRowsInPlace();
     const info = renderGrid({
       rows: allRows,
       columns: allColumns,
@@ -252,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           order: (idx >= 0 ? idx + 1 : allRows.length + 1) + 0.1,
         };
         allRows.splice(idx >= 0 ? idx + 1 : allRows.length, 0, newRow);
-        allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+        renumberRowsInPlace();
         setDirty(true);
         renderNow();
       },
@@ -261,7 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (idx < 0) return;
         if (!window.confirm("Excluir esta linha do programa?")) return;
         allRows.splice(idx, 1);
-        allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+        renumberRowsInPlace();
         setDirty(true);
         renderNow();
       },
@@ -284,7 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const byAulaTema = new Map(temaMap.map((t) => [Number(t.aulaNumero), t]));
     const columns = normalizeColumns([
       { key: "dataAulaISO", label: "DATA", type: "date", width: 140 },
-      { key: "aulaNumero", label: "N.o", type: "number", width: 80 },
+      { key: "aulaNumero", label: "N.o", type: "number", width: 80, readonly: true },
       { key: "capitulo", label: "CAPÍTULO", type: "text", width: 90 },
       { key: "aulaTitulo", label: "AULA", type: "text", width: 300 },
       { key: "assuntos", label: "ASSUNTOS", type: "text", width: 520 },
@@ -337,6 +353,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       allRows = legacy.rows;
     }
 
+    // Garante numeração incremental sempre
+    renumberRowsInPlace();
+
     // Aplica datas do schedule (se existir) em memória
     for (const r of allRows) {
       const aulaNumero = Number(r?.aulaNumero);
@@ -385,7 +404,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   qs("#btnAdicionarLinhaFim")?.addEventListener("click", async () => {
     allRows.push({ rowId: `row_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`, order: allRows.length + 1 });
-    allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+    renumberRowsInPlace();
     setDirty(true);
     renderNow();
   });

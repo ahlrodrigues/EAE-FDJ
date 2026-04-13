@@ -79,7 +79,7 @@ function main() {
 
   const columns = [
     { key: "dataAulaISO", label: "DATA", type: "date", width: 140 },
-    { key: "aulaNumero", label: "N.o", type: "number", width: 80 },
+    { key: "aulaNumero", label: "N.o", type: "number", width: 80, readonly: true },
     { key: "capitulo", label: "CAPÍTULO", type: "text", width: 90 },
     { key: "aulaTitulo", label: "AULA", type: "text", width: 300 },
     { key: "assuntos", label: "ASSUNTOS", type: "text", width: 520 },
@@ -91,10 +91,13 @@ function main() {
   const dataRows = rows.slice(1);
   const outRows = [];
 
+  let seq = 0;
   for (let i = 0; i < dataRows.length; i++) {
     const r = dataRows[i] || [];
     const hasAny = r.some((v) => asNonEmptyString(v));
     if (!hasAny) continue;
+
+    seq++;
 
     const rawData = asNonEmptyString(r[colIdx.data]);
     const dataAulaISO =
@@ -102,13 +105,15 @@ function main() {
       (String(rawData).trim().match(/^\d{4}-\d{2}-\d{2}$/) ? String(rawData).trim() : "");
 
     const aulaCell = r[colIdx.aula];
-    const aulaNumero = Number.isFinite(Number(aulaCell)) ? Number(aulaCell) : asNonEmptyString(aulaCell);
+    const aulaRef = asNonEmptyString(aulaCell);
+    const aulaNumero = seq; // ✅ sempre incremental: 1..fim
 
     const rowObj = {
       rowId: genRowId(`${sheetName}:${i + 1}`),
-      order: i + 1,
+      order: seq,
       dataAulaISO,
       aulaNumero,
+      aulaRef,
       capitulo: asNonEmptyString(r[colIdx.cap]),
       aulaTitulo: asNonEmptyString(r[colIdx.temaAula]),
       assuntos: asNonEmptyString(r[colIdx.assunto]),
