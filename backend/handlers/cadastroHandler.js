@@ -82,6 +82,21 @@ async function salvarCadastroCore(dadosInput) {
 
   const emailHash = dados.emailHash;
 
+  // Perfis/roles
+  // Produção: roles devem ser emitidas/assinadas pelo servidor (não escolhidas no cliente).
+  // DEV: permitir override somente se habilitado por env.
+  const allowLocalRolePick = String(process.env.LOCAL_ALLOW_ROLE_PICK || "").trim() === "1";
+  if (!allowLocalRolePick) {
+    dados.roles = ["aluno"];
+  } else {
+    if (!Array.isArray(dados.roles) || dados.roles.length === 0) dados.roles = ["aluno"];
+    const allowed = new Set(["aluno", "dirigente", "analista"]);
+    dados.roles = Array.from(
+      new Set(dados.roles.map((x) => String(x || "").trim().toLowerCase()).filter((x) => allowed.has(x)))
+    );
+    if (dados.roles.length === 0) dados.roles = ["aluno"];
+  }
+
   // Senha → bcrypt
   if (typeof dados.senha !== "string" || dados.senha.length < 4) {
     throw new Error("Senha ausente ou muito curta");

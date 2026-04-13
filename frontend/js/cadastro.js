@@ -83,6 +83,30 @@ function normalizarIdioma(v) {
   return map[v] || v || "pt-BR";
 }
 
+function env(key) {
+  try { return window.nativo?.getEnv?.(key); } catch { return null; }
+}
+
+function envFlag(key) {
+  const v = String(env(key) || "").trim().toLowerCase();
+  return v === "1" || v === "true" || v === "yes" || v === "on";
+}
+
+function lerRolesDoCadastro() {
+  // Produção: roles emitidas/assinadas pelo servidor → não escolher no cliente.
+  // DEV: permitir somente se habilitado por env.
+  if (!envFlag("LOCAL_ALLOW_ROLE_PICK")) return ["aluno"];
+
+  const roles = [];
+  if (qs("#perfilAluno")?.checked) roles.push("aluno");
+  if (qs("#perfilDirigente")?.checked) roles.push("dirigente");
+  if (qs("#perfilAnalista")?.checked) roles.push("analista");
+  // default seguro
+  if (roles.length === 0) roles.push("aluno");
+  // remove duplicados
+  return Array.from(new Set(roles));
+}
+
 // ✔️ Validação automática por campo
 function validarCampoIndividual(campo) {
   if (!campo) return;
@@ -178,6 +202,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
   await esperarElemento("#cadastroForm");
 
+  // Roles: esconder UI por padrão (server-issued roles). Reativar com LOCAL_ALLOW_ROLE_PICK=1
+  try {
+    const rolesRow = qs("#rolesRow");
+    if (rolesRow && !envFlag("LOCAL_ALLOW_ROLE_PICK")) rolesRow.style.display = "none";
+  } catch {}
+
+  // Evita submit padrão do form (Enter não deve recarregar a página)
+  qs("#cadastroForm")?.addEventListener("submit", (e) => e.preventDefault());
+
   inicializarValidacaoSenha();
   inicializarBotaoVerSenha();
   console.log(`${LOG} componentes de senha prontos.`);
@@ -227,7 +260,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Salvar cadastro
-  btnSalvar?.addEventListener("click", async () => {
+  btnSalvar?.addEventListener("click", async (e) => {
+    e?.preventDefault?.();
     console.log(`${LOG} clique em Salvar Cadastro`);
 
     if (!verificarCamposCadastroPreenchidos()) {
@@ -278,6 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dadosUsuario = {
       email,
       senha,
+      roles: lerRolesDoCadastro(),
       aluno: qs("#aluno")?.value,
       casaEspírita: qs("#casaEspírita")?.value,
       numeroTurma: qs("#numeroTurma")?.value,

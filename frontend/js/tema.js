@@ -145,25 +145,85 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 1) Usuário + codigoTemas (descriptografado)
-    const usuario = await window.api.lerUsuario();
-    const dadosUsuario = Object.values(usuario?.usuarios || {})[0];
-    const criptCodigoTemas = dadosUsuario?.codigoTemas;
-    const codigoTemas = await window.api.descriptografarComMestra(criptCodigoTemas);
-
-    if (!codigoTemas) throw new Error("Código da planilha (codigoTemas) não encontrado.");
-
-    const emailHash = window.api.obterEmailHash();
+    // 1) Sessão + usuário (novo modelo)
+    const emailHash = await window.api.obterEmailHash();
     if (!emailHash) throw new Error("emailHash não disponível.");
+
+    const uResp = await window.usuarioAPI?.lerAtual?.();
+    if (!uResp?.ok) throw new Error(uResp?.erro || "Falha ao obter usuário da sessão.");
+    const u = uResp.dados || {};
 
     // 2) Temas salvos (normalizado)
     const listaBruta = await window.api.listarTemasSalvos(emailHash);
     const salvos = normalizarListaTemasSalvos(listaBruta);
     console.log("📁 [RENDERER] Temas salvos (normalizado):", salvos);
 
-    // 3) Temas da planilha (<= hoje)
-    const temas = await buscarTemasFormatados(codigoTemas);
-    console.log("📋 [RENDERER] Temas vindos da planilha:", temas);
+    // 3) Temas (preferência: conteúdo baixado localmente via sync; fallback: planilha antiga)
+    let temas = [];
+    try {
+      const st = await window.api.sync?.status?.();
+      const turmaId = st?.configured ? st?.turmaId : "";
+      const schedule = (turmaId ? await window.api?.content?.getItem?.("tema_schedule", turmaId) : null)?.item;
+      const catalog = (turmaId ? await window.api?.content?.getItem?.("tema_catalog", "global") : null)?.item;
+
+      const catalogItems = Array.isArray(catalog?.items) ? catalog.items : [];
+      const catalogMap = new Map(
+        catalogItems
+          .map((it) => {
+            const n = Number(it?.temaNumero);
+            if (!Number.isFinite(n)) return null;
+            const titulo = String(it?.temaTitulo || it?.titulo || "").trim();
+            const label = String(it?.temaLabel || it?.label || "").trim();
+            return [n, { titulo, label }];
+          })
+          .filter(Boolean)
+      );
+
+      if (schedule?.items && Array.isArray(schedule.items)) {
+        temas = schedule.items.map((t) => ({
+          dataISO: String(t.dataPublicacaoISO || "").trim(),
+          numero: Number(t.temaNumero),
+          titulo: String(t.temaTitulo || t.temaLabel || "").trim(),
+        })).filter((t) => t.dataISO && t.numero);
+
+        // Se o schedule não trouxer títulos, usa o catalog global
+        temas = temas.map((t) => {
+          if (t.titulo) return t;
+          const fromCat = catalogMap.get(Number(t.numero)) || null;
+          const titulo = fromCat?.titulo || fromCat?.label || "";
+          return { ...t, titulo: titulo || `Tema ${t.numero}` };
+        });
+
+        console.log("📋 [RENDERER] Temas vindos do schedule local:", temas.length);
+      }
+    } catch (e) {
+      console.warn("⚠️ [RENDERER] Falha ao ler tema_schedule local, usando fallback planilha:", e?.message || e);
+    }
+
+    if (!temas.length) {
+      // Fallback: legado via planilha (codigoTemas no cadastro)
+      const criptCodigoTemas = u.codigoTemas;
+      const codigoTemas = criptCodigoTemas ? await window.api.descriptografarComMestra(criptCodigoTemas) : "";
+      if (!codigoTemas) {
+        if (window.api?.exibirAviso) {
+          await window.api.exibirAviso({
+            tipo: "Configuração necessária",
+            mensagem: "Falta o código de integração (planilha) para Temas. Abra Configurações e informe “Código das atividades”.",
+          });
+        }
+        window.location.href = "config.html";
+        return;
+      }
+
+      const temasPlanilha = await buscarTemasFormatados(codigoTemas);
+      console.log("📋 [RENDERER] Temas vindos da planilha:", temasPlanilha);
+      temas = temasPlanilha.map((t) => ({
+        // legado traz "Date(Y,M,D)"
+        dataLegacy: t.data,
+        numero: t.numero,
+        titulo: t.titulo,
+      }));
+    }
 
     let temaEmAberto = false;
     const hoje = new Date();
@@ -174,18 +234,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       salvos.itens.map((i) => [i.nome, { caminho: i.caminho || null }])
     );
 
-    temas.forEach(({ data, numero, titulo }) => {
-      if (!data || !numero || !titulo) return;
+    temas.forEach(({ dataLegacy, dataISO, numero, titulo }) => {
+      if (!numero || !titulo) return;
 
-      // data: "Date(Y,M,D)" (M zero-based)
-      const match = String(data).match(/Date\((\d+),\s*(\d+),\s*(\d+)\)/);
-      if (!match) return;
+      let dataTema = null;
+      let ano, mes0, dia;
 
-      const ano = parseInt(match[1], 10);
-      const mes0 = parseInt(match[2], 10);
-      const dia = parseInt(match[3], 10);
+      if (dataISO) {
+        const parts = String(dataISO).split("-");
+        if (parts.length === 3) {
+          ano = parseInt(parts[0], 10);
+          mes0 = parseInt(parts[1], 10) - 1;
+          dia = parseInt(parts[2], 10);
+          dataTema = new Date(ano, mes0, dia);
+        }
+      } else if (dataLegacy) {
+        const match = String(dataLegacy).match(/Date\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (!match) return;
+        ano = parseInt(match[1], 10);
+        mes0 = parseInt(match[2], 10);
+        dia = parseInt(match[3], 10);
+        dataTema = new Date(ano, mes0, dia);
+      }
 
-      const dataTema = new Date(ano, mes0, dia);
+      if (!dataTema || isNaN(dataTema)) return;
       if (dataTema > hoje) return;
 
       const mes = String(mes0 + 1).padStart(2, "0");
@@ -364,5 +436,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-

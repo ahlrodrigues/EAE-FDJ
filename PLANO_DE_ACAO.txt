@@ -1,0 +1,462 @@
+PLANO DE AÇÃO — EAE-FDJ (branch: migration)
+Data: 2026-04-11
+
+Objetivo
+--------
+Finalizar a migração do projeto para o “novo modelo” (sem usuario.json legado),
+padronizar o contrato de IPC/preload e alinhar as telas que ficaram inconsistentes.
+
+Atualização de rumo (2026-04-11)
+-------------------------------
+Decisão: substituir “Google Drive + arquivo de importação” por um fluxo de
+pré-cadastro via site do projeto (pull inicial) usando:
+- Código da turma (digitável/colar; QR opcional)
+- Verificação do e-mail do aluno por OTP (código enviado por e-mail)
+- Depois do pull inicial, o app fica OFFLINE (edição local apenas)
+- No servidor: dirigente cadastra turma + lista de alunos (apenas e-mail, idealmente hash)
+
+Atualização de rumo (2026-04-13)
+-------------------------------
+Decisão: manter o sync de conteúdo do app como “manifest + itens” (fluxo
+dirigente → alunos, liberado pela data da atividade no programa), e introduzir
+um segundo canal para “troca de pacotes” (requests/packages) quando houver
+necessidade de retorno aluno → dirigente (somente sob solicitação).
+
+Arquitetura alvo (pacotes):
+- API mínima: autenticar, autorizar, listar pendências, registrar status,
+  emitir URLs (upload/download), expiração e limpeza
+- Object storage: guardar apenas blobs (criptografados) temporariamente
+- App local: montar pacote incremental, criptografar/assinar, enviar, baixar,
+  validar, aplicar e confirmar
+
+
+Contexto rápido (onde paramos)
+-----------------------------
+- App Electron com:
+  - Main: `main.js`
+  - Preload: `preload.js` (contextBridge → window.api / window.usuarioAPI / window.nativo)
+  - Handlers IPC: `backend/handlers/*`
+  - UI: `frontend/*`
+- Branch atual: `migration`
+- Worktree com alterações não commitadas (na data acima):
+  - `backend/handlers/notasHandler.js`
+  - `frontend/js/anotacoes.js`
+  - `frontend/js/modalAviso.js`
+  - `preload.js`
+
+
+Plano de ação (prioridade)
+==========================
+
+1) FECHAR MIGRAÇÃO DO MODELO DE DADOS (PRIORIDADE MÁXIMA)
+--------------------------------------------------------
+Meta: remover dependência do arquivo legado:
+  `~/.config/escola-aprendizes/config/usuario.json`
+e usar apenas:
+  `~/.config/escola-aprendizes/config/usuarios/<emailHash>.json`
+  `~/.config/escola-aprendizes/config/index.json`
+(e, se mantido, `~/.config/escola-aprendizes/config/backup.json` como global de backup).
+
+Pontos legados que ainda precisam migrar:
+- `backend/handlers/salvarAceiteHandler.js`
+  - Hoje grava `usuario.json`; precisa marcar aceite no arquivo do usuário logado
+    (por sessão/emailHash) e/ou no registro do próprio usuário.
+- `backend/handlers/salvarUsuarioHandler.js`
+  - Hoje grava `usuario.json`; precisa atualizar `config/usuarios/<hash>.json`.
+- `backend/handlers/verificacaoEmailHandler.js`
+  - Hoje lê `usuario.json` e ainda trata `usuarios` como array; precisa verificar
+    existência pelo `emailHash` (sha256(email normalizado)), consultando
+    `usuarioStore.userFileExists(emailHash)` ou `loadUserByHash`.
+- `backend/handlers/backupEmailHandler.js`
+  - Tenta obter e-mail do `usuario.json` como fallback; ajustar para usar
+    usuário da sessão (ex.: ler `emailCriptografado` de `config/usuarios/<hash>.json`
+    e descriptografar com `CRYPTO_SECRET`).
+
+Resultado esperado:
+- Nenhuma leitura/escrita em `usuario.json` em runtime.
+- Todo “cadastro/aceite/config” persiste no arquivo do usuário por hash.
+
+
+2) PADRONIZAR CONTRATO DO PRELOAD + IPC
+---------------------------------------
+Meta: evitar “cada tela usa um formato diferente”.
+
+Definir e aplicar um padrão (exemplo sugerido):
+- Sessão:
+  - `session:emailHash` (invoke) → string|null
+  - `sessao-definir` (send) → define sessão ativa
+- Usuário:
+  - `usuario:ler` (invoke) → { ok, dados, caminho? }
+  - `usuario:obterNomeAluno` (invoke) → { ok, nome } (decriptado)
+- Notas:
+  - `notas:salvar|listar|ler|excluir` (invoke) → payloads consistentes
+- Temas:
+  - `listar-temas-salvos|ler-tema|salvar-tema` (invoke) → payloads consistentes
+
+Checklist:
+- Garantir que todas as telas usem `await window.api.obterEmailHash()` (assíncrono).
+- Evitar renderer importar módulos do `backend/` diretamente.
+
+
+3) CONSERTAR TELAS DESALINHADAS (FUNCIONALIDADE VISÍVEL)
+--------------------------------------------------------
+Meta: deixar as telas principais funcionando com o novo contrato.
+
+Alvos imediatos:
+- `frontend/js/tema.js`
+  - Ajustar leitura do usuário e `codigoTemas` para o novo formato:
+    - Preferir `window.usuarioAPI.lerAtual()` → `{ ok, dados }`
+    - Descriptografar `codigoTemas` via `window.api.descriptografarComMestra(...)`
+    - `emailHash` deve vir de `await window.api.obterEmailHash()`
+- `frontend/js/relatorio.js`
+  - Hoje usa `backend/servicos/notasService.js` e chama APIs antigas.
+  - Migrar para:
+    - `window.api.notas.listar()` → lista nomes
+    - para cada nota, `window.api.notas.ler(nomeArquivo)` → conteúdo decriptado no main
+    - remover dependência de `window.api.listarArquivosNotas` / `lerAnotacoesSelecionadas`
+- Modal/avisos:
+  - `preload.js` expõe `window.api.exibirAviso`, mas falta IPC `exibir-aviso`.
+  - Implementar handler no main para padronizar modais (ou remover chamadas e usar
+    `modalAviso` do renderer).
+
+
+4) CONSOLIDAR CRIPTOGRAFIA E MIGRAÇÕES (SEGURANÇA/DADOS)
+--------------------------------------------------------
+Meta: garantir consistência e evitar dados ilegíveis.
+
+Observações:
+- Notas (novo handler): AES-256-GCM com IV=12 (base64 [iv|tag|ct]) em:
+  - `backend/handlers/notasHandler.js`
+- `backend/lib/usuarioStore.js` também usa AES-256-GCM IV=12 para campos/token.
+- `backend/lib/criptografia.js` usa AES-256-CBC no formato `ivBase64:cipherBase64`
+  para campos de cadastro (aluno, etc.). Decidir se:
+  - (A) mantém CBC para campos de usuário (e só notas/backup usam GCM), ou
+  - (B) migra tudo para GCM e cria compatibilidade de leitura.
+
+Ferramentas já existentes:
+- `backend/scripts/iv_scan_legacy.js` (procura restos IV=16 GCM)
+- `backend/scripts/iv_migrate_all.js` (recriptografa 16→12)
+- `backend/scripts/encrypt_plain_notes.js` (plaintext → GCM iv=12)
+
+Recomendação:
+- Antes de rodar migrações em massa, fazer backup do diretório:
+  `~/.config/escola-aprendizes/`
+
+
+5) QUALIDADE / EMPACOTAMENTO (DEPOIS QUE ESTABILIZAR)
+-----------------------------------------------------
+- Criar testes mínimos (onde fizer sentido) para:
+  - `backend/lib/usuarioStore.js`
+  - `backend/handlers/loginHandler.js` (core)
+  - `backend/handlers/resetSenhaHandler.js` (core)
+- Revisar “Atualização via Github” (está na lista do README como pendente).
+
+
+Ordem de execução sugerida (prática)
+-----------------------------------
+1) Migrar os handlers que ainda usam `usuario.json` (aceite, salvar usuário, verificação e-mail, backupEmail fallback).
+2) Normalizar preload/IPC e ajustar `tema.js` para o novo modelo.
+3) Migrar `relatorio.js` para `window.api.notas.*` (novo IPC).
+4) Implementar/decidir `exibir-aviso` (ou remover chamadas e usar modal do renderer).
+5) Rodar scripts de migração de cripto (se necessário), com backup prévio.
+
+
+Plano (novo) — Pré-cadastro via site + OTP (pull inicial offline)
+=================================================================
+
+6) DEFINIR CONTRATO DE DADOS (WHITELIST) DA TURMA
+------------------------------------------------
+Meta: definir exatamente quais campos o servidor pode devolver ao app no pull inicial.
+Recomendação: apenas “configuração da turma”, sem dados pessoais do aluno.
+
+Campos candidatos (config):
+- casaEspírita
+- numeroTurma
+- dirigente
+- emailDirigente
+- secretarios
+- codigoTemas
+- idioma (opcional)
+
+Campos explicitamente NÃO enviados pelo servidor:
+- nome do aluno, telefone, senha, aceiteTermos, etc.
+
+Saída desta etapa:
+- Documento/README interno com o JSON do payload `turmaConfig` e `schemaVersion`.
+
+
+7) API DO SITE (MÍNIMA) — OTP + PULL INICIAL
+--------------------------------------------
+Endpoints sugeridos:
+- POST `/api/enroll/request-otp`
+  Entrada: `{ turmaCode, email }`
+  Saída: `{ ok: true }` (resposta sempre genérica para evitar enumeração)
+  Ação: se e-mail estiver pré-cadastrado na turma, enviar OTP por e-mail.
+
+- POST `/api/enroll/verify-otp`
+  Entrada: `{ turmaCode, email, otp }`
+  Saída: `{ ok: true, turmaConfig }` (apenas whitelist)
+  Ação: valida OTP (hash + TTL + 1 uso) e retorna config.
+
+Requisitos de segurança:
+- Normalizar e-mail: `trim().toLowerCase()`
+- Armazenar e comparar aluno por `sha256(email_normalizado)` (evita guardar e-mail em claro)
+- OTP armazenado como hash (não em claro), TTL curto (ex.: 10 min), invalidar após uso
+- Rate-limit por IP + por turmaCode + por hashEmail
+- Logs de auditoria (geração de OTP, validações, falhas)
+
+
+8) APP (ELECTRON) — FLUXO “IMPORTAR DA TURMA”
+---------------------------------------------
+UI (desktop-friendly, QR opcional):
+- Tela de cadastro:
+  - Campo “Código da turma” (digitável) + botão “Colar”
+  - Campo “E-mail”
+  - Botão “Enviar código” (request-otp)
+  - Campo “Código recebido” (OTP)
+  - Botão “Importar” (verify-otp + pull)
+  - Após importar, o aluno completa seus dados locais e cria senha local
+
+IPC/handlers sugeridos (no processo main):
+- `remoteConfig:requestOtp` (invoke) → chama API do site
+- `remoteConfig:verifyOtp`  (invoke) → chama API e retorna `turmaConfig`
+
+Persistência local após pull:
+- Salvar `turmaConfig` no `config/usuarios/<emailHash>.json` (campos sensíveis criptografados)
+- NÃO salvar nada no servidor após isso (offline-first)
+
+
+9) CADASTRO DO DIRIGENTE NO SITE
+-------------------------------
+Escopo do site:
+- Dirigente cria conta no site e cria turmas
+- Dirigente cadastra lista de alunos (somente e-mail; preferir hash no storage)
+- Dirigente define/edita configuração da turma (whitelist)
+
+
+10) SYNC DE PACOTES (REQUESTS + PACKAGES) — ALUNO → DIRIGENTE (SOB DEMANDA)
+==========================================================================
+Meta: permitir que o dirigente publique uma SOLICITAÇÃO (request) e o app do
+aluno responda enviando um pacote incremental para o dirigente.
+
+Regras de autorização (evita “bidirecional aberto”):
+- Conteúdo: dirigente → alunos (publish de materiais)
+- Respostas: aluno → dirigente apenas se houver `requestId` aberta e válida
+
+Endpoints mínimos sugeridos (API):
+- POST `/api/requests` (dirigente cria solicitação)
+- GET  `/api/requests?to=<alunoId>&status=open&available=1`
+- POST `/api/packages` → retorna `packageId` + `uploadUrl`
+- PUT  (uploadUrl) → envia blob do pacote
+- GET  `/api/packages?to=<dirigenteId>&status=pending&available=1`
+- GET  `/api/packages/:id/blob`
+- POST `/api/packages/:id/downloaded`
+- POST `/api/packages/:id/applied` (confirmação + limpeza)
+
+Status mínimos:
+- request: `open|closed|expired`
+- package: `pending|downloaded|applied|failed|expired|deleted`
+
+DEV (hoje):
+- `tools/mock-api/server.js` simula `requests/packages` e guarda blobs em disco
+  (`tools/mock-api/_storage/`).
+- App: IPC expõe `window.api.requests`, `window.api.packages`, `window.api.responses`
+  para teste e evolução (criptografia fica para próxima etapa).
+- Dirigente gera `turmaCode` e compartilha com a turma (pode ser texto/QR)
+
+
+10) MIGRAÇÃO DO APP (REMOVER FLUXOS ANTIGOS)
+-------------------------------------------
+Depois do novo fluxo estar OK:
+- Remover/ocultar UI e handlers de:
+  - Integração com Google Drive para “config”/import
+  - Fluxos que dependiam de arquivo de importação
+- Manter backup de notas/temas (se ainda fizer sentido), mas separado do “cadastro/import”.
+
+
+Plano (novo) — Notificação de atualizações via WebSocket + Pull HTTP
+====================================================================
+Decisão: WebRTC NÃO obrigatório. Usar WebSocket apenas para avisar “tem update”.
+Conteúdo (temas/materiais/avisos) fica no site; o app baixa sob demanda (pull).
+
+11) DEFINIR MODELO DE VERSIONAMENTO/INCREMENTO
+----------------------------------------------
+Meta: permitir atualizar apenas o que mudou, com integridade.
+
+Recomendação (por turma):
+- `manifestVersion` incremental (int) ou `updatedAtISO` + `etag`
+- Itens versionados (cada item com `id`, `type`, `version`, `hash`, `url`)
+- Tipos previstos (exemplos):
+  - `tema_catalog` (global)
+  - `tema_schedule` (por turma: temaId → dataPublicacao)
+  - `aviso_dirigente` (por turma)
+  - `mensagem_mentor_turma` (por turma)
+  - `mensagem_mentor_individual` (por aluno, opcional)
+  - `etiquetas_notas` (global)
+  - `etiquetas_vistos` (global) + `vistos_emitidos` (por aluno)
+  - `certificados` (global) + `certificados_emitidos` (por aluno)
+  - `fdj_ingresso` (por aluno)
+
+Saída:
+- Esquema do `manifest.json` e tabela de mapeamento type→endpoint.
+
+
+12) API HTTP (PULL) PARA ATUALIZAÇÃO
+------------------------------------
+Endpoints mínimos sugeridos:
+- `GET /api/turmas/:turmaId/manifest?since=<manifestVersion|etag>`
+  - Retorna manifest completo ou delta (se suportado)
+- `GET /api/content/:type/:id`
+  - Retorna o blob/JSON do item (com cache headers)
+
+Requisitos:
+- Cache com ETag/If-None-Match
+- Hash de integridade no manifest (sha256)
+- Whitelist de campos por type (LGPD)
+
+
+13) WEBSOCKET (PUSH) PARA “UPDATE AVAILABLE”
+--------------------------------------------
+Meta: avisar o app quando houver atualização, sem baixar conteúdo automaticamente.
+
+Servidor WS:
+- Autenticação: token curto gerado no enroll (OTP) e renovável
+- Canal por turma: `turma:<turmaId>`
+- Evento: `updateAvailable`
+  Payload: `{ turmaId, manifestVersion, updatedAtISO, summary? }`
+
+Cliente (Electron renderer ou main):
+- Conectar no login/index (somente quando sessão ativa)
+- Reconnect com backoff
+- Ao receber `updateAvailable`, exibir banner/badge “Há atualizações”
+- Botão “Atualizar” chama o fluxo HTTP (step 12) e persiste localmente
+
+Fallback:
+- Se WS falhar, o app pode rodar `checkUpdates` via HTTP ao abrir (polling leve).
+
+
+14) APP — PERSISTÊNCIA LOCAL DO CONTEÚDO BAIXADO
+------------------------------------------------
+Meta: manter offline após “Atualizar”.
+
+Estratégia:
+- Criar diretório por turma/usuário:
+  - `~/.config/escola-aprendizes/content/<turmaId>/...`
+- Salvar `manifest.json` local e `lastAppliedManifestVersion`
+- Itens por type/id em arquivos JSON (ou sqlite opcional)
+
+
+15) UI — EXPERIÊNCIA DE ATUALIZAÇÃO
+-----------------------------------
+No app:
+- Banner persistente: “Atualizações disponíveis” + botão “Atualizar”
+- Tela de status: última atualização (data/hora), versão, erros
+- Em “Configurações”: botão “Verificar agora” (HTTP) e “Conectar WS”
+
+
+16) PRÓXIMOS PASSOS RECOMENDADOS (EXECUÇÃO)
+-------------------------------------------
+Ordem sugerida:
+1) Definir `manifest` (step 11) e quais types entram na 1ª entrega.
+2) Implementar endpoints HTTP (step 12).
+3) Implementar WS server com evento `updateAvailable` (step 13).
+4) Implementar client WS no Electron + banner “Atualizar” (step 15).
+5) Implementar persistência local do conteúdo baixado (step 14).
+6) Adicionar fallback HTTP “check on open” e logs/telemetria básica.
+
+
+17) DEV — MOCK SERVER (HTTP+WS) PARA TESTE LOCAL
+-----------------------------------------------
+Objetivo: testar de ponta a ponta, sem depender do servidor real.
+
+Arquivos:
+- `tools/mock-api/server.js` (HTTP + WebSocket em `/ws`)
+- `tools/mock-api/README.md` (instruções)
+
+Comandos:
+- Terminal 1: `npm run mock-api`
+- Terminal 2: `npm start`
+
+Atalho DEV (faz pull mesmo na tela de login):
+- `SYNC_HTTP_BASE_URL=http://127.0.0.1:8789 SYNC_TURMA_ID=TurmaIdA1B2C3 SYNC_DEV_AUTO_PULL=1 npm start`
+
+Config no app (tela `Integrações`):
+- Base HTTP: `http://127.0.0.1:8789`
+- WS: `ws://127.0.0.1:8789/ws`
+- TurmaId (exemplo): `TurmaIdA1B2C3`
+
+Disparar banner de atualização (WS):
+- `curl -X POST http://127.0.0.1:8789/api/turmas/TurmaIdA1B2C3/notify-update`
+
+
+18) DEV — START DO ELECTRON (EVITAR ELECTRON_RUN_AS_NODE)
+--------------------------------------------------------
+Problema observado: em alguns ambientes `ELECTRON_RUN_AS_NODE` vem setado e o Electron roda como Node,
+fazendo `require("electron")` retornar apenas o path do executável (quebrando `main.js`).
+
+Correção:
+- `tools/start-electron.js` remove `ELECTRON_RUN_AS_NODE` do env e executa o Electron.
+- `package.json` passou a usar `node tools/start-electron.js` no `npm start`.
+
+
+19) ESTABILIDADE — DESATIVAR ACELERAÇÃO DE HARDWARE (GPU)
+---------------------------------------------------------
+Problema observado em alguns ambientes: falhas do processo de GPU podem encerrar o app.
+
+Mitigação:
+- `main.js` chama `app.disableHardwareAcceleration()` logo no início.
+
+
+20) CHECK ON OPEN (SEM WEBSOCKET)
+--------------------------------
+Meta: mesmo sem WS, o app faz “checar atualizações” ao abrir (após login) e em intervalos, exibindo o banner quando houver mudança.
+
+Implementação no app:
+- IPC `sync:check` (consulta `manifest` com ETag/If-None-Match e retorna `changed=true|false` sem baixar itens).
+- `frontend/js/syncWsClient.js` chama `checkNow()` ao iniciar e agenda `setInterval`.
+
+Config:
+- `SYNC_CHECK_INTERVAL_MINUTES` (default 60)
+- opcional: `remoteSync.checkIntervalMinutes`
+
+
+21) ADMIN LOCAL (DIRIGENTE) — MVP
+--------------------------------
+Meta: criar uma área para o dirigente editar conteúdo e publicar localmente (offline), usando os mesmos `types` do manifest.
+
+UI:
+- `frontend/admin.html`
+- `frontend/js/admin.js`
+- Menu: `frontend/componentes/menuSuperior.html` → “Administração”
+
+Backend:
+- IPC `admin:publishLocal` em `backend/handlers/adminHandler.js`
+- Grava em `contentStore` (mesma pasta/estrutura do pull HTTP), atualizando `manifestVersion`.
+
+
+22) PROGRAMA DE AULAS (ADMIN) COM DATAS EDITÁVEIS
+-------------------------------------------------
+Meta: dirigente define as datas das 118 aulas e o app deriva automaticamente o `tema_schedule`.
+
+Dados:
+- `backend/data/programa_aulas_eae.json` (118 aulas + mapeamento aula→tema)
+
+UI:
+- `frontend/programa.html` + `frontend/js/programa.js`
+  - Campo Turma ID
+  - Campo “Data da aula 1” + botão “Aplicar semanal”
+  - Coluna “Data” (editável por aula)
+  - Botão “Salvar datas (local)” (publica `programa_aulas_eae_schedule` + `tema_schedule` derivados)
+
+Backend:
+- `backend/handlers/adminHandler.js` aceita `payload.programaSchedule.items[]` e grava:
+  - `programa_aulas_eae_schedule` (por turma)
+  - `tema_schedule` (por turma) derivado do programa + datas
+
+
+23) REGRA: HOJE == DATA DO TEMA → ATUALIZAR APP DO ALUNO
+--------------------------------------------------------
+Implementação no app:
+- `frontend/js/syncWsClient.js` faz `pullNow()` automaticamente 1x por dia quando existir tema com `dataPublicacaoISO == hoje`.
+  - Pode desabilitar por config: `remoteSync.autoPullOnThemeDate=false`
+  - Pode desabilitar por env: `SYNC_AUTO_PULL_ON_THEME_DATE=0`

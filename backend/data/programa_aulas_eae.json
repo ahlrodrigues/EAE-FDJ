@@ -1,0 +1,555 @@
+{
+  "schemaVersion": 1,
+  "type": "programa_aulas_eae",
+  "source": {
+    "layout": "EAE_table_layout_39_60.txt",
+    "extractedFromPages": {
+      "from": 39,
+      "to": 60
+    }
+  },
+  "extractedAtISO": "2026-04-11T18:51:17.970Z",
+  "aulas": [
+    {
+      "aulaNumero": 1
+    },
+    {
+      "aulaNumero": 2
+    },
+    {
+      "aulaNumero": 3
+    },
+    {
+      "aulaNumero": 4
+    },
+    {
+      "aulaNumero": 5
+    },
+    {
+      "aulaNumero": 6
+    },
+    {
+      "aulaNumero": 7
+    },
+    {
+      "aulaNumero": 8
+    },
+    {
+      "aulaNumero": 9
+    },
+    {
+      "aulaNumero": 10
+    },
+    {
+      "aulaNumero": 11
+    },
+    {
+      "aulaNumero": 12
+    },
+    {
+      "aulaNumero": 13
+    },
+    {
+      "aulaNumero": 14
+    },
+    {
+      "aulaNumero": 15
+    },
+    {
+      "aulaNumero": 16
+    },
+    {
+      "aulaNumero": 17
+    },
+    {
+      "aulaNumero": 18
+    },
+    {
+      "aulaNumero": 19
+    },
+    {
+      "aulaNumero": 20
+    },
+    {
+      "aulaNumero": 21
+    },
+    {
+      "aulaNumero": 22
+    },
+    {
+      "aulaNumero": 23
+    },
+    {
+      "aulaNumero": 24
+    },
+    {
+      "aulaNumero": 25
+    },
+    {
+      "aulaNumero": 26
+    },
+    {
+      "aulaNumero": 27
+    },
+    {
+      "aulaNumero": 28
+    },
+    {
+      "aulaNumero": 29
+    },
+    {
+      "aulaNumero": 30
+    },
+    {
+      "aulaNumero": 31
+    },
+    {
+      "aulaNumero": 32
+    },
+    {
+      "aulaNumero": 33
+    },
+    {
+      "aulaNumero": 34
+    },
+    {
+      "aulaNumero": 35
+    },
+    {
+      "aulaNumero": 36
+    },
+    {
+      "aulaNumero": 37
+    },
+    {
+      "aulaNumero": 38
+    },
+    {
+      "aulaNumero": 39
+    },
+    {
+      "aulaNumero": 40
+    },
+    {
+      "aulaNumero": 41
+    },
+    {
+      "aulaNumero": 42
+    },
+    {
+      "aulaNumero": 43
+    },
+    {
+      "aulaNumero": 44
+    },
+    {
+      "aulaNumero": 45
+    },
+    {
+      "aulaNumero": 46
+    },
+    {
+      "aulaNumero": 47
+    },
+    {
+      "aulaNumero": 48
+    },
+    {
+      "aulaNumero": 49
+    },
+    {
+      "aulaNumero": 50
+    },
+    {
+      "aulaNumero": 51
+    },
+    {
+      "aulaNumero": 52
+    },
+    {
+      "aulaNumero": 53
+    },
+    {
+      "aulaNumero": 54
+    },
+    {
+      "aulaNumero": 55
+    },
+    {
+      "aulaNumero": 56
+    },
+    {
+      "aulaNumero": 57
+    },
+    {
+      "aulaNumero": 58
+    },
+    {
+      "aulaNumero": 59
+    },
+    {
+      "aulaNumero": 60
+    },
+    {
+      "aulaNumero": 61
+    },
+    {
+      "aulaNumero": 62
+    },
+    {
+      "aulaNumero": 63
+    },
+    {
+      "aulaNumero": 64
+    },
+    {
+      "aulaNumero": 65
+    },
+    {
+      "aulaNumero": 66
+    },
+    {
+      "aulaNumero": 67
+    },
+    {
+      "aulaNumero": 68
+    },
+    {
+      "aulaNumero": 69
+    },
+    {
+      "aulaNumero": 70
+    },
+    {
+      "aulaNumero": 71
+    },
+    {
+      "aulaNumero": 72
+    },
+    {
+      "aulaNumero": 73
+    },
+    {
+      "aulaNumero": 74
+    },
+    {
+      "aulaNumero": 75
+    },
+    {
+      "aulaNumero": 76
+    },
+    {
+      "aulaNumero": 77
+    },
+    {
+      "aulaNumero": 78
+    },
+    {
+      "aulaNumero": 79
+    },
+    {
+      "aulaNumero": 80
+    },
+    {
+      "aulaNumero": 81
+    },
+    {
+      "aulaNumero": 82
+    },
+    {
+      "aulaNumero": 83
+    },
+    {
+      "aulaNumero": 84
+    },
+    {
+      "aulaNumero": 85
+    },
+    {
+      "aulaNumero": 86
+    },
+    {
+      "aulaNumero": 87
+    },
+    {
+      "aulaNumero": 88
+    },
+    {
+      "aulaNumero": 89
+    },
+    {
+      "aulaNumero": 90
+    },
+    {
+      "aulaNumero": 91
+    },
+    {
+      "aulaNumero": 92
+    },
+    {
+      "aulaNumero": 93
+    },
+    {
+      "aulaNumero": 94
+    },
+    {
+      "aulaNumero": 95
+    },
+    {
+      "aulaNumero": 96
+    },
+    {
+      "aulaNumero": 97
+    },
+    {
+      "aulaNumero": 98
+    },
+    {
+      "aulaNumero": 99
+    },
+    {
+      "aulaNumero": 100
+    },
+    {
+      "aulaNumero": 101
+    },
+    {
+      "aulaNumero": 102
+    },
+    {
+      "aulaNumero": 103
+    },
+    {
+      "aulaNumero": 104
+    },
+    {
+      "aulaNumero": 105
+    },
+    {
+      "aulaNumero": 106
+    },
+    {
+      "aulaNumero": 107
+    },
+    {
+      "aulaNumero": 108
+    },
+    {
+      "aulaNumero": 109
+    },
+    {
+      "aulaNumero": 110
+    },
+    {
+      "aulaNumero": 111
+    },
+    {
+      "aulaNumero": 112
+    },
+    {
+      "aulaNumero": 113
+    },
+    {
+      "aulaNumero": 114
+    },
+    {
+      "aulaNumero": 115
+    },
+    {
+      "aulaNumero": 116
+    },
+    {
+      "aulaNumero": 117
+    },
+    {
+      "aulaNumero": 118
+    }
+  ],
+  "temaMap": [
+    {
+      "aulaNumero": 13,
+      "temaNumero": 1,
+      "temaTexto": "Nas lutas habituais, não exija a educação do companheiro, demonstre a sua."
+    },
+    {
+      "aulaNumero": 18,
+      "temaNumero": 2,
+      "temaTexto": "O seu mau humor não modifica a vida"
+    },
+    {
+      "aulaNumero": 22,
+      "temaNumero": 3,
+      "temaTexto": "A sua irritação não solucionará problema algum."
+    },
+    {
+      "aulaNumero": 26,
+      "temaNumero": 4,
+      "temaTexto": "Ajude sem exigências, para que os outros o auxiliem sem reclamações"
+    },
+    {
+      "aulaNumero": 30,
+      "temaNumero": 5,
+      "temaTexto": "Discuta com serenidade; o opositor tem direitos iguais aos seus"
+    },
+    {
+      "aulaNumero": 33,
+      "temaNumero": 6,
+      "temaTexto": "Ajude conversando. Uma boa palavra auxilia sempre"
+    },
+    {
+      "aulaNumero": 36,
+      "temaNumero": 7,
+      "temaTexto": "Levante o caído. Você ignora onde seus pés tropeçarão"
+    },
+    {
+      "aulaNumero": 39,
+      "temaNumero": 8,
+      "temaTexto": "Lembre-se de que o mal não merece comentário em tempo algum"
+    },
+    {
+      "aulaNumero": 42,
+      "temaNumero": 9,
+      "temaTexto": "Diante da noite não acuse as trevas. aprenda a fazer lume"
+    },
+    {
+      "aulaNumero": 48,
+      "temaNumero": 10,
+      "temaTexto": "O cristão é chamado a servir em toda parte"
+    },
+    {
+      "aulaNumero": 51,
+      "temaNumero": 11,
+      "temaTexto": "As dores sangram no corpo, mas acendem luzes na alma"
+    },
+    {
+      "aulaNumero": 54,
+      "temaNumero": 12,
+      "temaTexto": "O sofrimento é um recurso do próprio Espírito para evoluir"
+    },
+    {
+      "aulaNumero": 56,
+      "temaNumero": 13,
+      "temaTexto": "O mundo desengana e justi- fica o pessimismo de muitos, mas este julgamento é uma visão im- perfeita"
+    },
+    {
+      "aulaNumero": 58,
+      "temaNumero": 14,
+      "temaTexto": "O arrependimento é o primeiro passo para o paga- mento de nossas dívidas"
+    },
+    {
+      "aulaNumero": 60,
+      "temaNumero": 15,
+      "temaTexto": "O homem retarda, porém a lei o impulsiona"
+    },
+    {
+      "aulaNumero": 62,
+      "temaNumero": 16,
+      "temaTexto": "A paz é uma conquista ín- tima do Espírito em prova"
+    },
+    {
+      "aulaNumero": 64,
+      "temaNumero": 17,
+      "temaTexto": "A finalidade da vida é a glo- rificação de Deus nas almas"
+    },
+    {
+      "aulaNumero": 66,
+      "temaNumero": 18,
+      "temaTexto": "O culto de um deus exterior é um retardamento evolutivo"
+    },
+    {
+      "aulaNumero": 68,
+      "temaNumero": 19,
+      "temaTexto": "Sem desprendimento dos mundos materiais não pode ha- ver ascensão espiritual."
+    },
+    {
+      "aulaNumero": 70,
+      "temaNumero": 20,
+      "temaTexto": "Deus é a fonte do bem; o mal é criação dos homens."
+    },
+    {
+      "aulaNumero": 72,
+      "temaNumero": 21,
+      "temaTexto": "A verdade liberta e estimula para a redenção."
+    },
+    {
+      "aulaNumero": 74,
+      "temaNumero": 22,
+      "temaTexto": "Toda virtude que se conquis- ta é uma porta nova que se abre para um mundo melhor"
+    },
+    {
+      "aulaNumero": 76,
+      "temaNumero": 23,
+      "temaTexto": "Nos caminhos das reali- zações espirituais não há que- das definitivas. ADOS"
+    },
+    {
+      "aulaNumero": 78,
+      "temaNumero": 24,
+      "temaTexto": "O corpo é o templo do Es- pírito"
+    },
+    {
+      "aulaNumero": 80,
+      "temaNumero": 25,
+      "temaTexto": "Aliança é um estado de es- pírito. Estamos à altura dele?"
+    },
+    {
+      "aulaNumero": 82,
+      "temaNumero": 26,
+      "temaTexto": "Nos graus inferiore da evolução somente os que compreendem o sofrimento se humilham e se salvam."
+    },
+    {
+      "aulaNumero": 84,
+      "temaNumero": 27,
+      "temaTexto": "Caminhar com Cristo é su- perar a morte, vencer a vida e ingressar, desde já, na eterni- dade."
+    },
+    {
+      "aulaNumero": 86,
+      "temaNumero": 28,
+      "temaTexto": "Pode haver amor sem Alian- ça? E Aliança sem amor?"
+    },
+    {
+      "aulaNumero": 88,
+      "temaNumero": 29,
+      "temaTexto": "Somente após superar o transitório poderá o aprendiz conquistar a individualidade eterna."
+    },
+    {
+      "aulaNumero": 90,
+      "temaNumero": 30,
+      "temaTexto": "Servir com desprendimento, sem visar retribuições do mun- do, é viver com sabedoria."
+    },
+    {
+      "aulaNumero": 94,
+      "temaNumero": 31,
+      "temaTexto": "Aliança tem diversas acep- ções, porém a mais importante é a espiritual."
+    },
+    {
+      "aulaNumero": 97,
+      "temaNumero": 32,
+      "temaTexto": "Cultivar o silêncio é lutar pela paz interna, vencendo a agitação do mundo"
+    },
+    {
+      "aulaNumero": 100,
+      "temaNumero": 33,
+      "temaTexto": "Falar pouco e certo é dizer muito em poucas palavras"
+    },
+    {
+      "aulaNumero": 103,
+      "temaNumero": 34,
+      "temaTexto": "Prece das Fraternidades, o que representa para mim?"
+    },
+    {
+      "aulaNumero": 109,
+      "temaNumero": 37,
+      "temaTexto": "Como entendo a Fraterni- dade dos Discípulos de Jesus?"
+    },
+    {
+      "aulaNumero": 111,
+      "temaNumero": 38,
+      "temaTexto": "Para as conquistas de ordem espiritual é bom que não haja nem entusiasmos nem desâni- mos."
+    },
+    {
+      "aulaNumero": 113,
+      "temaNumero": 39,
+      "temaTexto": "Nos caminhos de espirituali- zação o progresso se mede em milímetros"
+    }
+  ]
+}

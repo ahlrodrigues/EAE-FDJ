@@ -12,11 +12,26 @@
   box-sizing: border-box;
 }
 
+:root {
+  --app-bg: #ecfae0;
+}
+
+html[data-role="aluno"] {
+  --app-bg: #ecfae0;
+}
+html[data-role="dirigente"] {
+  --app-bg: #e0f0ff;
+}
+html[data-role="analista"] {
+  --app-bg: #f3e8ff;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 2rem auto;
   padding: 1rem;
-  background-color: #ecfae0;
+  background-color: var(--app-bg);
+  transition: background-color 200ms ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -459,6 +474,24 @@ form#formAnotacao textarea{
   margin-bottom: 1rem;
   width: 100%;
   max-width: 800px;
+}
+
+/* ===== Atualizações (banner) ===== */
+.update-banner{
+  margin: 10px 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #f59e0b;
+  background: #fffbeb;
+  color: #7c2d12;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.update-banner .btn-principal{
+  margin: 0;
+  padding: 8px 12px;
 }
 
 .barra-esquerda,

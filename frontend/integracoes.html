@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Integrações</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+  <div id="menuSuperior"></div>
+  <div id="modalAvisoContainer"></div>
+
+  <main class="container">
+    <h2>Integrações</h2>
+
+    <div class="card">
+      <h3>Atualizações (WebSocket + Pull)</h3>
+
+      <form id="formSync" novalidate>
+        <label for="syncHttpBaseUrl">Base URL (HTTP)</label>
+        <input id="syncHttpBaseUrl" type="text" placeholder="https://seu-site.com" autocomplete="off" />
+
+        <label for="syncWsUrl">URL (WebSocket)</label>
+        <input id="syncWsUrl" type="text" placeholder="wss://seu-site.com/ws" autocomplete="off" />
+
+        <label for="syncTurmaId">Turma ID</label>
+        <input id="syncTurmaId" type="text" placeholder="ex.: turma-123" autocomplete="off" />
+
+        <label for="syncToken">Token</label>
+        <input id="syncToken" type="password" placeholder="(opcional)" autocomplete="off" />
+
+	        <div class="acoes" style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+	          <button id="btnSyncSalvar" type="submit" class="btn-principal">Salvar</button>
+	          <button id="btnSyncStatus" type="button" class="btn-principal">Status</button>
+	          <button id="btnSyncCheck" type="button" class="btn-secundario">Checar atualizações</button>
+	          <button id="btnSyncPull" type="button" class="btn-principal">Atualizar agora</button>
+	        </div>
+      </form>
+
+      <small id="syncStatusText" style="display:block; margin-top:12px; color:#555;">
+        Status: —
+      </small>
+    </div>
+
+    <div class="card">
+      <h3>Pacotes (Requests / Packages)</h3>
+
+      <h4 style="margin: 6px 0 0;">Vínculos (Dirigente ↔ Aluno)</h4>
+      <div data-roles="dirigente,analista">
+        <label for="linkAlunoId">Convidar — Aluno ID</label>
+        <input id="linkAlunoId" type="text" placeholder="emailHash do aluno (64 hex)" autocomplete="off" />
+        <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btnLinkInvite" type="button" class="btn-principal">Convidar vínculo</button>
+        </div>
+      </div>
+
+      <div data-roles="aluno">
+        <label for="linkIdConfirm" style="margin-top: 10px;">Confirmar — Link ID</label>
+        <input id="linkIdConfirm" type="text" placeholder="ex.: lnk_..." autocomplete="off" />
+        <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btnLinkConfirm" type="button" class="btn-secundario">Confirmar vínculo</button>
+        </div>
+      </div>
+
+      <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnLinkList" type="button" class="btn-secundario">Listar meus vínculos</button>
+      </div>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+
+      <label for="reqToId">Criar solicitação — To ID (aluno)</label>
+      <input id="reqToId" type="text" placeholder="emailHash do aluno (ex.: 64 hex)" autocomplete="off" />
+
+      <label for="reqType">Tipo</label>
+      <input id="reqType" type="text" value="materials_request" autocomplete="off" />
+
+      <label for="reqAvailableAt">Disponível em (ISO opcional)</label>
+      <input id="reqAvailableAt" type="text" placeholder="ex.: 2026-04-13T09:00:00-03:00" autocomplete="off" />
+
+      <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;" data-roles="dirigente,analista">
+        <button id="btnReqCreate" type="button" class="btn-principal">Criar solicitação</button>
+      </div>
+
+      <div class="acoes" style="margin-top: 8px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnReqList" type="button" class="btn-secundario">Listar solicitações</button>
+        <button id="btnPkgList" type="button" class="btn-secundario">Listar pacotes</button>
+      </div>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+
+      <label for="respRequestId">Request ID (para responder)</label>
+      <input id="respRequestId" type="text" placeholder="ex.: req_..." autocomplete="off" />
+
+      <label for="respPayload">Payload (JSON) — DEV</label>
+      <textarea id="respPayload" rows="6" style="width:100%; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">{}</textarea>
+
+      <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnRespSend" type="button" class="btn-principal">Enviar resposta</button>
+        <button id="btnRespSendAuto" type="button" class="btn-secundario" data-roles="aluno">Enviar incremental (auto)</button>
+      </div>
+
+      <hr style="margin:16px 0; opacity:.2;" />
+
+      <label for="pkgId">Package ID (para baixar/confirmar)</label>
+      <input id="pkgId" type="text" placeholder="ex.: pkg_..." autocomplete="off" />
+
+      <div class="acoes" style="margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap;" data-roles="dirigente,analista">
+        <button id="btnPkgDownload" type="button" class="btn-secundario">Baixar</button>
+        <button id="btnPkgApplied" type="button" class="btn-principal">Confirmar aplicado</button>
+      </div>
+
+      <pre id="pkgDebugOut" style="margin-top:12px; padding:10px; background:#111; color:#eee; border-radius:8px; overflow:auto; max-height:240px;">(saída)</pre>
+    </div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/modalAviso.js"></script>
+  <script type="module" src="js/integracoes.js"></script>
+</body>
+</html>

@@ -237,11 +237,15 @@ function getLastDeviceAuth() { return lastDeviceAuth; }
 function clearLastDeviceAuth() { lastDeviceAuth = null; }
 
 // ========================= IPC auxiliares (replay p/ UI antiga) =============
-function registerReplayIpcOnce() {
+function registerReplayIpcOnce(ipc = ipcMain) {
   if (replayIpcRegistered) return;
+  if (!ipc || typeof ipc.on !== "function") {
+    console.warn(`${LOG} IPC indisponível para registrar replay (drive:codigo:request).`);
+    return;
+  }
   replayIpcRegistered = true;
 
-  ipcMain.on("drive:codigo:request", () => {
+  ipc.on("drive:codigo:request", () => {
     console.log(`${LOG} Replay solicitado → drive:codigo`);
     if (lastDeviceAuth) {
       sendToRenderer("drive:codigo", {
@@ -253,6 +257,7 @@ function registerReplayIpcOnce() {
     }
   });
 }
+// Evita efeitos colaterais em importações fora do Electron main.
 registerReplayIpcOnce();
 
 // ========================= Exports ==========================================
@@ -273,4 +278,7 @@ module.exports = {
   getLastDeviceAuth,
   clearLastDeviceAuth,
   DRIVE_TOKEN_FILE,
+
+  // IPC auxiliar
+  registerReplayIpcOnce,
 };

@@ -32,8 +32,16 @@
       <ul class="submenu-itens">
         <li><a href="cadastro2.html" class="link-submenu"><span>👤</span> Cadastro</a></li>
         <li><a href="backup.html" class="link-submenu"><span>☁️</span> Backup</a></li>
-        <li><a href="#" class="link-submenu"><span>🧩</span> Integrações</a></li>
+        <li><a href="integracoes.html" class="link-submenu"><span>🧩</span> Integrações</a></li>
+        <li data-roles="dirigente,analista"><a href="admin.html" class="link-submenu"><span>🛠️</span> Administração</a></li>
+        <li data-roles="dirigente,analista"><a href="programa.html" class="link-submenu"><span>📘</span> Programa de Aulas</a></li>
       </ul>
     </li>
   </ul>
 </nav>
+
+<!-- 🔔 Banner de atualizações (mostra quando WS sinaliza ou check HTTP detecta) -->
+<div id="updateBanner" class="update-banner" style="display:none;" role="status" aria-live="polite">
+  <span id="updateBannerText">Há atualizações disponíveis.</span>
+  <button id="btnAtualizarConteudo" class="btn-principal" type="button">Atualizar</button>
+</div>

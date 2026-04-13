@@ -27,6 +27,25 @@ Ajustes:
     <div class="card">
       <!-- IDs e estrutura compatíveis com frontend/js/config.js -->
       <form id="formConfig" novalidate>
+        <!-- Perfis (pode ter mais de um) -->
+        <div id="rolesRow">
+        <label>Perfis (pode selecionar mais de um)</label>
+        <div class="row-checkbox" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilAluno" />
+            Aluno
+          </label>
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilDirigente" />
+            Dirigente
+          </label>
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilAnalista" />
+            Analista
+          </label>
+        </div>
+        </div>
+
         <label for="aluno">Nome do aluno</label>
         <input type="text" id="aluno" required />
 

@@ -165,6 +165,11 @@ contextBridge.exposeInMainWorld("usuarioAPI", {
     return ipcRenderer.invoke("usuario:obterNomeAluno", emailHash);
   },
 
+  /** Atualizar campos do usuário da sessão atual (patch em claro; main criptografa) */
+  async atualizarAtual(patch) {
+    return ipcRenderer.invoke("usuario:atualizar", { patch });
+  },
+
   /** Caminho absoluto do JSON do usuário atual (novo modelo) */
   async getUserFilePath() {
     return getUserFilePath();
@@ -180,6 +185,8 @@ contextBridge.exposeInMainWorld("api", {
   definirSessao: (emailHash) => ipcRenderer.send("sessao-definir", emailHash),
   salvarCadastro: (dados) => ipcRenderer.invoke("salvar-cadastro", dados),
   verificarEmailExistente: (email) => ipcRenderer.invoke("verificar-email-existente", email),
+  usuarioPreferenciasGet: async (emailHash) => ipcRenderer.invoke("usuario:prefs:get", { emailHash }),
+  usuarioPreferenciasSet: async (emailHash, patch) => ipcRenderer.invoke("usuario:prefs:set", { emailHash, patch }),
 
   // ---- Recuperação de senha (token + troca)
   solicitarToken: (email) => ipcRenderer.invoke("solicitar-token", email),
@@ -205,6 +212,63 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
 
+  notas: {
+    /** Salvar anotação criptografada para o usuário da sessão */
+    async salvar(conteudo, nomeArquivo) {
+      try {
+        const emailHash = await _getSessionEmailHash();
+        if (!emailHash) return { sucesso: false, erro: "Sessão sem emailHash" };
+        // IPC esperado no MAIN
+        return await ipcRenderer.invoke("notas:salvar", {
+          emailHash,
+          nomeArquivo,
+          conteudo
+        });
+      } catch (e) {
+        console.error(`${PRE} notas.salvar falhou:`, e?.message || e);
+        return { sucesso: false, erro: e?.message || String(e) };
+      }
+    },
+
+    /** Listar anotações do usuário da sessão (nomes/paths) */
+    async listar() {
+      try {
+        const emailHash = await _getSessionEmailHash();
+        if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+        return await ipcRenderer.invoke("notas:listar", { emailHash });
+      } catch (e) {
+        return { ok: false, erro: e?.message || String(e) };
+      }
+    },
+
+    /** Ler (descriptografar no MAIN) */
+    async ler(nomeArquivo) {
+      try {
+        const emailHash = await _getSessionEmailHash();
+        if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+        return await ipcRenderer.invoke("notas:ler", { emailHash, nomeArquivo });
+      } catch (e) {
+        return { ok: false, erro: e?.message || String(e) };
+      }
+    },
+
+    /** Excluir */
+    async excluir(nomeArquivo) {
+      try {
+        const emailHash = await _getSessionEmailHash();
+        if (!emailHash) return { ok: false, erro: "Sessão sem emailHash" };
+        return await ipcRenderer.invoke("notas:excluir", { emailHash, nomeArquivo });
+      } catch (e) {
+        return { ok: false, erro: e?.message || String(e) };
+      }
+    },
+  },
+
+  /** Compat legado: manter assinatura window.api.salvarAnotacao(conteudo, nomeArquivo) */
+  async salvarAnotacao(conteudo, nomeArquivo) {
+    return await this.notas.salvar(conteudo, nomeArquivo);
+  },
+
   // ---- Usuário (novo modelo)
   /** Lê o usuário da sessão atual (wrapper p/ novo IPC) */
   lerUsuario: async () => {
@@ -214,7 +278,7 @@ contextBridge.exposeInMainWorld("api", {
   },
 
   /** Salvar dados do usuário (mantém seu IPC existente no MAIN) */
-  salvarUsuario: (dados) => ipcRenderer.invoke("salvar-usuario", dados),
+  salvarUsuario: (patch) => ipcRenderer.invoke("usuario:atualizar", { patch }),
 
   // ==== Troca de e-mail (novo fluxo) ====
   emailChange: {
@@ -412,6 +476,50 @@ contextBridge.exposeInMainWorld("api", {
     } catch (e) {
       return { ok: false, erro: e?.message || String(e) };
     }
+  },
+
+  // ---- Sync (WebSocket avisa; pull é via IPC/main)
+  sync: {
+    status: () => ipcRenderer.invoke("sync:status"),
+    check: () => ipcRenderer.invoke("sync:check"),
+    pullNow: () => ipcRenderer.invoke("sync:pullNow"),
+  },
+
+  // ---- Requests + Packages (troca assíncrona via API mínima)
+  links: {
+    invite: (alunoId) => ipcRenderer.invoke("links:invite", { alunoId }),
+    confirm: (linkId) => ipcRenderer.invoke("links:confirm", { linkId }),
+    listMine: () => ipcRenderer.invoke("links:listMine"),
+  },
+  requests: {
+    create: (toId, turmaId = "", type = "materials_request", availableAtISO = "", dueAtISO = "") =>
+      ipcRenderer.invoke("requests:create", { toId, turmaId, type, availableAtISO, dueAtISO }),
+    listOpen: () => ipcRenderer.invoke("requests:listOpen"),
+  },
+  packages: {
+    listPending: () => ipcRenderer.invoke("packages:listPending"),
+    download: (packageId) => ipcRenderer.invoke("packages:download", { packageId }),
+    markApplied: (packageId, ok = true, error = "") => ipcRenderer.invoke("packages:markApplied", { packageId, ok, error }),
+  },
+  responses: {
+    uploadForRequest: (requestId, payload) => ipcRenderer.invoke("responses:uploadForRequest", { requestId, payload }),
+    uploadForRequestAuto: (requestId, force = false) => ipcRenderer.invoke("responses:uploadForRequestAuto", { requestId, force }),
+  },
+
+  // ---- Conteúdo local baixado (manifest + itens)
+  content: {
+    getManifest: () => ipcRenderer.invoke("content:manifest:get"),
+    getItem: (type, id) => ipcRenderer.invoke("content:item:get", { type, id }),
+  },
+
+  // ---- Admin local (dirigente/analista): publica conteúdo no contentStore local
+  admin: {
+    publishLocal: (payload) => ipcRenderer.invoke("admin:publishLocal", payload),
+  },
+
+  // ---- Programa padrão (referência)
+  programa: {
+    getPadrao: () => ipcRenderer.invoke("programa:padrao:get"),
   },
 });
 

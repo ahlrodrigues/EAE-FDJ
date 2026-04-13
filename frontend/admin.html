@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administração (Dirigente)</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="cabecalho"></div>
+  <div id="menuSuperior"></div>
+  <div id="modalAvisoContainer"></div>
+
+  <main class="container">
+    <h2>Administração (Dirigente)</h2>
+
+    <div class="card" data-roles="dirigente,analista">
+      <h3>Publicar conteúdo local</h3>
+      <small style="display:block; color:#555; margin-bottom:12px;">
+        Isto grava no conteúdo local do app (offline). Depois, na fase do servidor, estes mesmos JSONs serão publicados para a turma.
+      </small>
+
+      <form id="adminForm" novalidate>
+        <label for="adminTurmaId">Turma ID</label>
+        <input id="adminTurmaId" type="text" placeholder="ex.: TurmaIdA1B2C3" autocomplete="off" />
+
+        <hr style="margin:16px 0; border:0; border-top:1px solid #eee;" />
+
+        <h4 style="margin:0 0 10px 0;">Temas (Programa de Aulas padrão)</h4>
+        <label for="temaStartDate">Data da aula 1 (início da turma)</label>
+        <input id="temaStartDate" type="date" />
+
+        <label for="temaPublishedAtHour">Hora de publicação (local)</label>
+        <input id="temaPublishedAtHour" type="time" value="06:00" />
+
+        <hr style="margin:16px 0; border:0; border-top:1px solid #eee;" />
+
+        <label for="avisoTitulo">Aviso do dirigente (título)</label>
+        <input id="avisoTitulo" type="text" placeholder="Aviso do Dirigente" autocomplete="off" />
+
+        <label for="avisoMensagem">Aviso do dirigente (mensagem)</label>
+        <textarea id="avisoMensagem" rows="4" placeholder="Digite o aviso..." autocomplete="off"></textarea>
+
+        <hr style="margin:16px 0; border:0; border-top:1px solid #eee;" />
+
+        <label for="mentorMensagem">Mensagem do mentor da turma</label>
+        <textarea id="mentorMensagem" rows="4" placeholder="Digite a mensagem do mentor..." autocomplete="off"></textarea>
+
+        <div class="acoes" style="margin-top: 16px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btnPublicarLocal" type="submit" class="btn-principal">Publicar localmente</button>
+        </div>
+      </form>
+
+      <small id="adminStatusText" style="display:block; margin-top:12px; color:#555;">
+        Status: —
+      </small>
+    </div>
+
+    <div class="card" data-roles="aluno">
+      <h3>Acesso restrito</h3>
+      <small style="display:block; color:#555;">
+        Esta área é destinada ao dirigente/analista.
+      </small>
+    </div>
+  </main>
+
+  <div id="rodape"></div>
+
+  <script type="module" src="js/incluirComponentes.js"></script>
+  <script type="module" src="js/modalAviso.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

@@ -29,6 +29,28 @@ Notas:
       <div class="aviso-obrigatorio">⚠️ Todos os campos são obrigatórios.</div><br/>
 
       <form id="cadastroForm">
+        <!-- Perfis (pode ter mais de um) -->
+        <div id="rolesRow">
+        <label>Perfis (pode selecionar mais de um)</label>
+        <div class="row-checkbox" style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:10px;">
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilAluno" checked />
+            Aluno
+          </label>
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilDirigente" />
+            Dirigente
+          </label>
+          <label style="display:flex; gap:6px; align-items:center; margin:0;">
+            <input type="checkbox" id="perfilAnalista" />
+            Analista
+          </label>
+        </div>
+        <small style="display:block; color:#666; margin-top:-6px; margin-bottom:12px;">
+          Observação: dirigente/analista poderão exigir validação no futuro; por enquanto os perfis são locais.
+        </small>
+        </div>
+
         <!-- Casa Espírita -->
         <label for="casaEspírita">Nome da casa espírita</label>
         <input type="text" id="casaEspírita" required autocomplete="organization" />
@@ -114,7 +136,7 @@ Notas:
 
         <!-- Ações -->
         <div class="acoes" style="margin-top: 16px;">
-          <button id="btnSalvar" class="btn-principal" style="display:none;" disabled>Salvar Cadastro</button>
+          <button id="btnSalvar" type="button" class="btn-principal" style="display:none;" disabled>Salvar Cadastro</button>
         </div>
       </form>
     </div>

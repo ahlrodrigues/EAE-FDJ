@@ -3,9 +3,17 @@
 require("dotenv").config();
 
 // 📦 Electron / Node
-const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
 const path = require("path");
 const fs = require("fs");
+
+// 🖥️ Estabilidade: evita crash/fatal quando o processo de GPU não está disponível
+try { app.disableHardwareAcceleration(); } catch {}
+try {
+  app.commandLine.appendSwitch("disable-gpu");
+  app.commandLine.appendSwitch("disable-gpu-compositing");
+  app.commandLine.appendSwitch("disable-software-rasterizer");
+} catch {}
 
 // 🧬 Sessão
 const { isLoginAtivo, obterEmailHashAtivo } = require("./backend/lib/sessionStore");
@@ -22,6 +30,26 @@ const USERS_DIR = path.join(CONFIG_DIR, "usuarios");            // pasta por usu
 
 // 🪟 janela principal
 let janelaCadastro = null;
+
+// 🚫 Garante instância única (evita abrir “segunda instância” sem necessidade)
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  console.warn("🚫 Segunda instância detectada → encerrando esta instância.");
+  app.quit();
+} else {
+  app.on("second-instance", (_event, _commandLine, _workingDirectory) => {
+    console.warn("🚫 'second-instance' acionado → focando janela existente.");
+    try {
+      if (janelaCadastro && !janelaCadastro.isDestroyed()) {
+        if (janelaCadastro.isMinimized()) janelaCadastro.restore();
+        janelaCadastro.show();
+        janelaCadastro.focus();
+      }
+    } catch (e) {
+      console.warn("⚠️ Falha ao focar janela na segunda instância:", e?.message || e);
+    }
+  });
+}
 
 // 🧩 Handlers (importados no topo; sem redefinir aqui)
 const { registrarCadastroHandler } = require("./backend/handlers/cadastroHandler");
@@ -49,6 +77,11 @@ const { registrarShellHandler } = require("./backend/handlers/shellHandler");
 const { registrarBackupEmailHandler } = require("./backend/handlers/backupEmailHandler");
 const { registrarLoginHandler } = require("./backend/handlers/loginHandler");
 const { registrarEmailChangeHandler } = require("./backend/handlers/emailChangeHandler");
+const { registrarSyncHandler } = require("./backend/handlers/syncHandler");
+const { registrarPackagesHandler } = require("./backend/handlers/packagesHandler");
+const { registrarContentHandler } = require("./backend/handlers/contentHandler");
+const { registrarAdminHandler } = require("./backend/handlers/adminHandler");
+const { registrarProgramaHandler } = require("./backend/handlers/programaHandler");
 
 // ▶️ Executor do backup (reutilizado pelo cron)
 async function executarBackupAgendado() {
@@ -218,6 +251,30 @@ function createWindow() {
   // ⛔ Sempre forçar links externos no navegador padrão
   forceExternalBrowserHandlers(janelaCadastro);
 
+  // 🧯 Diagnóstico de fechamento/crash (ajuda quando o app “fecha sozinho”)
+  try {
+    const wc = janelaCadastro.webContents;
+    janelaCadastro.on("close", () => {
+      let url = "";
+      try { url = wc.getURL(); } catch {}
+      console.warn("🧯 [win] close solicitado", { url });
+    });
+    janelaCadastro.on("closed", () => {
+      console.warn("🧯 [win] closed (janela principal destruída)");
+    });
+    wc.on("did-fail-load", (_e, code, desc, url, isMainFrame) => {
+      console.error("🧯 [wc] did-fail-load", { code, desc, url, isMainFrame });
+    });
+    wc.on("render-process-gone", (_e, details) => {
+      console.error("🧯 [wc] render-process-gone", details);
+    });
+    wc.on("unresponsive", () => {
+      console.error("🧯 [wc] unresponsive");
+    });
+  } catch (e) {
+    console.warn("⚠️ [win] Falha ao anexar listeners de diagnóstico:", e?.message || e);
+  }
+
   // Eventos de janela
   janelaCadastro.on("minimize", () => {
     console.log("🛑 Janela minimizada — acionando bloqueio.");
@@ -290,12 +347,17 @@ try {
     "backupScheduleIeHandler",
     registrarBackupScheduleIeHandler,
     { startSchedule, stopSchedule, executarBackupAgendado }
-  );
-  safeRegister("backupHandler", registrarBackupHandler);
+	  );
+	  safeRegister("backupHandler", registrarBackupHandler);
+	  safeRegister("syncHandler", registrarSyncHandler);
+	  safeRegister("packagesHandler", registrarPackagesHandler);
+	  safeRegister("contentHandler", registrarContentHandler);
+	  safeRegister("adminHandler", registrarAdminHandler);
+	  safeRegister("programaHandler", registrarProgramaHandler);
 
-  console.log("✅ Todos os handlers registrados (veja logs ✅/❌ por item).");
+	  console.log("✅ Todos os handlers registrados (veja logs ✅/❌ por item).");
 } catch (e) {
-  console.error("❌ Falha inesperada ao registrar handlers:", e);
+	  console.error("❌ Falha inesperada ao registrar handlers:", e);
 }
 
 // 🛠️ Conferência do preload
@@ -311,16 +373,9 @@ app.whenReady().then(async () => {
   console.log("🩺 [blog] Aguardando ping via canal:", BLOG_CHANNELS?.PING, "(exposto pelo preload).");
 
   try {
-  console.log("📗 [revista] Iniciando verificação de capa em segundo plano (base=531, maxTentativas=30)...");
-  await verificarAtualizacaoCapaEmSegundoPlano(); // ← use await para log de término
-  console.log("📗 [revista] Verificação de capa finalizada.");
-} catch (err) {
-  console.error("❌ [revista] Erro na verificação da capa em segundo plano:", err);
-}
-
-  // 📕 Capa da revista em segundo plano
-  try {
+    console.log("📗 [revista] Iniciando verificação de capa em segundo plano (base=531, maxTentativas=30)...");
     verificarAtualizacaoCapaEmSegundoPlano();
+    console.log("📗 [revista] Verificação disparada (background).");
   } catch (err) {
     console.error("❌ Erro na verificação da capa em segundo plano:", err);
   }
@@ -350,6 +405,24 @@ app.whenReady().then(async () => {
   });
 });
 
+// 🧯 Diagnóstico global de crashes/erros não tratados
+process.on("uncaughtException", (err) => {
+  console.error("🧯 [process] uncaughtException:", err?.stack || err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("🧯 [process] unhandledRejection:", reason);
+});
+process.on("SIGTERM", () => {
+  console.warn("🧯 [process] SIGTERM recebido (encerramento solicitado pelo SO/serviço).");
+});
+process.on("SIGINT", () => {
+  console.warn("🧯 [process] SIGINT recebido (Ctrl+C).");
+});
+
+app.on("before-quit", () => console.warn("🧯 [app] before-quit"));
+app.on("will-quit", () => console.warn("🧯 [app] will-quit"));
+app.on("quit", (_e, exitCode) => console.warn("🧯 [app] quit", { exitCode }));
+
 // ⛔ Encerramento
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -371,4 +444,37 @@ ipcMain.on("abrirLink", (_evt, url) => {
   shell.openExternal(url).catch((err) =>
     console.error(`${NAV} Falha ao abrir (IPC abrirLink):`, err?.message || err)
   );
+});
+
+// 🔔 IPC utilitário: aviso simples (evita "No handler registered for 'exibir-aviso'")
+ipcMain.handle("exibir-aviso", async (_evt, payload) => {
+  try {
+    let title = "Aviso";
+    let message = "";
+    if (typeof payload === "string") {
+      message = payload;
+    } else if (payload && typeof payload === "object") {
+      title = String(payload.tipo || payload.titulo || payload.title || "Aviso");
+      message = String(payload.mensagem || payload.message || "");
+      if (!message) {
+        try { message = JSON.stringify(payload, null, 2); } catch { message = String(payload); }
+      }
+    } else {
+      message = String(payload ?? "");
+    }
+
+    const browserWin = BrowserWindow.getFocusedWindow() || janelaCadastro || null;
+    await dialog.showMessageBox(browserWin, {
+      type: "info",
+      title,
+      message,
+      buttons: ["OK"],
+      defaultId: 0,
+      noLink: true,
+    });
+    return { ok: true };
+  } catch (e) {
+    console.error("❌ [IPC exibir-aviso] falhou:", e?.message || e);
+    return { ok: false, erro: e?.message || String(e) };
+  }
 });

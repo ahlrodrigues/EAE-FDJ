@@ -27,7 +27,7 @@ async function carregarCodigoTemasDaSessao() {
   // Esperado: campo 'codigoTemas' cifrado (string AES-GCM base64)
   const cifrado = usuario.codigoTemas;
   if (!cifrado) {
-    throw new Error("Campo 'codigoTemas' ausente no cadastro do usuário.");
+    throw new Error("Campo 'codigoTemas' ausente no cadastro do usuário. Configure em Configurações.");
   }
 
   // 2) Descriptografa no backend (mantém segredo no MAIN)
@@ -60,6 +60,18 @@ componentesCarregados.then(async () => {
     console.log(`${LOG} Página inicial carregada com sucesso.`);
   } catch (erro) {
     console.error(`${LOG} Erro ao preparar conteúdo:`, erro.message);
+
+    // Caso típico: usuário não configurou o código de integração
+    if (/codigoTemas/i.test(String(erro?.message || "")) && window.api?.exibirAviso) {
+      try {
+        await window.api.exibirAviso({
+          tipo: "Configuração necessária",
+          mensagem: "Falta o código de integração das atividades (planilha). Abra Configurações e informe o campo “Código das atividades”.",
+        });
+        window.location.href = "config.html";
+        return;
+      } catch {}
+    }
 
     // Feedback visual mínimo nos cartões
     const msgDir = document.getElementById("mensagem-dirigente");

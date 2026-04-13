@@ -25,6 +25,9 @@ Thumbs.db
 # VSCode (caso use)
 .vscode/
 
+# Codex local markers
+.codex
+
 # .git
 .git/backend/config/*.json
 *.pem

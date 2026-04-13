@@ -4,7 +4,8 @@
   "description": "<p align=\"center\" width=\"100%\">     <img src=\"https://geea.com.br/imagem/trevo.png\"> </p>",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "node tools/start-electron.js",
+    "mock-api": "node tools/mock-api/server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.5",
     "open": "^10.2.0",
+    "ws": "^8.18.3",
     "zxcvbn": "^4.4.2"
   },
   "repository": {
