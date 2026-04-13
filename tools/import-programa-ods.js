@@ -108,20 +108,26 @@ function main() {
     const aulaRef = asNonEmptyString(aulaCell);
     const aulaNumero = seq; // ✅ sempre incremental: 1..fim
 
-    const capitulo = asNonEmptyString(r[colIdx.cap]);
-    const aulaTitulo = asNonEmptyString(r[colIdx.temaAula]);
-    const assuntos = asNonEmptyString(r[colIdx.assunto]);
-    const temaFacilitador = asNonEmptyString(r[colIdx.temaAtividade]);
+    const capituloRaw = asNonEmptyString(r[colIdx.cap]);
+    const aulaTituloRaw = asNonEmptyString(r[colIdx.temaAula]);
+    const assuntosRaw = asNonEmptyString(r[colIdx.assunto]);
+    const temaFacilitadorRaw = asNonEmptyString(r[colIdx.temaAtividade]);
     const email = asNonEmptyString(r[colIdx.email]);
     const contato = asNonEmptyString(r[colIdx.whatsapp]);
 
     // Ignora linhas "modelo" que só trazem o placeholder de data
     const isDatePlaceholder = rawData.toUpperCase() === "DD/MM/YYYY";
-    const isAllOtherEmpty = !aulaRef && !capitulo && !aulaTitulo && !assuntos && !temaFacilitador && !email && !contato;
+    const isAllOtherEmpty = !aulaRef && !capituloRaw && !aulaTituloRaw && !assuntosRaw && !temaFacilitadorRaw && !email && !contato;
     if (isDatePlaceholder && isAllOtherEmpty) {
       seq--; // desfaz incremento
       continue;
     }
+
+    // ✅ Garante campos preenchidos mesmo quando a planilha vem com células vazias
+    const capitulo = capituloRaw || aulaRef || "—";
+    const aulaTitulo = aulaTituloRaw || assuntosRaw || temaFacilitadorRaw || "—";
+    const assuntos = assuntosRaw;
+    const temaFacilitador = temaFacilitadorRaw;
 
     const rowObj = {
       rowId: genRowId(`${sheetName}:${i + 1}`),

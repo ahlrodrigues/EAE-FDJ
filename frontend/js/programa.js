@@ -192,9 +192,29 @@ function hasAnyMissingProgramaFields(rows) {
   return false;
 }
 
+function fillCapituloEAulaFallbacksInPlace(rows) {
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i] || {};
+    const cap = String(r.capitulo || "").trim();
+    const aula = String(r.aulaTitulo || "").trim();
+
+    if (!cap) {
+      const aulaRef = String(r.aulaRef || "").trim();
+      rows[i] = { ...r, capitulo: aulaRef || "—" };
+    }
+    if (!aula) {
+      const assuntos = String(r.assuntos || "").trim();
+      const temaFac = String(r.temaFacilitador || "").trim();
+      rows[i] = { ...(rows[i] || r), aulaTitulo: assuntos || temaFac || "—" };
+    }
+  }
+}
+
 async function backfillCapituloEAulaFromBundledIfNeeded(localDados) {
   const rows = Array.isArray(localDados?.rows) ? localDados.rows : null;
   if (!rows || !rows.length) return localDados;
+  // garante preenchimento mínimo (mesmo antes de salvar)
+  fillCapituloEAulaFallbacksInPlace(rows);
   if (!hasAnyMissingProgramaFields(rows)) return localDados;
 
   let bundled = null;
@@ -224,6 +244,7 @@ async function backfillCapituloEAulaFromBundledIfNeeded(localDados) {
     };
   });
 
+  fillCapituloEAulaFallbacksInPlace(mergedRows);
   return { ...localDados, rows: mergedRows };
 }
 
