@@ -1,14 +1,2522 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "type": "programa_aulas_eae",
   "source": {
-    "layout": "EAE_table_layout_39_60.txt",
-    "extractedFromPages": {
-      "from": 39,
-      "to": 60
-    }
+    "file": "PROGRAMA EAE.ods",
+    "sheetName": "61a Turma EAE"
   },
-  "extractedAtISO": "2026-04-11T18:51:17.970Z",
+  "extractedAtISO": "2026-04-13T13:21:12.813Z",
+  "columns": [
+    {
+      "key": "dataAulaISO",
+      "label": "Data",
+      "type": "date",
+      "width": 140
+    },
+    {
+      "key": "aulaNumero",
+      "label": "Aula",
+      "type": "number",
+      "width": 80
+    },
+    {
+      "key": "capitulo",
+      "label": "Cap.",
+      "type": "text",
+      "width": 90
+    },
+    {
+      "key": "temaAula",
+      "label": "Tema (aula)",
+      "type": "text",
+      "width": 260
+    },
+    {
+      "key": "assuntoDirigente",
+      "label": "Assunto (dirigente)",
+      "type": "text",
+      "width": 420
+    },
+    {
+      "key": "temaAtividade",
+      "label": "Tema (atividade)",
+      "type": "text",
+      "width": 220
+    },
+    {
+      "key": "facilitadores",
+      "label": "Facilitadores",
+      "type": "text",
+      "width": 220,
+      "rolesHidden": [
+        "analista"
+      ]
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "text",
+      "width": 220,
+      "rolesHidden": [
+        "analista"
+      ]
+    },
+    {
+      "key": "whatsapp",
+      "label": "Whatsapp",
+      "type": "text",
+      "width": 160,
+      "rolesHidden": [
+        "analista"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "rowId": "row_092ea3870b1b",
+      "order": 1,
+      "dataAulaISO": "",
+      "aulaNumero": 1,
+      "capitulo": "AE",
+      "temaAula": "Aula 001 - Aula Inaugural",
+      "assuntoDirigente": "Implantação da Prece dos Aprendizes",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_d1073b45f655",
+      "order": 2,
+      "dataAulaISO": "",
+      "aulaNumero": 2,
+      "capitulo": "IE 01",
+      "temaAula": "Aula 002 - A Criação",
+      "assuntoDirigente": "Implantação da Prece dos Aprendizes",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_edc4337c3a67",
+      "order": 3,
+      "dataAulaISO": "",
+      "aulaNumero": 3,
+      "capitulo": "IE 02",
+      "temaAula": "Aula 003 - O Nosso Planeta",
+      "assuntoDirigente": "Revisão dos Objetivos Precípuos da Escola de Aprendizes do Evangelho",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_7ca1dbb86c13",
+      "order": 4,
+      "dataAulaISO": "",
+      "aulaNumero": 4,
+      "capitulo": "IE 03",
+      "temaAula": "Aula 004 - As Raças Primitivas",
+      "assuntoDirigente": "Revisão dos Objetivos Precípuos da Escola de Aprendizes do Evangelho",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_fa143abbd288",
+      "order": 5,
+      "dataAulaISO": "",
+      "aulaNumero": 5,
+      "capitulo": "IE 04",
+      "temaAula": "Aula 005 - Constituição geográfica da Terra. Expurgos até o Dilúvio de Noé.",
+      "assuntoDirigente": "Revisão dos Objetivos Precípuos da Escola de Aprendizes do Evangelho",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6e37e924ec17",
+      "order": 6,
+      "dataAulaISO": "",
+      "aulaNumero": 6,
+      "capitulo": "IE 05",
+      "temaAula": "Aula 006 - Civilização da Mesopotâmia",
+      "assuntoDirigente": "Roteiro de Preces e Vibrações",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_eed6a15f146a",
+      "order": 7,
+      "dataAulaISO": "",
+      "aulaNumero": 7,
+      "capitulo": "IE 06",
+      "temaAula": "Aula 007 - Missão Planetária de Moisés - Preparação dos Hebreus no Deserto",
+      "assuntoDirigente": "Roteiro de Preces e Vibrações",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5c546d3beeb2",
+      "order": 8,
+      "dataAulaISO": "",
+      "aulaNumero": 8,
+      "capitulo": "IE 064",
+      "temaAula": "Aula 008 - Introdução ao Processo de Reforma Íntima",
+      "assuntoDirigente": "Solicitar compra do livro:\nO Redentor",
+      "temaAtividade": "*  O LIVRO REDENTOR pode ser adquirido na Livraria do CEDER (RECADO)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_e0c80b9bd5d2",
+      "order": 9,
+      "dataAulaISO": "",
+      "aulaNumero": 9,
+      "capitulo": "IE 07",
+      "temaAula": "Aula 009 - O Decálogo - Regresso a Canaã - Morte de Moisés",
+      "assuntoDirigente": "Roteiro de Preces e vibrações",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_2da38361d5e9",
+      "order": 10,
+      "dataAulaISO": "",
+      "aulaNumero": 10,
+      "capitulo": "IE 08",
+      "temaAula": "Aula 010 - O Governo dos Juízes - O Governo dos Reis Até Salomão",
+      "assuntoDirigente": "Evangelho no Lar",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_58f39f0ad20d",
+      "order": 11,
+      "dataAulaISO": "",
+      "aulaNumero": 11,
+      "capitulo": "IE 09",
+      "temaAula": "Aula 011 - Separação dos Reinos - Sua Destruição - O Período do Cativeiro Até a Reconstrução de Jerusalém",
+      "assuntoDirigente": "Comentários sobre a Caderneta, Temas e Vibrações das 22 hs",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b9ba7b79dced",
+      "order": 12,
+      "dataAulaISO": "",
+      "aulaNumero": 12,
+      "capitulo": "IE 010",
+      "temaAula": "Aula 012 - História de Israel e a Dominação Estrangeira",
+      "assuntoDirigente": "Participação nos trabalhos de vibrações coletivas",
+      "temaAtividade": "* PEDIR CADERNO DE TEMAS PARA DIRETORIA",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_76972b059f80",
+      "order": 13,
+      "dataAulaISO": "",
+      "aulaNumero": 13,
+      "capitulo": "AE",
+      "temaAula": "Aula 013 - Implantação do Caderno de Temas",
+      "assuntoDirigente": "Caderno de Temas. Proposição do 1º tema",
+      "temaAtividade": "1 - Nas lutas habituais, não exija a educação do companheiro, demonstre a sua.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6cd86f941b57",
+      "order": 14,
+      "dataAulaISO": "",
+      "aulaNumero": 14,
+      "capitulo": "RED 001 a 004",
+      "temaAula": "Aula 13A - COMEÇA O REDENTOR - Capítulos 1 e 2",
+      "assuntoDirigente": "Caderno de Termas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f41441edeb50",
+      "order": 15,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "Aula 014 - O Nascimento do Messias - Controvérsias Doutrinárias - Cap. 3 e 4",
+      "temaAula": "Caderno de Temas",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_82b0a1350e37",
+      "order": 16,
+      "dataAulaISO": "",
+      "aulaNumero": 15,
+      "capitulo": "RED 005 a 006",
+      "temaAula": "Aula 015 - Os Reis Magos - Exílio no Estrangeiro - Cap. 5 e 6",
+      "assuntoDirigente": "Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_2b8a7002567d",
+      "order": 17,
+      "dataAulaISO": "",
+      "aulaNumero": 16,
+      "capitulo": "RED 007 e 009",
+      "temaAula": "Aula 016 - Infância e Juventude do Messias - Cap. 7 e 9",
+      "assuntoDirigente": "As Fraternidades; a Prece das Fraternidades;  Vibração das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f91033e031e3",
+      "order": 18,
+      "dataAulaISO": "",
+      "aulaNumero": "AE",
+      "capitulo": "AE",
+      "temaAula": "CONCEITO DE FRATERNIDADES/PESQUISA SOBRE FRATERNIDADES DO ESPACO/ HISTORIA DA FDJ",
+      "assuntoDirigente": "Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_9f679e20dd13",
+      "order": 19,
+      "dataAulaISO": "",
+      "aulaNumero": 17,
+      "capitulo": "RED 008, 010 a 011",
+      "temaAula": "Aula 017 - Jerusalém e o Grande Templo - Reis e Líderes - Cap. 8, 10 e 11",
+      "assuntoDirigente": "As Fraternidades; a Prece das Fraternidades; Vibração das 22 horas",
+      "temaAtividade": "2 - O seu mau humor não modifica a vida.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_bec252b1710b",
+      "order": 20,
+      "dataAulaISO": "",
+      "aulaNumero": 18,
+      "capitulo": "RED  012 e 014",
+      "temaAula": "Aula 018 - As Seitas Nacionais - Costumes da Época - Cap. 12 e 14",
+      "assuntoDirigente": "As Fraternidades; a Prece das Fraternidades;Vibração das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0a57bec36a91",
+      "order": 21,
+      "dataAulaISO": "",
+      "aulaNumero": 19,
+      "capitulo": "RED  013 e 015",
+      "temaAula": "Aula 019 - A Fraternidade Essênia - Cap. 13 e 15",
+      "assuntoDirigente": "Evangelho no Lar",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f6ea0a48cb04",
+      "order": 22,
+      "dataAulaISO": "",
+      "aulaNumero": 20,
+      "capitulo": "RED  016",
+      "temaAula": "Aula 020 - O Precursor - Cap. 16",
+      "assuntoDirigente": "Evangelho no Lar",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_10682319183f",
+      "order": 23,
+      "dataAulaISO": "",
+      "aulaNumero": 21,
+      "capitulo": "RED  017 e 018",
+      "temaAula": "Aula 021 - O Início da Tarefa Pública e os Primeiros  Discípulos - Cap. 17 e 18",
+      "assuntoDirigente": "Revisão dos Objetivos Precípuos da Escola de Aprendizes do Evangelho",
+      "temaAtividade": "* PEDIR GUIAS DO APRENDIZ",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b1fd43e66112",
+      "order": 24,
+      "dataAulaISO": "",
+      "aulaNumero": 22,
+      "capitulo": "RED  019 a 021",
+      "temaAula": "Aula 022 - A Volta a Jerusalém e as Escolas Rabínicas - Cap. 19, 20 e 21",
+      "assuntoDirigente": "Revisão dos Objetivos Precípuos da Escola de Aprendizes do Evangelho",
+      "temaAtividade": "3 - A sua irritação não solucionará problema algum.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a51383daa6f0",
+      "order": 25,
+      "dataAulaISO": "",
+      "aulaNumero": 23,
+      "capitulo": "AE",
+      "temaAula": "Aula 023 - Passagem ao Grau de Aprendiz - Convite às Vibrações Coletivas",
+      "assuntoDirigente": "Distribuição do Guia do Aprendiz. Convite para Vibrações Coletivas",
+      "temaAtividade": "* AVISAR EQ DA ASSIST ESPIRITUAL PARA IR NA EAE E EXPLICAR AS VIBRAÇÕES -  PEDIR CADERNETA PESSOAL",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_953ae75e9c2f",
+      "order": 26,
+      "dataAulaISO": "",
+      "aulaNumero": "23 A",
+      "capitulo": "AE",
+      "temaAula": "Aula 023 (A) - Preambulo até o item 03 do “Guia do Aprendiz”",
+      "assuntoDirigente": "Leitura do Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c1dc86a9b963",
+      "order": 27,
+      "dataAulaISO": "",
+      "aulaNumero": "23 B",
+      "capitulo": "AE",
+      "temaAula": "Aula 023 (B) - Item 04 até o item 09 do “Guia do Aprendiz”",
+      "assuntoDirigente": "Leitura do Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3dd7d273a2c6",
+      "order": 28,
+      "dataAulaISO": "",
+      "aulaNumero": "23 C",
+      "capitulo": "AE",
+      "temaAula": "Aula 023 (C) - Item 10 a 11 do “Guia do Aprendiz",
+      "assuntoDirigente": "Leitura do Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5e751df32dce",
+      "order": 29,
+      "dataAulaISO": "",
+      "aulaNumero": "23 D",
+      "capitulo": "AE",
+      "temaAula": "Aula 023 (D) - Item 12 do “Guia do Aprendiz",
+      "assuntoDirigente": "Leitura do Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6e3f8bcd37c1",
+      "order": 30,
+      "dataAulaISO": "",
+      "aulaNumero": "23 E",
+      "capitulo": "AE",
+      "temaAula": "1ª AULA - As bases do transformar-se",
+      "assuntoDirigente": "Conhecer-se no convívio com o próximo, conhecer-se pela auto-análise, conhecimento de si mesmo",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_804681df7ef6",
+      "order": 31,
+      "dataAulaISO": "",
+      "aulaNumero": "23 F",
+      "capitulo": "AE",
+      "temaAula": "2ª AULA - O que se pode transformar intimamente",
+      "assuntoDirigente": "Definir quais são os vícios e defeitos, a imaginação nos vícios, a tentação nos vícios, qual nosso objetivo",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_38e88585030d",
+      "order": 32,
+      "dataAulaISO": "",
+      "aulaNumero": "23 G",
+      "capitulo": "AE",
+      "temaAula": "3ª AULA - O que se pode transformar intimamente",
+      "assuntoDirigente": "Maleficios do fumo, alcool e jogo",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b9d791a2660e",
+      "order": 33,
+      "dataAulaISO": "",
+      "aulaNumero": "23 H",
+      "capitulo": "AE",
+      "temaAula": "4ª AULA - O que se pode transformar intimamente",
+      "assuntoDirigente": "Os maleficios dos abusos sexuais, o homem e sexo, sexo e procriação, sexo e pecado, disturbios sexuais, pornografia",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_192099a370a8",
+      "order": 34,
+      "dataAulaISO": "",
+      "aulaNumero": "23 I",
+      "capitulo": "AE",
+      "temaAula": "5ª AULA - A vida em família",
+      "assuntoDirigente": "o preço da felicidade conjugal, obrigações decorrentes do matrimonio, relações sexuais no casamento, etc..",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0acd2d8f929a",
+      "order": 35,
+      "dataAulaISO": "",
+      "aulaNumero": "23 J",
+      "capitulo": "AE",
+      "temaAula": "6ª AULA - Processos de obsessão e cura",
+      "assuntoDirigente": "tipos de envolvimento espirituais, vampirismo, feitiçarias e trabalhos inferiores, processos de cura.",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_4feba6df0a5a",
+      "order": 36,
+      "dataAulaISO": "",
+      "aulaNumero": 24,
+      "capitulo": "AE",
+      "temaAula": "Aula 024 - Implantação da Caderneta Pessoal - Pag. 240 IE",
+      "assuntoDirigente": "Convite para participar no trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_1e669292e7f0",
+      "order": 37,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "AE",
+      "temaAula": "Aula 024 - Implantação da Caderneta Pessoal - Pag. 240 IE",
+      "assuntoDirigente": "Convite para participar no trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_673c0013b5d1",
+      "order": 38,
+      "dataAulaISO": "",
+      "aulaNumero": 25,
+      "capitulo": "RED  022 a 024",
+      "temaAula": "Aula 025 - Regresso à Galiléia - A Morte de João Batista - Cap. 22, 23 e 24",
+      "assuntoDirigente": "Caderneta Pessoal. Convite para participar no trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5dee835a6921",
+      "order": 39,
+      "dataAulaISO": "",
+      "aulaNumero": 26,
+      "capitulo": "RED  025",
+      "temaAula": "Aula 026 - Os Trabalhos na Galiléia - Cap. 25",
+      "assuntoDirigente": "Caderneta Pessoal. Convite para participar no trabalho de Vibrações Coletivas",
+      "temaAtividade": "4 - Ajude sem exigências, para que os outros o auxiliem sem reclamações.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_49c1d2e4c243",
+      "order": 40,
+      "dataAulaISO": "",
+      "aulaNumero": 28,
+      "capitulo": "RED  026",
+      "temaAula": "Aula 028 - Pregações e Curas (Cap. 26 e 27)",
+      "assuntoDirigente": "Comentários sobre Vibração das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6f6234a1f4e6",
+      "order": 41,
+      "dataAulaISO": "",
+      "aulaNumero": 27,
+      "capitulo": "RED  034",
+      "temaAula": "✨ Aula 027 A — As Parábolas I — Usos e Costumes Sociais - 📚 (Cap. 34, até página 150",
+      "assuntoDirigente": "Comentários sobre Vibração das 22 horas",
+      "temaAtividade": "✅ AULA 1 – O Chamado e a Responsabilidade Espiritual:  1. Os Dez Talentos (Mateus 25:14-30 / Lucas 19:12-26) | 2. As Bodas (Mateus 22:1-14 / Lucas 14:15-24) | 3. Viúva Oprimida (Lucas 18:2-8)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_4a335ce67a5b",
+      "order": 42,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "RED  034",
+      "temaAula": "✨ Aula 027 B — As Parábolas I — Usos e Costumes Sociais - 📚 (Cap. 34, até página 150",
+      "assuntoDirigente": "Comentários sobre Vibração das 22 horas",
+      "temaAtividade": "✅ AULA 2 – Justiça, Humildade e Caridade nas Relações Humanas: 1. O Bom Samaritano (Lucas 10:30-37) | 2. Fariseu e Publicano (Lucas 18:9-14) | 3. Os Primeiros Lugares (Lucas 14:7-14)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f3856d0438f0",
+      "order": 43,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "RED  034",
+      "temaAula": "✨ Aula 027 C — As Parábolas I — Usos e Costumes Sociais - 📚 (Cap. 34, até página 150",
+      "assuntoDirigente": "Comentários sobre Vibração das 22 horas",
+      "temaAtividade": "✅ AULA 3 – Apego, Desapego e A3:L202 Divina: 1. O Rico Avarento (Lucas 12:16-21) | 2. O Rico e o Pobre (Lázaro) (Lucas 16:19-31)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_80a4f5adb8ac",
+      "order": 44,
+      "dataAulaISO": "",
+      "aulaNumero": 29,
+      "capitulo": "RED  028 e 029",
+      "temaAula": "Aula 029 - Hostilidades do Sinédrio (Cap. 28 e 29, até a pag. 126)",
+      "assuntoDirigente": "Comentários sobre Vibração das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_07535228a0ac",
+      "order": 45,
+      "dataAulaISO": "",
+      "aulaNumero": 30,
+      "capitulo": "RED  029",
+      "temaAula": "Aula 030 - Desenvolvimento da Pregação (Cap. 29 a partir da pag. 127 e cap. 30)",
+      "assuntoDirigente": "Conceito de Respeito e Aceitação",
+      "temaAtividade": "5 - Discuta com serenidade; o opositor tem direitos iguais aos seus.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0895cafe362b",
+      "order": 46,
+      "dataAulaISO": "",
+      "aulaNumero": 31,
+      "capitulo": "RED  034",
+      "temaAula": "🏡 Aula 031 A — As Parábolas II — Domésticas e Familiares - 📚 (Cap. 34, pág. 151 a 155)",
+      "assuntoDirigente": "Distribuição do 1º teste. Explicações sobre os testes a anexar na Caderneta Pessoal",
+      "temaAtividade": "✅ AULA 4 – Desafios e Lições da Vida em Família: 1.Os Dois Filhos (Mateus 21:28-34) | 2. O Filho Pródigo (Lucas 15:11-32) A mais profunda e rica – dedicar metade da aula. | 3. O Credor Incompassivo (Mateus 18:31-35)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a07af914b111",
+      "order": 47,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "RED  034",
+      "temaAula": "🏡 Aula 031 B — As Parábolas II — Domésticas e Familiares - 📚 (Cap. 34, pág. 151 a 155)",
+      "assuntoDirigente": "Distribuição do 1º teste. Explicações sobre os testes a anexar na Caderneta Pessoal",
+      "temaAtividade": "✅ AULA 5 – Vigilância, Prudência e Disciplina Espiritual: 1. O Bom e o Mau Servo (Mateus 24:45-51 / Lucas 12:35-48) | 2. Mordomo Infiel (Lucas 16:1-13) | 3. As Dez Virgens (Mateus 25:1-13)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6b84f7b340b2",
+      "order": 48,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "RED  034",
+      "temaAula": "🏡 Aula 031 C — As Parábolas II — Domésticas e Familiares - 📚 (Cap. 34, pág. 151 a 155)",
+      "assuntoDirigente": "Distribuição do 1º teste. Explicações sobre os testes a anexar na Caderneta Pessoal",
+      "temaAtividade": "✅ AULA 6 – O Tesouro Interior e o Valor do Reino de Deus: 1. O Reino dos Céus (Tesouro, Pérola, Rede) (Mateus 13:44-53) | 2. A Candeia (Marcos 4:21-25 / Lucas 8:16-18) | 3. A Dracma Perdida (Lucas 15:8-10) | 4. O Homem Previdente (Lucas 14:25-35)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_10614b448b44",
+      "order": 49,
+      "dataAulaISO": "",
+      "aulaNumero": 32,
+      "capitulo": "AE",
+      "temaAula": "Aula 032 - Implantação das Caravanas - Conceito de Respeito e Aceitação (Pag. 241 IE)",
+      "assuntoDirigente": "Explicações sobre os testes a anexar na Caderneta Pessoal",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_37343401f532",
+      "order": 50,
+      "dataAulaISO": "",
+      "aulaNumero": 33,
+      "capitulo": "RED 031 E 032",
+      "temaAula": "Aula 033 - O Quadro dos Apóstolos e a Consagração (Cap. 31 e 32, até a pag. 138)",
+      "assuntoDirigente": "Explicações sobre os testes a anexar na Caderneta Pessoal",
+      "temaAtividade": "6 - Ajude conversando. Uma boa palavra auxilia sempre.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a274f7b28bde",
+      "order": 51,
+      "dataAulaISO": "",
+      "aulaNumero": 34,
+      "capitulo": "RED  032 E 033",
+      "temaAula": "Aula 034 - Excursões ao Estrangeiro - Cena do Tabor (Cap. 32, a partir da pag. 138 e 33)",
+      "assuntoDirigente": "Comentários sobre a Caravana de Evangelização e Auxílio",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_1bc13fc82579",
+      "order": 52,
+      "dataAulaISO": "",
+      "aulaNumero": 35,
+      "capitulo": "RED  032 E 034",
+      "temaAula": "🌾 Aula 035 A — As Parábolas III — Vida Rural - 📚 (Cap. 34, pág. 156 a 160)",
+      "assuntoDirigente": "Comentários sobre a Caravana de Evangelização e Auxílio",
+      "temaAtividade": "✅  AULA 7 – As Leis da Semeadura e do Crescimento Espiritual:1. O Semeador (Mateus 13:1-23) | 2. O Trigo e o Joio (Mateus 13:24-30) | 3. O Grão de Mostarda (Mateus 13:31-32) | 4. A Figueira Estéril (Lucas 13:6-9) | 5. A Semente que Brota (Marcos 4:26-29)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_2e835eea840c",
+      "order": 53,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "RED  034",
+      "temaAula": "🌾 Aula 035 B — As Parábolas III — Vida Rural - 📚 (Cap. 34, pág. 156 a 160)",
+      "assuntoDirigente": "Comentários sobre a Caravana de Evangelização e Auxílio",
+      "temaAtividade": "✅  AULA 8 – Justiça, Amor e Misericórdia – O Resgate Final: 1. Obreiros da Vinha (Mateus 20:1-16) | 2. Lavradores Maus (Mateus 21:33-41) | 3. A Figueira que Secou (Mateus 21:18-22) | 4. O Bom Pastor e a Ovelha Desgarrada (João 10:1-16 / Lucas 15:3-7)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_351509fe5da5",
+      "order": 54,
+      "dataAulaISO": "",
+      "aulaNumero": 36,
+      "capitulo": "AE",
+      "temaAula": "Aula Pratica - Caderneta Pessoal",
+      "assuntoDirigente": "Explicações sobre como escrever na Caderneta Pessoal e na Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b6e7d65a7b06",
+      "order": 55,
+      "dataAulaISO": "",
+      "aulaNumero": 37,
+      "capitulo": "AE",
+      "temaAula": "Aula Prática - Continuação e Implantação de Novos Trabalhos",
+      "assuntoDirigente": "Explicações sobre os novos trabalhos",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5c5c0a977c60",
+      "order": 56,
+      "dataAulaISO": "",
+      "aulaNumero": 38,
+      "capitulo": "RED 035",
+      "temaAula": "Aula 036 - O Sermão do Monte (Cap. 35)",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "7 - Levante o caído. Você ignora onde seus pés tropeçarão.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_09c642b2598d",
+      "order": 57,
+      "dataAulaISO": "",
+      "aulaNumero": 39,
+      "capitulo": "",
+      "temaAula": "Aula 037 - A Gênese da Alma (Pag. 237 IE)",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "** PEDIR PARA ALUNOS TRAZEREM CADERNETA",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_06e6006302f9",
+      "order": 58,
+      "dataAulaISO": "",
+      "aulaNumero": 40,
+      "capitulo": "RED  036 E 037",
+      "temaAula": "Aula 038 - Atos Finais na Galiléia (Cap. 36 e 37)",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "** RECOLHER CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a89d2b3a9bec",
+      "order": 59,
+      "dataAulaISO": "",
+      "aulaNumero": 41,
+      "capitulo": "RE 038",
+      "temaAula": "Aula 039 - Últimos Dias em Jerusalém (Cap. 38)",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "8 - Lembre-se de que o mal não merece comentário em tempo algum.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c71d4fda570a",
+      "order": 60,
+      "dataAulaISO": "",
+      "aulaNumero": 42,
+      "capitulo": "RE 039",
+      "temaAula": "Aula 040 - Encerramento da Tarefa Planetária (Cap. 39)",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "Avisar equipe mediunica sobre o exame",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3281f86ac901",
+      "order": 61,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "FÉRIAS 2025",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_45e73043e7cd",
+      "order": 62,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_98c79e35d728",
+      "order": 63,
+      "dataAulaISO": "",
+      "aulaNumero": 43,
+      "capitulo": "RE 040",
+      "temaAula": "Aula 041 - Prisão e Entrega aos Romanos (Cap. 40)",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "DISTRIBUIÇÃO DO 2º TESTE CP",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_fde6bba6f418",
+      "order": 64,
+      "dataAulaISO": "",
+      "aulaNumero": 44,
+      "capitulo": "RE 041",
+      "temaAula": "Aula 042 - O Tribunal Judaico (Cap. 41)",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "9 - Diante da noite não acuse as trevas. aprenda a fazer lume.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_bf13c2298b0e",
+      "order": 65,
+      "dataAulaISO": "",
+      "aulaNumero": 45,
+      "capitulo": "RE 042",
+      "temaAula": "Aula 043 - O Julgamento de Pilatos (Cap. 42)",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_dcbb47ea5027",
+      "order": 66,
+      "dataAulaISO": "",
+      "aulaNumero": 46,
+      "capitulo": "RE 043",
+      "temaAula": "Aula 044 - O Calvário (Cap. 43)",
+      "assuntoDirigente": "Comentários sobre o Exame Espiritual",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ecc261d4b4bb",
+      "order": 67,
+      "dataAulaISO": "",
+      "aulaNumero": 47,
+      "capitulo": "RE 044",
+      "temaAula": "Aula 045 - Ressurreição (Cap. 44 e 45)",
+      "assuntoDirigente": "Recolhimento das Cadernetas Pessoais e Caderno de Temas para Avaliação do 1º ciclo",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a1f563464993",
+      "order": 68,
+      "dataAulaISO": "",
+      "aulaNumero": 48,
+      "capitulo": "AE",
+      "temaAula": "AULA PRÉ -EXAME TEMA A DEFINIR",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5b44baec70d5",
+      "order": 69,
+      "dataAulaISO": "",
+      "aulaNumero": 49,
+      "capitulo": "",
+      "temaAula": "QUARTA-FEIRA DE CINZAS - NÃO HAVERA AULA",
+      "assuntoDirigente": "NÃO HAVERÁ AULA",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_91e5c0cfd8c1",
+      "order": 70,
+      "dataAulaISO": "",
+      "aulaNumero": 50,
+      "capitulo": "AE",
+      "temaAula": "AULA PRÉ -EXAME TEMA A DEFINIR",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ec81a65c794d",
+      "order": 71,
+      "dataAulaISO": "",
+      "aulaNumero": 51,
+      "capitulo": "AE",
+      "temaAula": "Aula 046 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "Exame espiritual",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_92e35d8623b1",
+      "order": 72,
+      "dataAulaISO": "",
+      "aulaNumero": 52,
+      "capitulo": "AE",
+      "temaAula": "Aula 047 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "Exame espiritual / Vivência",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c68948443824",
+      "order": 73,
+      "dataAulaISO": "",
+      "aulaNumero": 53,
+      "capitulo": "IE 065",
+      "temaAula": "Aula 048 - Passagem para o Grau de Servidor (pag. 225 IE) e Inscrições para o Curso de Médiuns (pag. 47 IE)",
+      "assuntoDirigente": "Inscrição para o Curso de Passes",
+      "temaAtividade": "10 - O cristão é chamado a servir em toda parte.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_d505e85a2349",
+      "order": 74,
+      "dataAulaISO": "",
+      "aulaNumero": 54,
+      "capitulo": "AE",
+      "temaAula": "Aula 049 - Evolução do Homem Animal para o Homem Espiritual",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_e79892c188c8",
+      "order": 75,
+      "dataAulaISO": "",
+      "aulaNumero": 55,
+      "capitulo": "IE 011",
+      "temaAula": "Aula 050 - Interpretação do Sermão do Monte I",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_60bda13ead03",
+      "order": 76,
+      "dataAulaISO": "",
+      "aulaNumero": 56,
+      "capitulo": "IE 012",
+      "temaAula": "Aula 051 - Interpretação do Sermão do Monte II",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "11 - As dores sangram no corpo, mas acendem luzes na alma.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_29b93bc8e479",
+      "order": 77,
+      "dataAulaISO": "",
+      "aulaNumero": 57,
+      "capitulo": "IE 013",
+      "temaAula": "Aula 052 - Interpretação do Sermão do Monte III",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ef1c9df227e6",
+      "order": 78,
+      "dataAulaISO": "",
+      "aulaNumero": 58,
+      "capitulo": "IE 014",
+      "temaAula": "Aula 053 - Interpretação do Sermão do Monte IV",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_1bce0ecda78c",
+      "order": 79,
+      "dataAulaISO": "",
+      "aulaNumero": 59,
+      "capitulo": "IE 015",
+      "temaAula": "Aula 054 - A Fundação da Igreja Cristã",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "12 - O sofrimento é um recurso do próprio Espírito para evoluir.     **  PEDIR PARA TRAZEREM CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f02d5dbecb34",
+      "order": 80,
+      "dataAulaISO": "",
+      "aulaNumero": 60,
+      "capitulo": "IE 016",
+      "temaAula": "Aula 055 - Ascensão",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "** RECOLHER CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ba10f916c80f",
+      "order": 81,
+      "dataAulaISO": "",
+      "aulaNumero": 61,
+      "capitulo": "IE 070",
+      "temaAula": "Aula 056 - Vida Plena - Conceito",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "13 - O mundo desengana e justifica o pessimismo de muitos, mas este julgamento é uma visão imperfeita.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c45bb54ffc6c",
+      "order": 82,
+      "dataAulaISO": "",
+      "aulaNumero": 62,
+      "capitulo": "IE 017",
+      "temaAula": "Aula 057 - Instituição dos Diáconos",
+      "assuntoDirigente": "Comentários sobre a utilização da Caderneta Pessoal.",
+      "temaAtividade": "DISTRIBUIÇÃO DO 3º TESTE",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3a3c00da15ac",
+      "order": 83,
+      "dataAulaISO": "",
+      "aulaNumero": 63,
+      "capitulo": "IE 018",
+      "temaAula": "Aula 058 - A Conversão de Paulo",
+      "assuntoDirigente": "Comentários sobre a utilização da Caderneta Pessoal.",
+      "temaAtividade": "14 - O arrependimento é o primeiro passo para o pagamento de nossas dívidas.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c5fc74c599a2",
+      "order": 84,
+      "dataAulaISO": "",
+      "aulaNumero": 64,
+      "capitulo": "IE 019",
+      "temaAula": "Aula 059 - O Apóstolo Paulo e Suas Pregações",
+      "assuntoDirigente": "Comentários sobre a utilização da Caderneta Pessoal.",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_313556b49ad0",
+      "order": 85,
+      "dataAulaISO": "",
+      "aulaNumero": 65,
+      "capitulo": "IE 020",
+      "temaAula": "Aula 060 - Paulo Defende-se em Jerusalém",
+      "assuntoDirigente": "A confraternização entre os Grupos Integrados",
+      "temaAtividade": "15 - O homem retarda, porém a lei o impulsiona.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_8e212c71cf36",
+      "order": 86,
+      "dataAulaISO": "",
+      "aulaNumero": 66,
+      "capitulo": "IE 021",
+      "temaAula": "Aula 061 - Os Apóstolos Que Mais se Destacaram e Seus",
+      "assuntoDirigente": "A confraternização entre os Grupos Integrados",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_eb4068890cad",
+      "order": 87,
+      "dataAulaISO": "",
+      "aulaNumero": 67,
+      "capitulo": "IE 069",
+      "temaAula": "Aula 062 - Preconceito - Definição (pag. 232 IE)",
+      "assuntoDirigente": "Vibrações das 22 horas",
+      "temaAtividade": "16 - A paz é uma conquista íntima do Espírito em prova.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_981077b795ff",
+      "order": 88,
+      "dataAulaISO": "",
+      "aulaNumero": 68,
+      "capitulo": "IE 022",
+      "temaAula": "Aula 064 - Estudo das Epístolas",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "17 - A finalidade da vida é a glorificação de Deus nas almas.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f71833483d89",
+      "order": 89,
+      "dataAulaISO": "",
+      "aulaNumero": 69,
+      "capitulo": "IE 023",
+      "temaAula": "Aula 065 - A Predestinação Segundo a Doutrina de Paulo",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_98ccab8f365d",
+      "order": 90,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "FÉRIAS JULHO 2026",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_2dd817e5b35c",
+      "order": 91,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_99f27e67d036",
+      "order": 92,
+      "dataAulaISO": "",
+      "aulaNumero": 70,
+      "capitulo": "IE 024",
+      "temaAula": "Aula 066 - Justificação dos Pecados",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "18 - O culto de um deus exterior é um retardamento evolutivo.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_90cd8555a133",
+      "order": 93,
+      "dataAulaISO": "",
+      "aulaNumero": 71,
+      "capitulo": "IE 025",
+      "temaAula": "Aula 067 - Continuação das Epístolas",
+      "assuntoDirigente": "Vibrações das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_80b5145009f2",
+      "order": 94,
+      "dataAulaISO": "",
+      "aulaNumero": 72,
+      "capitulo": "IE 068",
+      "temaAula": "Aula 068 - Vícios e Defeitos - Conceitos",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "19 - Sem desprendimento dos mundos materiais não pode haver ascensão espiritual.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_8a594111cd6c",
+      "order": 95,
+      "dataAulaISO": "",
+      "aulaNumero": 73,
+      "capitulo": "IE 026",
+      "temaAula": "Aula 069 - A Doutrina de Tiago Sobre a Salvação",
+      "assuntoDirigente": "O que é a Aliança Espírita Evangélica",
+      "temaAtividade": "** PEDIR PARA ALUNOS TRAZEREM CADERNETA",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_7e5f830d91f3",
+      "order": 96,
+      "dataAulaISO": "",
+      "aulaNumero": 74,
+      "capitulo": "IE 027",
+      "temaAula": "Aula 070 - Doutrinas de Pedro, João e Judas",
+      "assuntoDirigente": "O que é a Aliança Espírita Evangélica",
+      "temaAtividade": "20 - Deus é a fonte do bem; o mal é criação dos homens.   ** RECOLHER CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_d222e708b900",
+      "order": 97,
+      "dataAulaISO": "",
+      "aulaNumero": 75,
+      "capitulo": "IE 028",
+      "temaAula": "Aula 071 - O Apocalipse de João I",
+      "assuntoDirigente": "O que é a Aliança Espírita Evangélica",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_27543797fe70",
+      "order": 98,
+      "dataAulaISO": "",
+      "aulaNumero": 76,
+      "capitulo": "IE 029",
+      "temaAula": "Aula 072 - O Apocalipse de João II",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal.",
+      "temaAtividade": "21 - A verdade liberta e estimula para a redenção.      DISTRIBUIÇÃO DO 4º TESTE",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_98bc8fc0fde4",
+      "order": 99,
+      "dataAulaISO": "",
+      "aulaNumero": 77,
+      "capitulo": "AE",
+      "temaAula": "Aula 073 - Vícios e Defeitos - Vivência",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a482572da035",
+      "order": 100,
+      "dataAulaISO": "",
+      "aulaNumero": 78,
+      "capitulo": "IE 030",
+      "temaAula": "Aula 074 - Ciência e Religião",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "22 - Toda virtude que se conquista é uma porta nova que se abre para um mundo melhor.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_7390c09f0158",
+      "order": 101,
+      "dataAulaISO": "",
+      "aulaNumero": 79,
+      "capitulo": "IE 031",
+      "temaAula": "Aula 075 - O Pensamento e a Vontade",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3d54692561ea",
+      "order": 102,
+      "dataAulaISO": "",
+      "aulaNumero": 80,
+      "capitulo": "IE 032",
+      "temaAula": "Aula 076 - Lei de Ação e Reação",
+      "assuntoDirigente": "Acompanhamento da Caravana de Evangelização e Auxílio",
+      "temaAtividade": "23 - Nos caminhos das realizações espirituais não há quedas definitivas.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_9c0bbb68710f",
+      "order": 103,
+      "dataAulaISO": "",
+      "aulaNumero": 81,
+      "capitulo": "IE 033",
+      "temaAula": "Aula 077 - Amor como Lei Soberana - O Valor Científico da Prece - Lei da Solidariedade",
+      "assuntoDirigente": "Comentários sobre a Participação em Novas Frentes de Trabalhos",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_7754bffb150f",
+      "order": 104,
+      "dataAulaISO": "",
+      "aulaNumero": 82,
+      "capitulo": "IE 034",
+      "temaAula": "Aula 078 - A Medicina Psicossomática",
+      "assuntoDirigente": "Comentários sobre a Participação em Novas Frentes de Trabalhos",
+      "temaAtividade": "24 - O corpo é o templo do Espírito.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_4cdb68347707",
+      "order": 105,
+      "dataAulaISO": "",
+      "aulaNumero": 83,
+      "capitulo": "IE 070",
+      "temaAula": "Aula 079 - Exercício de Vida Plena",
+      "assuntoDirigente": "Comentários sobre a Participação em Novas Frentes de Trabalhos",
+      "temaAtividade": "PEDIR PARA TRAZEREM CADERNETA",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ddbf3b2d94ad",
+      "order": 106,
+      "dataAulaISO": "",
+      "aulaNumero": 84,
+      "capitulo": "IE 035",
+      "temaAula": "Aula 080 - Curas e Milagres do Evangelho",
+      "assuntoDirigente": "Convite a abertura de um Centro Espírita",
+      "temaAtividade": "25 - Aliança é um estado de espírito. Estamos à altura dele?  (RECOLHER CADERNETAS)",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f4cc189fbdd4",
+      "order": 107,
+      "dataAulaISO": "",
+      "aulaNumero": 85,
+      "capitulo": "IE 036 E037",
+      "temaAula": "Aula 081 - Cosmogonias e as Concepções do Universo",
+      "assuntoDirigente": "Convite a abertura de um Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_72dd56074866",
+      "order": 108,
+      "dataAulaISO": "",
+      "aulaNumero": 86,
+      "capitulo": "IE 038",
+      "temaAula": "Aula 082 - Estudo dos Seres e das Formas",
+      "assuntoDirigente": "Convite a abertura de um Centro Espírita",
+      "temaAtividade": "26 - Nos graus inferiores da evolução somente os que compreendem o sofrimento se humilham e se salvam.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c64b635e2b80",
+      "order": 109,
+      "dataAulaISO": "",
+      "aulaNumero": 87,
+      "capitulo": "IE 039 E040",
+      "temaAula": "Aula 083 - Evolução nos Diferentes Reinos da Natureza - Histórico da Evolução dos Seres Vivos",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0100279acec8",
+      "order": 110,
+      "dataAulaISO": "",
+      "aulaNumero": 88,
+      "capitulo": "IE 041",
+      "temaAula": "Aula 084 - Leis Universais",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "27 - Caminhar com Cristo é superar a morte, vencer a vida e ingressar, desde já, na eternidade.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_59878c29aa14",
+      "order": 111,
+      "dataAulaISO": "",
+      "aulaNumero": 89,
+      "capitulo": "AE",
+      "temaAula": "Aula 085 - Exercício de Vida Plena",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ac1d7b717705",
+      "order": 112,
+      "dataAulaISO": "",
+      "aulaNumero": 90,
+      "capitulo": "IE 042",
+      "temaAula": "Aula 086 - O Plano Divino - A Lei da Evolução",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal. Distribuição do 5º teste",
+      "temaAtividade": "28 - Pode haver amor sem Aliança? E Aliança sem amor?",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_d480c79a8772",
+      "order": 113,
+      "dataAulaISO": "",
+      "aulaNumero": 91,
+      "capitulo": "IE 043",
+      "temaAula": "Aula 087 - A Lei do Trabalho - A Lei da Justiça",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_9d786e867f4f",
+      "order": 114,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "FÉRIAS 2026",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_042fd1a36885",
+      "order": 115,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b6bc25c389e2",
+      "order": 116,
+      "dataAulaISO": "",
+      "aulaNumero": 92,
+      "capitulo": "IE 044",
+      "temaAula": "Aula 088 - A Lei do Amor",
+      "assuntoDirigente": "O papel do Discípulo de Jesus",
+      "temaAtividade": "29 - Somente após superar o transitório poderá o aprendiz conquistar a individualidade ETERNA DISTRIBUIÇÃO DO 5º TESTE",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_dd1b62c834d4",
+      "order": 117,
+      "dataAulaISO": "",
+      "aulaNumero": 93,
+      "capitulo": "IE 045",
+      "temaAula": "Aula 089 - Amor a Deus, ao Próximo e aos Inimigos",
+      "assuntoDirigente": "O papel do Discípulo de Jesus",
+      "temaAtividade": "* PEDIR PARA TRAZEREM CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_cc6f5c7fe107",
+      "order": 118,
+      "dataAulaISO": "",
+      "aulaNumero": 94,
+      "capitulo": "IE 046",
+      "temaAula": "Aula 090 - A Filosofia da Dor",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "30 - Servir com desprendimento, sem visar retribuições do mundo, é viver com sabedoria.  ** RECOLHER CADERNETAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_8b6451974dfd",
+      "order": 119,
+      "dataAulaISO": "",
+      "aulaNumero": 95,
+      "capitulo": "IE 047",
+      "temaAula": "Aula 091 - Normas da Vida Espiritual",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a041fd56a70e",
+      "order": 120,
+      "dataAulaISO": "",
+      "aulaNumero": 96,
+      "capitulo": "AE",
+      "temaAula": "Aula 092 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "2 ºExame Espiritual",
+      "temaAtividade": "DOMINGO",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_ffd082175ec3",
+      "order": 121,
+      "dataAulaISO": "",
+      "aulaNumero": 97,
+      "capitulo": "AE",
+      "temaAula": "Aula 093 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "Exame Espiritual. Exercício de Vida Plena",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_6f8a40fb431f",
+      "order": 122,
+      "dataAulaISO": "",
+      "aulaNumero": 98,
+      "capitulo": "AE",
+      "temaAula": "Aula 094 - Estrutura da Aliança e de um Centro Espírita - Como abrir um Centro Espírita (V.E.R.)",
+      "assuntoDirigente": "Novas Frentes de Trabalhos",
+      "temaAtividade": "31 - Aliança tem diversas acepções, porém a mais importante é a espiritual.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3c868b63420b",
+      "order": 123,
+      "dataAulaISO": "",
+      "aulaNumero": 99,
+      "capitulo": "AE",
+      "temaAula": "Aula 095 - Nova Frente de Trabalho",
+      "assuntoDirigente": "Novas Frentes de Trabalhos. Abertura de novo Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_892cae3937ca",
+      "order": 124,
+      "dataAulaISO": "",
+      "aulaNumero": 100,
+      "capitulo": "AE",
+      "temaAula": "Aula 095 - Nova Frente de Trabalho",
+      "assuntoDirigente": "Novas Frentes de Trabalhos. Abertura de novo Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_8890b70caf62",
+      "order": 125,
+      "dataAulaISO": "",
+      "aulaNumero": 101,
+      "capitulo": "IE 048",
+      "temaAula": "Aula 096 - Evolução Anímica I",
+      "assuntoDirigente": "Novas Frentes de Trabalhos. Abertura de novo Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_7e740cca488a",
+      "order": 126,
+      "dataAulaISO": "",
+      "aulaNumero": 102,
+      "capitulo": "IE 049",
+      "temaAula": "Aula 097 - Evolução Anímica II",
+      "assuntoDirigente": "Abertura de novo Centro Espírita",
+      "temaAtividade": "32 - Cultivar o silêncio é lutar pela paz interna, vencendo a agitação do mundo.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_09bd276f61fe",
+      "order": 127,
+      "dataAulaISO": "",
+      "aulaNumero": 103,
+      "capitulo": "IE 050",
+      "temaAula": "Aula 098 - Categoria dos Mundos",
+      "assuntoDirigente": "Abertura de novo Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_18e75bddb062",
+      "order": 128,
+      "dataAulaISO": "",
+      "aulaNumero": 104,
+      "capitulo": "IE 051",
+      "temaAula": "Aula 099 - Imortalidade",
+      "assuntoDirigente": "Abertura de novo Centro Espírita",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_4c2728d4c4ad",
+      "order": 129,
+      "dataAulaISO": "",
+      "aulaNumero": 105,
+      "capitulo": "AE",
+      "temaAula": "Aula 100 - A Fraternidade do Trevo e a FDJ",
+      "assuntoDirigente": "Vibrações das 22 horas. Distribuição de O Guia do Discípulo",
+      "temaAtividade": "33 - Falar pouco e certo é dizer muito em poucas palavras.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_2fd016399935",
+      "order": 130,
+      "dataAulaISO": "",
+      "aulaNumero": 106,
+      "capitulo": "AE",
+      "temaAula": "AULA INCLUÍDA - Conceito de Fraternidade - Pesquisa das Fraternidades do Espaço",
+      "assuntoDirigente": "AULA INCLUÍDA - OPCIONAL DO VIVENCIA",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_9486739d9faa",
+      "order": 131,
+      "dataAulaISO": "",
+      "aulaNumero": 107,
+      "capitulo": "IE 052",
+      "temaAula": "Aula 101 - Reencarnação",
+      "assuntoDirigente": "Vibrações das 22 horas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_827491aad7b3",
+      "order": 132,
+      "dataAulaISO": "",
+      "aulaNumero": 108,
+      "capitulo": "",
+      "temaAula": "Aula 102 - Exercício de Vida Plena",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_c9df115041d3",
+      "order": 133,
+      "dataAulaISO": "",
+      "aulaNumero": 109,
+      "capitulo": "IE 053",
+      "temaAula": "Aula 103 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres I",
+      "assuntoDirigente": "Participação no Trabalho de Vibrações Coletivas",
+      "temaAtividade": "34 - Prece das Fraternidades, o que representa para mim?",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_1a82448fa6e7",
+      "order": 134,
+      "dataAulaISO": "",
+      "aulaNumero": 110,
+      "capitulo": "IE 054",
+      "temaAula": "Aula 104 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres II",
+      "assuntoDirigente": "Distribuição do 6º teste",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b3a54cb4c4f8",
+      "order": 135,
+      "dataAulaISO": "",
+      "aulaNumero": 111,
+      "capitulo": "IE 055",
+      "temaAula": "Aula 105 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres III",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "35 - A vida é mudança; o dia de amanhã será diferente e marcará a vitória, se a diferença for para melhor.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a48a8926fcf6",
+      "order": 136,
+      "dataAulaISO": "",
+      "aulaNumero": 112,
+      "capitulo": "AE",
+      "temaAula": "Aula 106 - O Papel do Discípulo",
+      "assuntoDirigente": "Comentários sobre a Caderneta Pessoal",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_72a500498845",
+      "order": 137,
+      "dataAulaISO": "",
+      "aulaNumero": 113,
+      "capitulo": "IE 056",
+      "temaAula": "Aula 107 - O Cristão no Lar",
+      "assuntoDirigente": "O Discípulo de Jesus – Comentários",
+      "temaAtividade": "36 - Não estacionar no bem nem progredir no mal.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_4361dda171bc",
+      "order": 138,
+      "dataAulaISO": "",
+      "aulaNumero": 114,
+      "capitulo": "IE 057",
+      "temaAula": "Aula 108 - O Cristão no Meio Religioso e no Meio Profano",
+      "assuntoDirigente": "O Discípulo de Jesus – Comentários",
+      "temaAtividade": "DISTRIBUIÇÃO DO 6º TESTE",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f6760b1773a8",
+      "order": 139,
+      "dataAulaISO": "",
+      "aulaNumero": 115,
+      "capitulo": "AE",
+      "temaAula": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0e508323c0e4",
+      "order": 140,
+      "dataAulaISO": "",
+      "aulaNumero": 116,
+      "capitulo": "IE 058",
+      "temaAula": "Aula 109 - Os Recursos do Cristão",
+      "assuntoDirigente": "O Discípulo de Jesus – Comentários",
+      "temaAtividade": "37 - Como entendo a Fraternidade dos Discípulos de Jesus?",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_49ae3eb5ead0",
+      "order": 141,
+      "dataAulaISO": "",
+      "aulaNumero": 117,
+      "capitulo": "AE",
+      "temaAula": "Aula 110 - Exercício de Vida Plena",
+      "assuntoDirigente": "O Discípulo de Jesus – Comentários",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_70ba8aea9d5e",
+      "order": 142,
+      "dataAulaISO": "",
+      "aulaNumero": 118,
+      "capitulo": "IE 059",
+      "temaAula": "Aula 111 - Iniciação Espiritual",
+      "assuntoDirigente": "O Discípulo de Jesus – Comentários",
+      "temaAtividade": "38 - Para as conquistas de ordem espiritual é bom que não haja nem entusiasmos nem desânimos.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_9c8bbd26c413",
+      "order": 143,
+      "dataAulaISO": "",
+      "aulaNumero": 119,
+      "capitulo": "AE",
+      "temaAula": "AULA INCLUÍDA - Significado do Ingresso na FDJ. Testemunho do discípulo",
+      "assuntoDirigente": "AULA INCLUÍDA - OPCIONAL DO VIVENCIA",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_79e78667acdf",
+      "order": 144,
+      "dataAulaISO": "",
+      "aulaNumero": 120,
+      "capitulo": "IE 060",
+      "temaAula": "Aula 112 - O Estudo do Perispírito - Centros de Força",
+      "assuntoDirigente": "A Fraternidade dos Discípulos de Jesus",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_781d12585af0",
+      "order": 145,
+      "dataAulaISO": "",
+      "aulaNumero": 121,
+      "capitulo": "IE 061",
+      "temaAula": "Aula 113 - Regras de Conduta",
+      "assuntoDirigente": "A Fraternidade dos Discípulos de Jesus",
+      "temaAtividade": "39 - Nos caminhos de espiritualização o progresso se mede em milímetros.",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_159aac404e79",
+      "order": 146,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "FÉRIAS JULHO 2027",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0e011d757123",
+      "order": 147,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_42b751e83932",
+      "order": 148,
+      "dataAulaISO": "",
+      "aulaNumero": 122,
+      "capitulo": "IE 062",
+      "temaAula": "Aula 114 - O Espírito e o Sexo",
+      "assuntoDirigente": "O ingresso na FDJ. O Testemunho do Discípulo de Jesus",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_51b87d7be181",
+      "order": 149,
+      "dataAulaISO": "",
+      "aulaNumero": 123,
+      "capitulo": "AE",
+      "temaAula": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_e5e4017079a6",
+      "order": 150,
+      "dataAulaISO": "",
+      "aulaNumero": 124,
+      "capitulo": "AE",
+      "temaAula": "AULA INCLUÍDA - Divulgação doutrinária",
+      "assuntoDirigente": "AULA INCLUÍDA - OPCIONAL DO VIVENCIA",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3b4dfa74cf01",
+      "order": 151,
+      "dataAulaISO": "",
+      "aulaNumero": 125,
+      "capitulo": "IE 063",
+      "temaAula": "Aula 115 - Problemas da Propagação do Espiritismo",
+      "assuntoDirigente": "Recolhimento da Caderneta. Pessoal e Caderno de Temas",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_5f169ee75051",
+      "order": 152,
+      "dataAulaISO": "",
+      "aulaNumero": 126,
+      "capitulo": "AE",
+      "temaAula": "Aula 116 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "3º Exame espiritual",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_88d68ac19474",
+      "order": 153,
+      "dataAulaISO": "",
+      "aulaNumero": 126,
+      "capitulo": "AE",
+      "temaAula": "Aula 117 - Exame Espiritual - Vivência",
+      "assuntoDirigente": "Exame Espiritual. Exercício de Vida Plena",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_b6b3b6d814b1",
+      "order": 154,
+      "dataAulaISO": "",
+      "aulaNumero": 127,
+      "capitulo": "AE",
+      "temaAula": "Aula 118 - Exame Espiritual. Devolução das Cadernetas",
+      "assuntoDirigente": "Esclarecimentos sobre o período probatório de três meses após o estudo de O Livro dos Espíritos",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_742fa2e30577",
+      "order": 155,
+      "dataAulaISO": "",
+      "aulaNumero": 1,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS -0 1",
+      "assuntoDirigente": "AULA 1",
+      "temaAtividade": "Introdução e Prolegômenos",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_72f5c0b307c1",
+      "order": 156,
+      "dataAulaISO": "",
+      "aulaNumero": 2,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 02",
+      "assuntoDirigente": "AULA 2: Livro I – Cap. 1 a 4 - Q. 01 a 75",
+      "temaAtividade": "As Causas Primeiras: *Deus; *Elementos Gerais do Universo; * Criação; *Princípio Vital",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_e20f38499a57",
+      "order": 157,
+      "dataAulaISO": "",
+      "aulaNumero": 3,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 03",
+      "assuntoDirigente": "AULA 3: Livro II - Cap. 1 e 2 - Q. 76 a 148",
+      "temaAtividade": "Mundo Espírita ou dos Espíritos: * Dos Espíritos; * Encarnação dos Espíritos",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_bd5fe663aef0",
+      "order": 158,
+      "dataAulaISO": "",
+      "aulaNumero": 4,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 04",
+      "assuntoDirigente": "AULA 4: Livro II - Cap. 3 e 4 - Q. 149 a 221",
+      "temaAtividade": "* Retorno da Vida Corporal para a Vida Espiritual ;     * Pluralidade das Existências",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_aee941eb8c0e",
+      "order": 159,
+      "dataAulaISO": "",
+      "aulaNumero": 5,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 05",
+      "assuntoDirigente": "AULA 5: Livro II - Cap. 5 - Q.  222",
+      "temaAtividade": "* Considerações sobre a Pluralidade das existências",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_992ca78c8645",
+      "order": 160,
+      "dataAulaISO": "",
+      "aulaNumero": 6,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 06",
+      "assuntoDirigente": "AULA 6: Livro II - Cap. 6 - Q. 223 a 329",
+      "temaAtividade": "* Vida Espírita",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_569b85a4a65d",
+      "order": 161,
+      "dataAulaISO": "",
+      "aulaNumero": 7,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 07",
+      "assuntoDirigente": "AULA 7: Livro II - Cap. 7 - Q. 330 a 399",
+      "temaAtividade": "* Retorno à Vida Corporal",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_f0db439ebbff",
+      "order": 162,
+      "dataAulaISO": "",
+      "aulaNumero": 8,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 08",
+      "assuntoDirigente": "AULA 8: Livro II - Cap. 8 - Q. 400 a 455",
+      "temaAtividade": "* Emancipação da Alma",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_496dd94f6891",
+      "order": 163,
+      "dataAulaISO": "",
+      "aulaNumero": 9,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 09",
+      "assuntoDirigente": "AULA 9: Livro II - Cap. 9 -  Q.  456 e 557",
+      "temaAtividade": "* Intervenção dos Espíritos no Mundo Corporal",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3de725b437c9",
+      "order": 164,
+      "dataAulaISO": "",
+      "aulaNumero": 10,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 10",
+      "assuntoDirigente": "AULA 10: Livro II - Cap. 10 e 11 - Q. 558 a 613",
+      "temaAtividade": "* Ocupações e Missões dos Espíritos; * Os Três Reinos",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_180c63a2d289",
+      "order": 165,
+      "dataAulaISO": "",
+      "aulaNumero": 11,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 11",
+      "assuntoDirigente": "AULA 11 - Livro III  - Cap. 1 a 3 - Q. 614 a 685",
+      "temaAtividade": "Leis Morais: * Lei Divina ou Natural; * Lei de Adoração; * Lei do Trabalho",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_36b274328da8",
+      "order": 166,
+      "dataAulaISO": "",
+      "aulaNumero": 12,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 12",
+      "assuntoDirigente": "AULA 12: Livro III  - Cap. 4 a 7 - Q. 686 a 775",
+      "temaAtividade": "* Lei de Reprodução; * Lei de Conservação; * Lei de Destruição; * Lei de Sociedade",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_8296c0e35c8d",
+      "order": 167,
+      "dataAulaISO": "",
+      "aulaNumero": 13,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 13",
+      "assuntoDirigente": "AULA 13: Livro III  - Cap. 8 a 10 - Q.  776 a 872",
+      "temaAtividade": "* Lei do Progresso; * Lei de Igualdade; * Lei de Liberdade",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_796821acdd63",
+      "order": 168,
+      "dataAulaISO": "",
+      "aulaNumero": 14,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 14",
+      "assuntoDirigente": "AULA 14: Livro III - Cap. 11 e 12  - Q. 873 a 919",
+      "temaAtividade": "* Lei de Justiça, de Amor e de Caridade; * Perfeição Moral",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_60072be2f997",
+      "order": 169,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "FÉRIAS  DEZEMBRO 2027",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_59694e6053dc",
+      "order": 170,
+      "dataAulaISO": "",
+      "aulaNumero": 0,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_07b0d7dd1f46",
+      "order": 171,
+      "dataAulaISO": "",
+      "aulaNumero": 15,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 15",
+      "assuntoDirigente": "AULA 15: Livro IV - Cap. I  - Q. 920 a 957",
+      "temaAtividade": "Esperanças e Consolações: * Penas e Gozos Terrestres",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3d16f68cb227",
+      "order": 172,
+      "dataAulaISO": "",
+      "aulaNumero": 16,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 16",
+      "assuntoDirigente": "AULA 16:  Livro IV - Cap. 2 - Q. 958 a 1018",
+      "temaAtividade": "*Penas e Gozos Futuros; * Conclusão",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_e351237cf74d",
+      "order": 173,
+      "dataAulaISO": "",
+      "aulaNumero": 17,
+      "capitulo": "",
+      "temaAula": "LIVRO DOS ESPÍRITOS - 17",
+      "assuntoDirigente": "REVISÃO - DÚVIDAS",
+      "temaAtividade": "DÚVIDAS",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_0d439b9fb411",
+      "order": 174,
+      "dataAulaISO": "",
+      "aulaNumero": 18,
+      "capitulo": "",
+      "temaAula": "ULTIMA AULA - EXPLICAÇÃO SOBRE O PERÍODO PROBATÓRIO",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_18de519c90e9",
+      "order": 175,
+      "dataAulaISO": "",
+      "aulaNumero": 1,
+      "capitulo": "",
+      "temaAula": "ESTÁGIO PROBATÓRIO",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_872dfd4c8c11",
+      "order": 176,
+      "dataAulaISO": "",
+      "aulaNumero": 2,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_d18f4bc832cd",
+      "order": 177,
+      "dataAulaISO": "",
+      "aulaNumero": 3,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_805c55739aa2",
+      "order": 178,
+      "dataAulaISO": "",
+      "aulaNumero": 4,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_18c5d4a05587",
+      "order": 179,
+      "dataAulaISO": "",
+      "aulaNumero": 5,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_de4de6506cd6",
+      "order": 180,
+      "dataAulaISO": "",
+      "aulaNumero": 6,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_fc7bb5e6af7e",
+      "order": 181,
+      "dataAulaISO": "",
+      "aulaNumero": 7,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_86cf10728a25",
+      "order": 182,
+      "dataAulaISO": "",
+      "aulaNumero": 8,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_3eca60e3fd0f",
+      "order": 183,
+      "dataAulaISO": "",
+      "aulaNumero": 9,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_35ba5d521514",
+      "order": 184,
+      "dataAulaISO": "",
+      "aulaNumero": 10,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_57ede69a2961",
+      "order": 185,
+      "dataAulaISO": "",
+      "aulaNumero": 11,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_dced6bd90a81",
+      "order": 186,
+      "dataAulaISO": "",
+      "aulaNumero": 12,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_a27735475d84",
+      "order": 187,
+      "dataAulaISO": "",
+      "aulaNumero": 13,
+      "capitulo": "",
+      "temaAula": "",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    },
+    {
+      "rowId": "row_57ba2f9a9f67",
+      "order": 188,
+      "dataAulaISO": "",
+      "aulaNumero": 14,
+      "capitulo": "",
+      "temaAula": "RETORNO DO ESTÁGIO PROBATÓRIO - EXPLICAÇÕES SOBRE FDJ - RECOLHER CADERNETAS",
+      "assuntoDirigente": "",
+      "temaAtividade": "",
+      "facilitadores": "",
+      "email": "",
+      "whatsapp": ""
+    }
+  ],
   "aulas": [
     {
       "aulaNumero": 1
@@ -363,193 +2871,670 @@
     },
     {
       "aulaNumero": 118
+    },
+    {
+      "aulaNumero": 119
+    },
+    {
+      "aulaNumero": 120
+    },
+    {
+      "aulaNumero": 121
+    },
+    {
+      "aulaNumero": 122
+    },
+    {
+      "aulaNumero": 123
+    },
+    {
+      "aulaNumero": 124
+    },
+    {
+      "aulaNumero": 125
+    },
+    {
+      "aulaNumero": 126
+    },
+    {
+      "aulaNumero": 127
     }
   ],
   "temaMap": [
     {
-      "aulaNumero": 13,
+      "aulaNumero": 1,
       "temaNumero": 1,
-      "temaTexto": "Nas lutas habituais, não exija a educação do companheiro, demonstre a sua."
+      "temaTexto": "Aula 001 - Aula Inaugural"
+    },
+    {
+      "aulaNumero": 2,
+      "temaNumero": 2,
+      "temaTexto": "Aula 002 - A Criação"
+    },
+    {
+      "aulaNumero": 3,
+      "temaNumero": 3,
+      "temaTexto": "Aula 003 - O Nosso Planeta"
+    },
+    {
+      "aulaNumero": 4,
+      "temaNumero": 4,
+      "temaTexto": "Aula 004 - As Raças Primitivas"
+    },
+    {
+      "aulaNumero": 5,
+      "temaNumero": 5,
+      "temaTexto": "Aula 005 - Constituição geográfica da Terra. Expurgos até o Dilúvio de Noé."
+    },
+    {
+      "aulaNumero": 6,
+      "temaNumero": 6,
+      "temaTexto": "Aula 006 - Civilização da Mesopotâmia"
+    },
+    {
+      "aulaNumero": 7,
+      "temaNumero": 7,
+      "temaTexto": "Aula 007 - Missão Planetária de Moisés - Preparação dos Hebreus no Deserto"
+    },
+    {
+      "aulaNumero": 8,
+      "temaNumero": 8,
+      "temaTexto": "Aula 008 - Introdução ao Processo de Reforma Íntima"
+    },
+    {
+      "aulaNumero": 9,
+      "temaNumero": 9,
+      "temaTexto": "Aula 009 - O Decálogo - Regresso a Canaã - Morte de Moisés"
+    },
+    {
+      "aulaNumero": 10,
+      "temaNumero": 10,
+      "temaTexto": "Aula 010 - O Governo dos Juízes - O Governo dos Reis Até Salomão"
+    },
+    {
+      "aulaNumero": 11,
+      "temaNumero": 11,
+      "temaTexto": "Aula 011 - Separação dos Reinos - Sua Destruição - O Período do Cativeiro Até a Reconstrução de Jerusalém"
+    },
+    {
+      "aulaNumero": 12,
+      "temaNumero": 12,
+      "temaTexto": "Aula 012 - História de Israel e a Dominação Estrangeira"
+    },
+    {
+      "aulaNumero": 13,
+      "temaNumero": 13,
+      "temaTexto": "Aula 013 - Implantação do Caderno de Temas"
+    },
+    {
+      "aulaNumero": 14,
+      "temaNumero": 14,
+      "temaTexto": "Aula 13A - COMEÇA O REDENTOR - Capítulos 1 e 2"
+    },
+    {
+      "aulaNumero": 15,
+      "temaNumero": 15,
+      "temaTexto": "Aula 015 - Os Reis Magos - Exílio no Estrangeiro - Cap. 5 e 6"
+    },
+    {
+      "aulaNumero": 16,
+      "temaNumero": 16,
+      "temaTexto": "Aula 016 - Infância e Juventude do Messias - Cap. 7 e 9"
+    },
+    {
+      "aulaNumero": 17,
+      "temaNumero": 17,
+      "temaTexto": "Aula 017 - Jerusalém e o Grande Templo - Reis e Líderes - Cap. 8, 10 e 11"
     },
     {
       "aulaNumero": 18,
-      "temaNumero": 2,
-      "temaTexto": "O seu mau humor não modifica a vida"
+      "temaNumero": 18,
+      "temaTexto": "Aula 018 - As Seitas Nacionais - Costumes da Época - Cap. 12 e 14"
+    },
+    {
+      "aulaNumero": 19,
+      "temaNumero": 19,
+      "temaTexto": "Aula 019 - A Fraternidade Essênia - Cap. 13 e 15"
+    },
+    {
+      "aulaNumero": 20,
+      "temaNumero": 20,
+      "temaTexto": "Aula 020 - O Precursor - Cap. 16"
+    },
+    {
+      "aulaNumero": 21,
+      "temaNumero": 21,
+      "temaTexto": "Aula 021 - O Início da Tarefa Pública e os Primeiros  Discípulos - Cap. 17 e 18"
     },
     {
       "aulaNumero": 22,
-      "temaNumero": 3,
-      "temaTexto": "A sua irritação não solucionará problema algum."
+      "temaNumero": 22,
+      "temaTexto": "Aula 022 - A Volta a Jerusalém e as Escolas Rabínicas - Cap. 19, 20 e 21"
+    },
+    {
+      "aulaNumero": 23,
+      "temaNumero": 23,
+      "temaTexto": "Aula 023 - Passagem ao Grau de Aprendiz - Convite às Vibrações Coletivas"
+    },
+    {
+      "aulaNumero": 24,
+      "temaNumero": 24,
+      "temaTexto": "Aula 024 - Implantação da Caderneta Pessoal - Pag. 240 IE"
+    },
+    {
+      "aulaNumero": 25,
+      "temaNumero": 25,
+      "temaTexto": "Aula 025 - Regresso à Galiléia - A Morte de João Batista - Cap. 22, 23 e 24"
     },
     {
       "aulaNumero": 26,
-      "temaNumero": 4,
-      "temaTexto": "Ajude sem exigências, para que os outros o auxiliem sem reclamações"
+      "temaNumero": 26,
+      "temaTexto": "Aula 026 - Os Trabalhos na Galiléia - Cap. 25"
+    },
+    {
+      "aulaNumero": 27,
+      "temaNumero": 27,
+      "temaTexto": "✨ Aula 027 A — As Parábolas I — Usos e Costumes Sociais - 📚 (Cap. 34, até página 150"
+    },
+    {
+      "aulaNumero": 28,
+      "temaNumero": 28,
+      "temaTexto": "Aula 028 - Pregações e Curas (Cap. 26 e 27)"
+    },
+    {
+      "aulaNumero": 29,
+      "temaNumero": 29,
+      "temaTexto": "Aula 029 - Hostilidades do Sinédrio (Cap. 28 e 29, até a pag. 126)"
     },
     {
       "aulaNumero": 30,
-      "temaNumero": 5,
-      "temaTexto": "Discuta com serenidade; o opositor tem direitos iguais aos seus"
+      "temaNumero": 30,
+      "temaTexto": "Aula 030 - Desenvolvimento da Pregação (Cap. 29 a partir da pag. 127 e cap. 30)"
+    },
+    {
+      "aulaNumero": 31,
+      "temaNumero": 31,
+      "temaTexto": "🏡 Aula 031 A — As Parábolas II — Domésticas e Familiares - 📚 (Cap. 34, pág. 151 a 155)"
+    },
+    {
+      "aulaNumero": 32,
+      "temaNumero": 32,
+      "temaTexto": "Aula 032 - Implantação das Caravanas - Conceito de Respeito e Aceitação (Pag. 241 IE)"
     },
     {
       "aulaNumero": 33,
-      "temaNumero": 6,
-      "temaTexto": "Ajude conversando. Uma boa palavra auxilia sempre"
+      "temaNumero": 33,
+      "temaTexto": "Aula 033 - O Quadro dos Apóstolos e a Consagração (Cap. 31 e 32, até a pag. 138)"
+    },
+    {
+      "aulaNumero": 34,
+      "temaNumero": 34,
+      "temaTexto": "Aula 034 - Excursões ao Estrangeiro - Cena do Tabor (Cap. 32, a partir da pag. 138 e 33)"
+    },
+    {
+      "aulaNumero": 35,
+      "temaNumero": 35,
+      "temaTexto": "🌾 Aula 035 A — As Parábolas III — Vida Rural - 📚 (Cap. 34, pág. 156 a 160)"
     },
     {
       "aulaNumero": 36,
-      "temaNumero": 7,
-      "temaTexto": "Levante o caído. Você ignora onde seus pés tropeçarão"
+      "temaNumero": 36,
+      "temaTexto": "Aula Pratica - Caderneta Pessoal"
+    },
+    {
+      "aulaNumero": 37,
+      "temaNumero": 37,
+      "temaTexto": "Aula Prática - Continuação e Implantação de Novos Trabalhos"
+    },
+    {
+      "aulaNumero": 38,
+      "temaNumero": 38,
+      "temaTexto": "Aula 036 - O Sermão do Monte (Cap. 35)"
     },
     {
       "aulaNumero": 39,
-      "temaNumero": 8,
-      "temaTexto": "Lembre-se de que o mal não merece comentário em tempo algum"
+      "temaNumero": 39,
+      "temaTexto": "Aula 037 - A Gênese da Alma (Pag. 237 IE)"
+    },
+    {
+      "aulaNumero": 40,
+      "temaNumero": 40,
+      "temaTexto": "Aula 038 - Atos Finais na Galiléia (Cap. 36 e 37)"
+    },
+    {
+      "aulaNumero": 41,
+      "temaNumero": 41,
+      "temaTexto": "Aula 039 - Últimos Dias em Jerusalém (Cap. 38)"
     },
     {
       "aulaNumero": 42,
-      "temaNumero": 9,
-      "temaTexto": "Diante da noite não acuse as trevas. aprenda a fazer lume"
+      "temaNumero": 42,
+      "temaTexto": "Aula 040 - Encerramento da Tarefa Planetária (Cap. 39)"
+    },
+    {
+      "aulaNumero": 43,
+      "temaNumero": 43,
+      "temaTexto": "Aula 041 - Prisão e Entrega aos Romanos (Cap. 40)"
+    },
+    {
+      "aulaNumero": 44,
+      "temaNumero": 44,
+      "temaTexto": "Aula 042 - O Tribunal Judaico (Cap. 41)"
+    },
+    {
+      "aulaNumero": 45,
+      "temaNumero": 45,
+      "temaTexto": "Aula 043 - O Julgamento de Pilatos (Cap. 42)"
+    },
+    {
+      "aulaNumero": 46,
+      "temaNumero": 46,
+      "temaTexto": "Aula 044 - O Calvário (Cap. 43)"
+    },
+    {
+      "aulaNumero": 47,
+      "temaNumero": 47,
+      "temaTexto": "Aula 045 - Ressurreição (Cap. 44 e 45)"
     },
     {
       "aulaNumero": 48,
-      "temaNumero": 10,
-      "temaTexto": "O cristão é chamado a servir em toda parte"
+      "temaNumero": 48,
+      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
+    },
+    {
+      "aulaNumero": 49,
+      "temaNumero": 49,
+      "temaTexto": "QUARTA-FEIRA DE CINZAS - NÃO HAVERA AULA"
+    },
+    {
+      "aulaNumero": 50,
+      "temaNumero": 50,
+      "temaTexto": "AULA PRÉ -EXAME TEMA A DEFINIR"
     },
     {
       "aulaNumero": 51,
-      "temaNumero": 11,
-      "temaTexto": "As dores sangram no corpo, mas acendem luzes na alma"
+      "temaNumero": 51,
+      "temaTexto": "Aula 046 - Exame Espiritual - Vivência"
+    },
+    {
+      "aulaNumero": 52,
+      "temaNumero": 52,
+      "temaTexto": "Aula 047 - Exame Espiritual - Vivência"
+    },
+    {
+      "aulaNumero": 53,
+      "temaNumero": 53,
+      "temaTexto": "Aula 048 - Passagem para o Grau de Servidor (pag. 225 IE) e Inscrições para o Curso de Médiuns (pag. 47 IE)"
     },
     {
       "aulaNumero": 54,
-      "temaNumero": 12,
-      "temaTexto": "O sofrimento é um recurso do próprio Espírito para evoluir"
+      "temaNumero": 54,
+      "temaTexto": "Aula 049 - Evolução do Homem Animal para o Homem Espiritual"
+    },
+    {
+      "aulaNumero": 55,
+      "temaNumero": 55,
+      "temaTexto": "Aula 050 - Interpretação do Sermão do Monte I"
     },
     {
       "aulaNumero": 56,
-      "temaNumero": 13,
-      "temaTexto": "O mundo desengana e justi- fica o pessimismo de muitos, mas este julgamento é uma visão im- perfeita"
+      "temaNumero": 56,
+      "temaTexto": "Aula 051 - Interpretação do Sermão do Monte II"
+    },
+    {
+      "aulaNumero": 57,
+      "temaNumero": 57,
+      "temaTexto": "Aula 052 - Interpretação do Sermão do Monte III"
     },
     {
       "aulaNumero": 58,
-      "temaNumero": 14,
-      "temaTexto": "O arrependimento é o primeiro passo para o paga- mento de nossas dívidas"
+      "temaNumero": 58,
+      "temaTexto": "Aula 053 - Interpretação do Sermão do Monte IV"
+    },
+    {
+      "aulaNumero": 59,
+      "temaNumero": 59,
+      "temaTexto": "Aula 054 - A Fundação da Igreja Cristã"
     },
     {
       "aulaNumero": 60,
-      "temaNumero": 15,
-      "temaTexto": "O homem retarda, porém a lei o impulsiona"
+      "temaNumero": 60,
+      "temaTexto": "Aula 055 - Ascensão"
+    },
+    {
+      "aulaNumero": 61,
+      "temaNumero": 61,
+      "temaTexto": "Aula 056 - Vida Plena - Conceito"
     },
     {
       "aulaNumero": 62,
-      "temaNumero": 16,
-      "temaTexto": "A paz é uma conquista ín- tima do Espírito em prova"
+      "temaNumero": 62,
+      "temaTexto": "Aula 057 - Instituição dos Diáconos"
+    },
+    {
+      "aulaNumero": 63,
+      "temaNumero": 63,
+      "temaTexto": "Aula 058 - A Conversão de Paulo"
     },
     {
       "aulaNumero": 64,
-      "temaNumero": 17,
-      "temaTexto": "A finalidade da vida é a glo- rificação de Deus nas almas"
+      "temaNumero": 64,
+      "temaTexto": "Aula 059 - O Apóstolo Paulo e Suas Pregações"
+    },
+    {
+      "aulaNumero": 65,
+      "temaNumero": 65,
+      "temaTexto": "Aula 060 - Paulo Defende-se em Jerusalém"
     },
     {
       "aulaNumero": 66,
-      "temaNumero": 18,
-      "temaTexto": "O culto de um deus exterior é um retardamento evolutivo"
+      "temaNumero": 66,
+      "temaTexto": "Aula 061 - Os Apóstolos Que Mais se Destacaram e Seus"
+    },
+    {
+      "aulaNumero": 67,
+      "temaNumero": 67,
+      "temaTexto": "Aula 062 - Preconceito - Definição (pag. 232 IE)"
     },
     {
       "aulaNumero": 68,
-      "temaNumero": 19,
-      "temaTexto": "Sem desprendimento dos mundos materiais não pode ha- ver ascensão espiritual."
+      "temaNumero": 68,
+      "temaTexto": "Aula 064 - Estudo das Epístolas"
+    },
+    {
+      "aulaNumero": 69,
+      "temaNumero": 69,
+      "temaTexto": "Aula 065 - A Predestinação Segundo a Doutrina de Paulo"
     },
     {
       "aulaNumero": 70,
-      "temaNumero": 20,
-      "temaTexto": "Deus é a fonte do bem; o mal é criação dos homens."
+      "temaNumero": 70,
+      "temaTexto": "Aula 066 - Justificação dos Pecados"
+    },
+    {
+      "aulaNumero": 71,
+      "temaNumero": 71,
+      "temaTexto": "Aula 067 - Continuação das Epístolas"
     },
     {
       "aulaNumero": 72,
-      "temaNumero": 21,
-      "temaTexto": "A verdade liberta e estimula para a redenção."
+      "temaNumero": 72,
+      "temaTexto": "Aula 068 - Vícios e Defeitos - Conceitos"
+    },
+    {
+      "aulaNumero": 73,
+      "temaNumero": 73,
+      "temaTexto": "Aula 069 - A Doutrina de Tiago Sobre a Salvação"
     },
     {
       "aulaNumero": 74,
-      "temaNumero": 22,
-      "temaTexto": "Toda virtude que se conquis- ta é uma porta nova que se abre para um mundo melhor"
+      "temaNumero": 74,
+      "temaTexto": "Aula 070 - Doutrinas de Pedro, João e Judas"
+    },
+    {
+      "aulaNumero": 75,
+      "temaNumero": 75,
+      "temaTexto": "Aula 071 - O Apocalipse de João I"
     },
     {
       "aulaNumero": 76,
-      "temaNumero": 23,
-      "temaTexto": "Nos caminhos das reali- zações espirituais não há que- das definitivas. ADOS"
+      "temaNumero": 76,
+      "temaTexto": "Aula 072 - O Apocalipse de João II"
+    },
+    {
+      "aulaNumero": 77,
+      "temaNumero": 77,
+      "temaTexto": "Aula 073 - Vícios e Defeitos - Vivência"
     },
     {
       "aulaNumero": 78,
-      "temaNumero": 24,
-      "temaTexto": "O corpo é o templo do Es- pírito"
+      "temaNumero": 78,
+      "temaTexto": "Aula 074 - Ciência e Religião"
+    },
+    {
+      "aulaNumero": 79,
+      "temaNumero": 79,
+      "temaTexto": "Aula 075 - O Pensamento e a Vontade"
     },
     {
       "aulaNumero": 80,
-      "temaNumero": 25,
-      "temaTexto": "Aliança é um estado de es- pírito. Estamos à altura dele?"
+      "temaNumero": 80,
+      "temaTexto": "Aula 076 - Lei de Ação e Reação"
+    },
+    {
+      "aulaNumero": 81,
+      "temaNumero": 81,
+      "temaTexto": "Aula 077 - Amor como Lei Soberana - O Valor Científico da Prece - Lei da Solidariedade"
     },
     {
       "aulaNumero": 82,
-      "temaNumero": 26,
-      "temaTexto": "Nos graus inferiore da evolução somente os que compreendem o sofrimento se humilham e se salvam."
+      "temaNumero": 82,
+      "temaTexto": "Aula 078 - A Medicina Psicossomática"
+    },
+    {
+      "aulaNumero": 83,
+      "temaNumero": 83,
+      "temaTexto": "Aula 079 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 84,
-      "temaNumero": 27,
-      "temaTexto": "Caminhar com Cristo é su- perar a morte, vencer a vida e ingressar, desde já, na eterni- dade."
+      "temaNumero": 84,
+      "temaTexto": "Aula 080 - Curas e Milagres do Evangelho"
+    },
+    {
+      "aulaNumero": 85,
+      "temaNumero": 85,
+      "temaTexto": "Aula 081 - Cosmogonias e as Concepções do Universo"
     },
     {
       "aulaNumero": 86,
-      "temaNumero": 28,
-      "temaTexto": "Pode haver amor sem Alian- ça? E Aliança sem amor?"
+      "temaNumero": 86,
+      "temaTexto": "Aula 082 - Estudo dos Seres e das Formas"
+    },
+    {
+      "aulaNumero": 87,
+      "temaNumero": 87,
+      "temaTexto": "Aula 083 - Evolução nos Diferentes Reinos da Natureza - Histórico da Evolução dos Seres Vivos"
     },
     {
       "aulaNumero": 88,
-      "temaNumero": 29,
-      "temaTexto": "Somente após superar o transitório poderá o aprendiz conquistar a individualidade eterna."
+      "temaNumero": 88,
+      "temaTexto": "Aula 084 - Leis Universais"
+    },
+    {
+      "aulaNumero": 89,
+      "temaNumero": 89,
+      "temaTexto": "Aula 085 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 90,
-      "temaNumero": 30,
-      "temaTexto": "Servir com desprendimento, sem visar retribuições do mun- do, é viver com sabedoria."
+      "temaNumero": 90,
+      "temaTexto": "Aula 086 - O Plano Divino - A Lei da Evolução"
+    },
+    {
+      "aulaNumero": 91,
+      "temaNumero": 91,
+      "temaTexto": "Aula 087 - A Lei do Trabalho - A Lei da Justiça"
+    },
+    {
+      "aulaNumero": 92,
+      "temaNumero": 92,
+      "temaTexto": "Aula 088 - A Lei do Amor"
+    },
+    {
+      "aulaNumero": 93,
+      "temaNumero": 93,
+      "temaTexto": "Aula 089 - Amor a Deus, ao Próximo e aos Inimigos"
     },
     {
       "aulaNumero": 94,
-      "temaNumero": 31,
-      "temaTexto": "Aliança tem diversas acep- ções, porém a mais importante é a espiritual."
+      "temaNumero": 94,
+      "temaTexto": "Aula 090 - A Filosofia da Dor"
+    },
+    {
+      "aulaNumero": 95,
+      "temaNumero": 95,
+      "temaTexto": "Aula 091 - Normas da Vida Espiritual"
+    },
+    {
+      "aulaNumero": 96,
+      "temaNumero": 96,
+      "temaTexto": "Aula 092 - Exame Espiritual - Vivência"
     },
     {
       "aulaNumero": 97,
-      "temaNumero": 32,
-      "temaTexto": "Cultivar o silêncio é lutar pela paz interna, vencendo a agitação do mundo"
+      "temaNumero": 97,
+      "temaTexto": "Aula 093 - Exame Espiritual - Vivência"
+    },
+    {
+      "aulaNumero": 98,
+      "temaNumero": 98,
+      "temaTexto": "Aula 094 - Estrutura da Aliança e de um Centro Espírita - Como abrir um Centro Espírita (V.E.R.)"
+    },
+    {
+      "aulaNumero": 99,
+      "temaNumero": 99,
+      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
     },
     {
       "aulaNumero": 100,
-      "temaNumero": 33,
-      "temaTexto": "Falar pouco e certo é dizer muito em poucas palavras"
+      "temaNumero": 100,
+      "temaTexto": "Aula 095 - Nova Frente de Trabalho"
+    },
+    {
+      "aulaNumero": 101,
+      "temaNumero": 101,
+      "temaTexto": "Aula 096 - Evolução Anímica I"
+    },
+    {
+      "aulaNumero": 102,
+      "temaNumero": 102,
+      "temaTexto": "Aula 097 - Evolução Anímica II"
     },
     {
       "aulaNumero": 103,
-      "temaNumero": 34,
-      "temaTexto": "Prece das Fraternidades, o que representa para mim?"
+      "temaNumero": 103,
+      "temaTexto": "Aula 098 - Categoria dos Mundos"
+    },
+    {
+      "aulaNumero": 104,
+      "temaNumero": 104,
+      "temaTexto": "Aula 099 - Imortalidade"
+    },
+    {
+      "aulaNumero": 105,
+      "temaNumero": 105,
+      "temaTexto": "Aula 100 - A Fraternidade do Trevo e a FDJ"
+    },
+    {
+      "aulaNumero": 106,
+      "temaNumero": 106,
+      "temaTexto": "AULA INCLUÍDA - Conceito de Fraternidade - Pesquisa das Fraternidades do Espaço"
+    },
+    {
+      "aulaNumero": 107,
+      "temaNumero": 107,
+      "temaTexto": "Aula 101 - Reencarnação"
+    },
+    {
+      "aulaNumero": 108,
+      "temaNumero": 108,
+      "temaTexto": "Aula 102 - Exercício de Vida Plena"
     },
     {
       "aulaNumero": 109,
-      "temaNumero": 37,
-      "temaTexto": "Como entendo a Fraterni- dade dos Discípulos de Jesus?"
+      "temaNumero": 109,
+      "temaTexto": "Aula 103 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres I"
+    },
+    {
+      "aulaNumero": 110,
+      "temaNumero": 110,
+      "temaTexto": "Aula 104 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres II"
     },
     {
       "aulaNumero": 111,
-      "temaNumero": 38,
-      "temaTexto": "Para as conquistas de ordem espiritual é bom que não haja nem entusiasmos nem desâni- mos."
+      "temaNumero": 111,
+      "temaTexto": "Aula 105 - Regras para a Educação - Conduta e Aperfeiçoamento dos Seres III"
+    },
+    {
+      "aulaNumero": 112,
+      "temaNumero": 112,
+      "temaTexto": "Aula 106 - O Papel do Discípulo"
     },
     {
       "aulaNumero": 113,
-      "temaNumero": 39,
-      "temaTexto": "Nos caminhos de espirituali- zação o progresso se mede em milímetros"
+      "temaNumero": 113,
+      "temaTexto": "Aula 107 - O Cristão no Lar"
+    },
+    {
+      "aulaNumero": 114,
+      "temaNumero": 114,
+      "temaTexto": "Aula 108 - O Cristão no Meio Religioso e no Meio Profano"
+    },
+    {
+      "aulaNumero": 115,
+      "temaNumero": 115,
+      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
+    },
+    {
+      "aulaNumero": 116,
+      "temaNumero": 116,
+      "temaTexto": "Aula 109 - Os Recursos do Cristão"
+    },
+    {
+      "aulaNumero": 117,
+      "temaNumero": 117,
+      "temaTexto": "Aula 110 - Exercício de Vida Plena"
+    },
+    {
+      "aulaNumero": 118,
+      "temaNumero": 118,
+      "temaTexto": "Aula 111 - Iniciação Espiritual"
+    },
+    {
+      "aulaNumero": 119,
+      "temaNumero": 119,
+      "temaTexto": "AULA INCLUÍDA - Significado do Ingresso na FDJ. Testemunho do discípulo"
+    },
+    {
+      "aulaNumero": 120,
+      "temaNumero": 120,
+      "temaTexto": "Aula 112 - O Estudo do Perispírito - Centros de Força"
+    },
+    {
+      "aulaNumero": 121,
+      "temaNumero": 121,
+      "temaTexto": "Aula 113 - Regras de Conduta"
+    },
+    {
+      "aulaNumero": 122,
+      "temaNumero": 122,
+      "temaTexto": "Aula 114 - O Espírito e o Sexo"
+    },
+    {
+      "aulaNumero": 123,
+      "temaNumero": 123,
+      "temaTexto": "DESDOBRAMENTO DA AULA ANTERIOR - VIDA PLENA"
+    },
+    {
+      "aulaNumero": 124,
+      "temaNumero": 124,
+      "temaTexto": "AULA INCLUÍDA - Divulgação doutrinária"
+    },
+    {
+      "aulaNumero": 125,
+      "temaNumero": 125,
+      "temaTexto": "Aula 115 - Problemas da Propagação do Espiritismo"
+    },
+    {
+      "aulaNumero": 126,
+      "temaNumero": 126,
+      "temaTexto": "Aula 116 - Exame Espiritual - Vivência"
+    },
+    {
+      "aulaNumero": 127,
+      "temaNumero": 127,
+      "temaTexto": "Aula 118 - Exame Espiritual. Devolução das Cadernetas"
     }
   ]
 }

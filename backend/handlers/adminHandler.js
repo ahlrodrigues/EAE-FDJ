@@ -38,11 +38,33 @@ function addDaysISO(yyyyMmDd, days) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function buildTemaScheduleFromPrograma({ turmaId, startDateISO, timezone, publishedAtHourLocal }) {
+async function loadProgramaAulasEaeForTurma(turmaId) {
+  try {
+    const it = await contentStore.readItem(turmaId, "programa_aulas_eae", "global");
+    if (it && typeof it === "object" && Array.isArray(it.temaMap) && it.temaMap.length) return it;
+  } catch {}
+  return programaAulasEae;
+}
+
+function safeTemaMap(programaItem) {
+  const temaMap = Array.isArray(programaItem?.temaMap) ? programaItem.temaMap : [];
+  // dedupe por aulaNumero (primeiro vence)
+  const byAula = new Map();
+  for (const t of temaMap) {
+    const aulaNumero = Number(t?.aulaNumero);
+    const temaNumero = Number(t?.temaNumero);
+    if (!Number.isFinite(aulaNumero) || aulaNumero <= 0) continue;
+    if (!Number.isFinite(temaNumero) || temaNumero <= 0) continue;
+    if (!byAula.has(aulaNumero)) byAula.set(aulaNumero, { aulaNumero, temaNumero, temaTexto: asNonEmptyString(t?.temaTexto) });
+  }
+  return Array.from(byAula.values()).sort((a, b) => a.aulaNumero - b.aulaNumero);
+}
+
+function buildTemaScheduleFromPrograma({ turmaId, startDateISO, timezone, publishedAtHourLocal, programaItem }) {
   const start = asNonEmptyString(startDateISO);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error("Data inicial inválida (use YYYY-MM-DD).");
 
-  const temaMap = Array.isArray(programaAulasEae?.temaMap) ? programaAulasEae.temaMap : [];
+  const temaMap = safeTemaMap(programaItem);
   const items = [];
   for (const m of temaMap) {
     if (!m || m.temaNumero == null || m.aulaNumero == null) continue;
@@ -59,7 +81,7 @@ function buildTemaScheduleFromPrograma({ turmaId, startDateISO, timezone, publis
     version: Date.now(),
     timezone: asNonEmptyString(timezone) || "America/Sao_Paulo",
     publishedAtHourLocal: asNonEmptyString(publishedAtHourLocal) || "06:00",
-    source: { type: "programa_aulas_eae", extractedAtISO: programaAulasEae?.extractedAtISO || null },
+    source: { type: "programa_aulas_eae", extractedAtISO: programaItem?.extractedAtISO || null, version: programaItem?.version || null },
     items,
   };
 }
@@ -77,18 +99,18 @@ function mergeManifestItems(oldItems, updates) {
   return Array.from(map.values());
 }
 
-function buildTemaScheduleFromProgramaSchedule({ turmaId, programaScheduleItem, timezone, publishedAtHourLocal }) {
+function buildTemaScheduleFromProgramaSchedule({ turmaId, programaScheduleItem, timezone, publishedAtHourLocal, programaItem }) {
   const scheduleItems = Array.isArray(programaScheduleItem?.items) ? programaScheduleItem.items : [];
   const byAula = new Map();
   for (const it of scheduleItems) {
     const aulaNumero = Number(it?.aulaNumero);
     const dataAulaISO = asNonEmptyString(it?.dataAulaISO);
-    if (!Number.isFinite(aulaNumero) || aulaNumero < 1 || aulaNumero > 118) continue;
+    if (!Number.isFinite(aulaNumero) || aulaNumero < 1) continue;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dataAulaISO)) continue;
     byAula.set(aulaNumero, dataAulaISO);
   }
 
-  const temaMap = Array.isArray(programaAulasEae?.temaMap) ? programaAulasEae.temaMap : [];
+  const temaMap = safeTemaMap(programaItem);
   const items = [];
   for (const m of temaMap) {
     const aulaNumero = Number(m?.aulaNumero);
@@ -106,7 +128,7 @@ function buildTemaScheduleFromProgramaSchedule({ turmaId, programaScheduleItem, 
     version: Date.now(),
     timezone: asNonEmptyString(timezone) || "America/Sao_Paulo",
     publishedAtHourLocal: asNonEmptyString(publishedAtHourLocal) || "06:00",
-    source: { type: "programa_aulas_eae_schedule", derivedAtISO: nowIso() },
+    source: { type: "programa_aulas_eae_schedule", derivedAtISO: nowIso(), programaVersion: programaItem?.version || null },
     items,
   };
 }
@@ -128,6 +150,8 @@ async function publishLocal(payload) {
   const turmaId = asNonEmptyString(payload?.turmaId);
   if (!turmaId) throw new Error("turmaId ausente");
 
+  let effectiveProgramaItem = await loadProgramaAulasEaeForTurma(turmaId);
+
   const manifestOld = await contentStore.readManifest(turmaId);
   const manifestVersion = Number.isFinite(Number(manifestOld?.manifestVersion))
     ? Number(manifestOld.manifestVersion) + 1
@@ -139,6 +163,26 @@ async function publishLocal(payload) {
   const writes = [];
   const manifestUpdates = [];
 
+  // 0) Programa de Aulas (editável) por turma
+  if (payload?.programaAulasEae) {
+    const incoming = payload.programaAulasEae && typeof payload.programaAulasEae === "object" ? payload.programaAulasEae : null;
+    const rows = Array.isArray(incoming?.rows) ? incoming.rows : null;
+    const columns = Array.isArray(incoming?.columns) ? incoming.columns : null;
+    if (!rows || !columns) throw new Error("programaAulasEae inválido (columns/rows obrigatórios).");
+
+    const prog = {
+      ...(incoming && typeof incoming === "object" ? incoming : {}),
+      schemaVersion: Number(incoming?.schemaVersion) || 2,
+      type: "programa_aulas_eae",
+      version: Date.now(),
+      turmaId,
+      updatedAtISO,
+    };
+    writes.push(contentStore.writeItem(turmaId, "programa_aulas_eae", "global", prog));
+    manifestUpdates.push({ type: "programa_aulas_eae", id: "global", version: prog.version, url: "" });
+    effectiveProgramaItem = prog;
+  }
+
   // 0) Tema schedule a partir do Programa de Aulas padrão (Vivência)
   if (payload?.temaScheduleFromPrograma?.startDateISO) {
     const schedule = buildTemaScheduleFromPrograma({
@@ -146,6 +190,7 @@ async function publishLocal(payload) {
       startDateISO: payload.temaScheduleFromPrograma.startDateISO,
       timezone: payload.temaScheduleFromPrograma.timezone,
       publishedAtHourLocal: payload.temaScheduleFromPrograma.publishedAtHourLocal,
+      programaItem: effectiveProgramaItem,
     });
     writes.push(contentStore.writeItem(turmaId, "tema_schedule", turmaId, schedule));
     manifestUpdates.push({ type: "tema_schedule", id: turmaId, version: schedule.version, url: "" });
@@ -171,6 +216,7 @@ async function publishLocal(payload) {
       programaScheduleItem: prog,
       timezone: prog.timezone,
       publishedAtHourLocal: payload.programaSchedule.publishedAtHourLocal,
+      programaItem: effectiveProgramaItem,
     });
     writes.push(contentStore.writeItem(turmaId, "tema_schedule", turmaId, derived));
     manifestUpdates.push({ type: "tema_schedule", id: turmaId, version: derived.version, url: "" });

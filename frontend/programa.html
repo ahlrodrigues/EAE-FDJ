@@ -11,10 +11,10 @@
   <div id="menuSuperior"></div>
   <div id="modalAvisoContainer"></div>
 
-  <main class="container">
-    <h2>Programa de Aulas (Dirigente)</h2>
+  <main class="container-wide">
+    <h2>Programa de Aulas</h2>
 
-    <div class="card" data-roles="dirigente,analista">
+    <div class="card card-wide" data-roles="dirigente,analista">
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
         <div style="flex:1; min-width:220px;">
           <label for="filtroPrograma">Buscar (aula/tema/texto)</label>
@@ -37,21 +37,16 @@
         —
       </small>
 
-      <div style="margin-top:12px; overflow:auto; border:1px solid #eee; border-radius:10px;">
-        <table style="width:100%; border-collapse:collapse; min-width:640px;">
-          <thead>
-            <tr style="background:#fafafa;">
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #eee; width:90px;">Aula</th>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #eee; width:90px;">Tema</th>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #eee;">Texto do tema</th>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #eee; width:160px;">Data</th>
-            </tr>
-          </thead>
+      <div class="programa-grid-wrap">
+        <table class="programa-grid">
+          <thead id="programaHead"></thead>
           <tbody id="programaBody"></tbody>
         </table>
       </div>
 
       <div class="acoes" style="margin-top: 14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="btnSalvarProgramaLocal" type="button" class="btn-principal">Salvar programa (local)</button>
+        <button id="btnAdicionarLinhaFim" type="button" class="btn-secundario">Adicionar linha</button>
         <button id="btnAplicarSemanal" type="button" class="btn-secundario">Aplicar semanal</button>
         <button id="btnSalvarProgramaDatas" type="button" class="btn-principal">Salvar datas (local)</button>
       </div>

@@ -24,41 +24,148 @@ function addDaysISO(yyyyMmDd, days) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function renderRows(rows, filtro) {
+function getActiveRole() {
+  try {
+    const v = String(document.documentElement?.dataset?.role || "").trim().toLowerCase();
+    if (v) return v;
+  } catch {}
+  const s = String(sessionStorage.getItem("activeRole") || "").trim().toLowerCase();
+  return s || "aluno";
+}
+
+function normalizeColumns(cols) {
+  const arr = Array.isArray(cols) ? cols : [];
+  return arr
+    .map((c) => ({
+      key: String(c?.key || "").trim(),
+      label: String(c?.label || c?.key || "").trim(),
+      type: String(c?.type || "text").trim(),
+      width: Number(c?.width) || null,
+      rolesHidden: Array.isArray(c?.rolesHidden) ? c.rolesHidden.map((r) => String(r || "").trim().toLowerCase()).filter(Boolean) : [],
+    }))
+    .filter((c) => c.key);
+}
+
+function normalizeRows(rows) {
+  const arr = Array.isArray(rows) ? rows : [];
+  return arr
+    .map((r, idx) => ({
+      rowId: String(r?.rowId || `row_${idx + 1}`),
+      order: Number.isFinite(Number(r?.order)) ? Number(r.order) : idx + 1,
+      ...r,
+    }))
+    .filter((r) => r.rowId);
+}
+
+function isColumnVisibleForRole(col, role) {
+  const hidden = Array.isArray(col?.rolesHidden) ? col.rolesHidden : [];
+  return !hidden.includes(String(role || "").toLowerCase());
+}
+
+function buildSearchHaystack(row, cols) {
+  return normalize(
+    cols
+      .map((c) => String(row?.[c.key] ?? ""))
+      .join(" ")
+  );
+}
+
+function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, onEditCell }) {
   const body = qs("#programaBody");
-  if (!body) return;
+  const head = qs("#programaHead");
+  if (!body || !head) return;
   body.innerHTML = "";
+  head.innerHTML = "";
 
   const f = normalize(filtro);
+
+  const visibleCols = columns.filter((c) => isColumnVisibleForRole(c, role));
+
+  // HEAD
+  const trh = document.createElement("tr");
+  const thActions = document.createElement("th");
+  thActions.textContent = "Ações";
+  thActions.style.width = "110px";
+  trh.appendChild(thActions);
+  for (const c of visibleCols) {
+    const th = document.createElement("th");
+    th.textContent = c.label;
+    if (c.width) th.style.width = `${c.width}px`;
+    trh.appendChild(th);
+  }
+  head.appendChild(trh);
+
+  // FILTER
   const filtered = !f
     ? rows
-    : rows.filter((r) => {
-        const hay = normalize(`${r.aulaNumero} ${r.temaNumero} ${r.temaTexto || ""}`);
-        return hay.includes(f);
-      });
+    : rows.filter((r) => buildSearchHaystack(r, visibleCols).includes(f));
 
+  // BODY
   for (const r of filtered) {
     const tr = document.createElement("tr");
-    const dateVal = r.dataAulaISO || "";
-    tr.innerHTML = `
-      <td style="padding:10px; border-bottom:1px solid #f0f0f0;">${r.aulaNumero ?? "—"}</td>
-      <td style="padding:10px; border-bottom:1px solid #f0f0f0;">${r.temaNumero ?? "—"}</td>
-      <td style="padding:10px; border-bottom:1px solid #f0f0f0;">${r.temaTexto || ""}</td>
-      <td style="padding:10px; border-bottom:1px solid #f0f0f0;">
-        <input data-aula="${r.aulaNumero}" class="programa-data" type="date" value="${dateVal}" />
-      </td>
+
+    const tdAct = document.createElement("td");
+    tdAct.setAttribute("data-label", "Ações");
+    tdAct.innerHTML = `
+      <div class="programa-row-actions">
+        <button type="button" data-act="insert" title="Inserir linha abaixo">＋</button>
+        <button type="button" data-act="del" title="Excluir linha">🗑</button>
+      </div>
     `;
+    tdAct.querySelector('[data-act="insert"]')?.addEventListener("click", () => onInsertBelow?.(r.rowId));
+    tdAct.querySelector('[data-act="del"]')?.addEventListener("click", () => onDeleteRow?.(r.rowId));
+    tr.appendChild(tdAct);
+
+    for (const c of visibleCols) {
+      const td = document.createElement("td");
+      td.setAttribute("data-label", c.label);
+
+      const v = r?.[c.key] ?? "";
+      if (c.type === "date") {
+        const inp = document.createElement("input");
+        inp.type = "date";
+        inp.className = "programa-cell-date";
+        inp.value = String(v || "");
+        inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value));
+        td.appendChild(inp);
+      } else if (c.type === "number") {
+        const inp = document.createElement("input");
+        inp.type = "number";
+        inp.inputMode = "numeric";
+        inp.className = "programa-cell-number";
+        inp.value = v === null || v === undefined ? "" : String(v);
+        inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value === "" ? "" : Number(inp.value)));
+        td.appendChild(inp);
+      } else if (String(v || "").length > 70 || c.key === "assuntoDirigente") {
+        const ta = document.createElement("textarea");
+        ta.className = "programa-cell-textarea";
+        ta.value = String(v || "");
+        ta.rows = 2;
+        ta.addEventListener("input", () => onEditCell?.(r.rowId, c.key, ta.value));
+        td.appendChild(ta);
+      } else {
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.className = "programa-cell-input";
+        inp.value = String(v || "");
+        inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value));
+        td.appendChild(inp);
+      }
+
+      tr.appendChild(td);
+    }
+
     body.appendChild(tr);
   }
 
-  return { total: rows.length, shown: filtered.length };
+  return { total: rows.length, shown: filtered.length, visibleColsCount: visibleCols.length };
 }
 
 async function loadPrograma() {
   // Preferência: se já veio pelo pull (contentStore), usa o item local
   try {
     const local = await window.api?.content?.getItem?.("programa_aulas_eae", "global");
-    if (local?.ok && local.item?.temaMap) {
+    if (local?.ok && (Array.isArray(local.item?.rows) || Array.isArray(local.item?.temaMap))) {
       return { source: "local", dados: local.item };
     }
   } catch {}
@@ -94,14 +201,13 @@ async function guessTurmaId() {
 }
 
 function readDatesFromTable() {
-  const inputs = Array.from(document.querySelectorAll("input.programa-data"));
-  return inputs
-    .map((inp) => ({ aulaNumero: Number(inp.dataset.aula), dataAulaISO: String(inp.value || "").trim() }))
-    .filter((x) => Number.isFinite(x.aulaNumero) && x.aulaNumero >= 1 && x.aulaNumero <= 118 && /^\d{4}-\d{2}-\d{2}$/.test(x.dataAulaISO));
+  // (mantido por compat) — agora preferimos ler das rows em memória
+  return [];
 }
 
 async function saveProgramaDatasLocal({ turmaId, publishedAtHourLocal }) {
-  const items = readDatesFromTable();
+  // items serão preenchidos a partir das rows em memória (abaixo)
+  const items = [];
   const payload = {
     turmaId,
     programaSchedule: {
@@ -121,34 +227,117 @@ document.addEventListener("DOMContentLoaded", async () => {
   await componentesCarregados;
 
   let programa = null;
-  let rows = [];
+  let allColumns = [];
+  let allRows = [];
   let schedule = null;
+  const role = getActiveRole();
+  let dirtyPrograma = false;
+
+  function setDirty(on) {
+    dirtyPrograma = !!on;
+    const btn = qs("#btnSalvarProgramaLocal");
+    if (btn) btn.textContent = dirtyPrograma ? "Salvar programa (pendente)" : "Salvar programa (local)";
+  }
+
+  function renderNow() {
+    const info = renderGrid({
+      rows: allRows,
+      columns: allColumns,
+      filtro: qs("#filtroPrograma")?.value || "",
+      role,
+      onInsertBelow: (rowId) => {
+        const idx = allRows.findIndex((x) => x.rowId === rowId);
+        const newRow = {
+          rowId: `row_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`,
+          order: (idx >= 0 ? idx + 1 : allRows.length + 1) + 0.1,
+        };
+        allRows.splice(idx >= 0 ? idx + 1 : allRows.length, 0, newRow);
+        allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+        setDirty(true);
+        renderNow();
+      },
+      onDeleteRow: (rowId) => {
+        const idx = allRows.findIndex((x) => x.rowId === rowId);
+        if (idx < 0) return;
+        if (!window.confirm("Excluir esta linha do programa?")) return;
+        allRows.splice(idx, 1);
+        allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+        setDirty(true);
+        renderNow();
+      },
+      onEditCell: (rowId, key, value) => {
+        const idx = allRows.findIndex((x) => x.rowId === rowId);
+        if (idx >= 0) {
+          allRows[idx] = { ...allRows[idx], [key]: value };
+          setDirty(true);
+        }
+      },
+    });
+
+    setMeta(`Fonte: ${programa?.source || "—"} • Linhas: ${allRows.length} • Exibindo: ${info?.shown ?? allRows.length}`);
+    return info;
+  }
+
+  function buildDefaultColumnsAndRowsFromLegacy(dados) {
+    const aulas = Array.isArray(dados?.aulas) ? dados.aulas : [];
+    const temaMap = Array.isArray(dados?.temaMap) ? dados.temaMap : [];
+    const byAulaTema = new Map(temaMap.map((t) => [Number(t.aulaNumero), t]));
+    const columns = normalizeColumns([
+      { key: "dataAulaISO", label: "Data", type: "date", width: 140 },
+      { key: "aulaNumero", label: "Aula", type: "number", width: 80 },
+      { key: "temaNumero", label: "Tema", type: "number", width: 80 },
+      { key: "temaTexto", label: "Texto do tema", type: "text", width: 420 },
+    ]);
+    const rows = aulas.map((a, idx) => {
+      const n = Number(a.aulaNumero);
+      const t = byAulaTema.get(n);
+      return {
+        rowId: `row_${idx + 1}`,
+        order: idx + 1,
+        dataAulaISO: "",
+        aulaNumero: n,
+        temaNumero: t?.temaNumero ?? "",
+        temaTexto: t?.temaTexto || "",
+      };
+    });
+    return { columns, rows };
+  }
+
+  function deriveScheduleItemsFromRows(rows) {
+    return rows
+      .map((r) => ({
+        aulaNumero: Number(r?.aulaNumero),
+        dataAulaISO: String(r?.dataAulaISO || "").trim(),
+      }))
+      .filter((x) => Number.isFinite(x.aulaNumero) && x.aulaNumero >= 1 && /^\d{4}-\d{2}-\d{2}$/.test(x.dataAulaISO));
+  }
 
   async function refresh() {
     programa = await loadPrograma();
-    const aulas = Array.isArray(programa?.dados?.aulas) ? programa.dados.aulas : [];
-    const temaMap = Array.isArray(programa?.dados?.temaMap) ? programa.dados.temaMap : [];
-    const byAulaTema = new Map(temaMap.map((t) => [Number(t.aulaNumero), t]));
+    const dados = programa?.dados || {};
+    allColumns = normalizeColumns(dados.columns);
+    allRows = normalizeRows(dados.rows);
 
     const turmaId = String(qs("#programaTurmaId")?.value || "").trim();
     schedule = turmaId ? await loadProgramaSchedule(turmaId) : null;
     const byAulaDate = new Map((schedule?.items || []).map((it) => [Number(it.aulaNumero), String(it.dataAulaISO || "")]));
 
-    rows = aulas
-      .map((a) => {
-        const n = Number(a.aulaNumero);
-        const t = byAulaTema.get(n);
-        return {
-          aulaNumero: n,
-          temaNumero: t?.temaNumero ?? null,
-          temaTexto: t?.temaTexto || "",
-          dataAulaISO: byAulaDate.get(n) || "",
-        };
-      })
-      .sort((x, y) => (x.aulaNumero || 0) - (y.aulaNumero || 0));
+    // Se ainda não tem grid (schema novo), cria a partir do legado
+    if (!allColumns.length || !allRows.length) {
+      const legacy = buildDefaultColumnsAndRowsFromLegacy(dados);
+      allColumns = legacy.columns;
+      allRows = legacy.rows;
+    }
 
-    const info = renderRows(rows, qs("#filtroPrograma")?.value || "");
-    setMeta(`Fonte: ${programa.source} • Temas mapeados: ${rows.length} • Exibindo: ${info?.shown ?? rows.length}`);
+    // Aplica datas do schedule (se existir) em memória
+    for (const r of allRows) {
+      const aulaNumero = Number(r?.aulaNumero);
+      if (!Number.isFinite(aulaNumero)) continue;
+      const dt = byAulaDate.get(aulaNumero);
+      if (dt) r.dataAulaISO = dt;
+    }
+    setDirty(false);
+    renderNow();
   }
 
   try {
@@ -161,8 +350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   qs("#filtroPrograma")?.addEventListener("input", (e) => {
-    const info = renderRows(rows, e.target.value);
-    setMeta(`Fonte: ${programa?.source || "—"} • Temas mapeados: ${rows.length} • Exibindo: ${info?.shown ?? rows.length}`);
+    renderNow();
   });
 
   qs("#btnRecarregarPrograma")?.addEventListener("click", async () => {
@@ -174,15 +362,66 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const start = String(qs("#programaStartDate")?.value || "").trim();
       if (!/^\d{4}-\d{2}-\d{2}$/.test(start)) throw new Error("Informe a Data da aula 1.");
-      const inputs = Array.from(document.querySelectorAll("input.programa-data"));
-      for (const inp of inputs) {
-        const aulaNumero = Number(inp.dataset.aula);
-        if (!Number.isFinite(aulaNumero)) continue;
-        inp.value = addDaysISO(start, (aulaNumero - 1) * 7);
+      for (const r of allRows) {
+        const aulaNumero = Number(r?.aulaNumero);
+        if (!Number.isFinite(aulaNumero) || aulaNumero < 1) continue;
+        r.dataAulaISO = addDaysISO(start, (aulaNumero - 1) * 7);
       }
+      setDirty(true);
+      renderNow();
       await exibirAviso({ tipo: "OK", mensagem: "Datas aplicadas semanalmente. Ajuste manualmente se necessário e clique em Salvar." });
     } catch (e) {
       await exibirAviso({ tipo: "Erro", mensagem: e?.message || "Falha ao aplicar datas." });
+    }
+  });
+
+  qs("#btnAdicionarLinhaFim")?.addEventListener("click", async () => {
+    allRows.push({ rowId: `row_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`, order: allRows.length + 1 });
+    allRows = allRows.map((r, i) => ({ ...r, order: i + 1 }));
+    setDirty(true);
+    renderNow();
+  });
+
+  qs("#btnSalvarProgramaLocal")?.addEventListener("click", async () => {
+    try {
+      const turmaId = String(qs("#programaTurmaId")?.value || "").trim();
+      if (!turmaId) throw new Error("Informe a Turma ID.");
+      if (!isValidTurmaId(turmaId)) throw new Error("Turma ID inválido. Use: TurmaId + letras/números.");
+
+      // Deriva aulas e temaMap (compat com outras rotinas)
+      const aulaNums = allRows
+        .map((r) => Number(r?.aulaNumero))
+        .filter((n) => Number.isFinite(n) && n > 0)
+        .sort((a, b) => a - b);
+      const aulas = Array.from(new Set(aulaNums)).map((n) => ({ aulaNumero: n }));
+      const temaByAula = new Map();
+      for (const r of allRows) {
+        const aulaNumero = Number(r?.aulaNumero);
+        if (!Number.isFinite(aulaNumero) || aulaNumero <= 0) continue;
+        const temaTexto = String(r?.temaAula || r?.temaTexto || "").trim();
+        if (!temaTexto) continue;
+        if (!temaByAula.has(aulaNumero)) temaByAula.set(aulaNumero, { aulaNumero, temaNumero: aulaNumero, temaTexto });
+      }
+      const temaMap = Array.from(temaByAula.values()).sort((a, b) => a.aulaNumero - b.aulaNumero);
+
+      const payload = {
+        schemaVersion: 2,
+        type: "programa_aulas_eae",
+        columns: allColumns,
+        rows: allRows,
+        aulas,
+        temaMap,
+        extractedAtISO: programa?.dados?.extractedAtISO || null,
+        source: programa?.dados?.source || null,
+      };
+
+      const resp = await window.api?.admin?.publishLocal?.({ turmaId, programaAulasEae: payload });
+      if (!resp?.ok) throw new Error(resp?.erro || "Falha ao salvar programa.");
+      setDirty(false);
+      await exibirAviso({ tipo: "Sucesso", mensagem: `Programa salvo localmente (v=${resp.manifestVersion}).` });
+      await refresh();
+    } catch (e) {
+      await exibirAviso({ tipo: "Erro", mensagem: e?.message || "Falha ao salvar programa." });
     }
   });
 
@@ -191,7 +430,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const turmaId = String(qs("#programaTurmaId")?.value || "").trim();
       if (!turmaId) throw new Error("Informe a Turma ID.");
       if (!isValidTurmaId(turmaId)) throw new Error("Turma ID inválido. Use: TurmaId + letras/números.");
-      const resp = await saveProgramaDatasLocal({ turmaId, publishedAtHourLocal: "06:00" });
+
+      const items = deriveScheduleItemsFromRows(allRows);
+      const resp = await window.api?.admin?.publishLocal?.({
+        turmaId,
+        programaSchedule: {
+          timezone: "America/Sao_Paulo",
+          publishedAtHourLocal: "06:00",
+          items,
+        },
+      });
+      if (!resp?.ok) throw new Error(resp?.erro || "Falha ao salvar datas.");
       await exibirAviso({ tipo: "Sucesso", mensagem: `Datas salvas localmente (v=${resp.manifestVersion}).` });
       await refresh();
     } catch (e) {

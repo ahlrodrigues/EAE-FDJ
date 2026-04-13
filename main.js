@@ -235,8 +235,9 @@ function createWindow() {
   }
 
   janelaCadastro = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: 1200,
+    height: 900,
+    show: false,
     icon: path.join(__dirname, "assets", "icon.png"),
     webPreferences: {
       contextIsolation: true,
@@ -247,6 +248,14 @@ function createWindow() {
       // additionalArguments: [`--blog-channels=${encodeURIComponent(process.env.BLOG_CHANNELS_JSON)}`],
     },
   });
+
+  // 🖥️ Abre maximizado (desktop) e mantém responsivo (CSS) para mobile
+  try {
+    janelaCadastro.once("ready-to-show", () => {
+      try { janelaCadastro.maximize(); } catch {}
+      try { janelaCadastro.show(); } catch {}
+    });
+  } catch {}
 
   // ⛔ Sempre forçar links externos no navegador padrão
   forceExternalBrowserHandlers(janelaCadastro);
