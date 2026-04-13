@@ -136,7 +136,7 @@ function renderGrid({ rows, columns, filtro, role, onInsertBelow, onDeleteRow, o
         inp.value = v === null || v === undefined ? "" : String(v);
         inp.addEventListener("input", () => onEditCell?.(r.rowId, c.key, inp.value === "" ? "" : Number(inp.value)));
         td.appendChild(inp);
-      } else if (String(v || "").length > 70 || c.key === "assuntoDirigente") {
+      } else if (String(v || "").length > 70 || c.key === "assuntoDirigente" || c.key === "assuntos") {
         const ta = document.createElement("textarea");
         ta.className = "programa-cell-textarea";
         ta.value = String(v || "");
@@ -283,10 +283,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const temaMap = Array.isArray(dados?.temaMap) ? dados.temaMap : [];
     const byAulaTema = new Map(temaMap.map((t) => [Number(t.aulaNumero), t]));
     const columns = normalizeColumns([
-      { key: "dataAulaISO", label: "Data", type: "date", width: 140 },
-      { key: "aulaNumero", label: "Aula", type: "number", width: 80 },
-      { key: "temaNumero", label: "Tema", type: "number", width: 80 },
-      { key: "temaTexto", label: "Texto do tema", type: "text", width: 420 },
+      { key: "dataAulaISO", label: "DATA", type: "date", width: 140 },
+      { key: "aulaNumero", label: "N.o", type: "number", width: 80 },
+      { key: "capitulo", label: "CAPÍTULO", type: "text", width: 90 },
+      { key: "aulaTitulo", label: "AULA", type: "text", width: 300 },
+      { key: "assuntos", label: "ASSUNTOS", type: "text", width: 520 },
+      { key: "temaFacilitador", label: "TEMA FACILITADOR", type: "text", width: 240, rolesHidden: ["analista"] },
+      { key: "email", label: "EMAIL", type: "text", width: 220, rolesHidden: ["analista"] },
+      { key: "contato", label: "CONTATO", type: "text", width: 160, rolesHidden: ["analista"] },
     ]);
     const rows = aulas.map((a, idx) => {
       const n = Number(a.aulaNumero);
@@ -296,8 +300,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         order: idx + 1,
         dataAulaISO: "",
         aulaNumero: n,
-        temaNumero: t?.temaNumero ?? "",
-        temaTexto: t?.temaTexto || "",
+        capitulo: "",
+        aulaTitulo: t?.temaTexto || "",
+        assuntos: "",
+        temaFacilitador: "",
+        email: "",
+        contato: "",
       };
     });
     return { columns, rows };
@@ -398,7 +406,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       for (const r of allRows) {
         const aulaNumero = Number(r?.aulaNumero);
         if (!Number.isFinite(aulaNumero) || aulaNumero <= 0) continue;
-        const temaTexto = String(r?.temaAula || r?.temaTexto || "").trim();
+        const temaTexto = String(r?.aulaTitulo || r?.temaAula || r?.temaTexto || "").trim();
         if (!temaTexto) continue;
         if (!temaByAula.has(aulaNumero)) temaByAula.set(aulaNumero, { aulaNumero, temaNumero: aulaNumero, temaTexto });
       }

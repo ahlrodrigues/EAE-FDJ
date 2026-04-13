@@ -78,15 +78,14 @@ function main() {
   };
 
   const columns = [
-    { key: "dataAulaISO", label: "Data", type: "date", width: 140 },
-    { key: "aulaNumero", label: "Aula", type: "number", width: 80 },
-    { key: "capitulo", label: "Cap.", type: "text", width: 90 },
-    { key: "temaAula", label: "Tema (aula)", type: "text", width: 260 },
-    { key: "assuntoDirigente", label: "Assunto (dirigente)", type: "text", width: 420 },
-    { key: "temaAtividade", label: "Tema (atividade)", type: "text", width: 220 },
-    { key: "facilitadores", label: "Facilitadores", type: "text", width: 220, rolesHidden: ["analista"] },
-    { key: "email", label: "Email", type: "text", width: 220, rolesHidden: ["analista"] },
-    { key: "whatsapp", label: "Whatsapp", type: "text", width: 160, rolesHidden: ["analista"] },
+    { key: "dataAulaISO", label: "DATA", type: "date", width: 140 },
+    { key: "aulaNumero", label: "N.o", type: "number", width: 80 },
+    { key: "capitulo", label: "CAPÍTULO", type: "text", width: 90 },
+    { key: "aulaTitulo", label: "AULA", type: "text", width: 300 },
+    { key: "assuntos", label: "ASSUNTOS", type: "text", width: 520 },
+    { key: "temaFacilitador", label: "TEMA FACILITADOR", type: "text", width: 240, rolesHidden: ["analista"] },
+    { key: "email", label: "EMAIL", type: "text", width: 220, rolesHidden: ["analista"] },
+    { key: "contato", label: "CONTATO", type: "text", width: 160, rolesHidden: ["analista"] },
   ];
 
   const dataRows = rows.slice(1);
@@ -111,12 +110,11 @@ function main() {
       dataAulaISO,
       aulaNumero,
       capitulo: asNonEmptyString(r[colIdx.cap]),
-      temaAula: asNonEmptyString(r[colIdx.temaAula]),
-      assuntoDirigente: asNonEmptyString(r[colIdx.assunto]),
-      temaAtividade: asNonEmptyString(r[colIdx.temaAtividade]),
-      facilitadores: asNonEmptyString(r[colIdx.facilitadores]),
+      aulaTitulo: asNonEmptyString(r[colIdx.temaAula]),
+      assuntos: asNonEmptyString(r[colIdx.assunto]),
+      temaFacilitador: asNonEmptyString(r[colIdx.temaAtividade]),
       email: asNonEmptyString(r[colIdx.email]),
-      whatsapp: asNonEmptyString(r[colIdx.whatsapp]),
+      contato: asNonEmptyString(r[colIdx.whatsapp]),
     };
 
     outRows.push(rowObj);
@@ -135,7 +133,7 @@ function main() {
   for (const r of outRows) {
     const aulaNumero = Number(r.aulaNumero);
     if (!Number.isFinite(aulaNumero) || aulaNumero <= 0) continue;
-    const temaTexto = asNonEmptyString(r.temaAula);
+    const temaTexto = asNonEmptyString(r.aulaTitulo);
     if (!temaTexto) continue;
     if (!temaByAula.has(aulaNumero)) temaByAula.set(aulaNumero, { aulaNumero, temaNumero: aulaNumero, temaTexto });
   }
